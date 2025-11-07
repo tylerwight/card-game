@@ -10,7 +10,8 @@ config_version=5
 
 [application]
 
-config/name="Card Test"
+config/name="Card game"
+run/main_scene="uid://c7ui0h4g6qg5o"
 config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://icon.svg"
 
