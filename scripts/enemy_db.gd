@@ -23,6 +23,13 @@ func _ready() -> void:
 		"health": 100
 	})
 	
+	_add_enemy("goodboy", {
+		"name": "Good Boy",
+		"description": "Oooo he Good",
+		"texture_path": "res://assets/bringer-of-death.png",
+		"health": 100
+	})
+	
 
 func _process(delta: float) -> void:
 	pass

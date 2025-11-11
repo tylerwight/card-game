@@ -5,13 +5,14 @@ const HAND_SPACING := 140.0
 const ENEMY_Y_FRAC := 0.20  # 20% from top
 
 var title: String = "big title!"
-var enemies: EnemyDb.EnemyData = EnemyDb.get_enemy("badboy")
+#var enemies: EnemyDb.EnemyData = EnemyDb.get_enemy("badboy")
+var enemies_data: Array[EnemyDb.EnemyData]
 
 @onready var world_root: Node2D = $World
 @onready var ui_layer: CanvasLayer = $UI
 
 var deck_hand: Node2D
-var enemy: Node2D
+var enemies: Array[Node2D]
 
 func _ready() -> void:
 	EventBus.card_played.connect(_on_card_played)
@@ -20,8 +21,12 @@ func _ready() -> void:
 	ui_layer.add_child(deck_hand)
 	
 	var scene_enemy = preload("res://scenes/enemy.tscn")
-	enemy = scene_enemy.instantiate()
-	world_root.add_child(enemy)
+	
+	var enemy: Node2D
+	for enemy_data in enemies_data:
+		enemy = scene_enemy.instantiate()
+		world_root.add_child(enemy)
+		enemies.push_back(enemy)
 	
 	
 
@@ -32,7 +37,12 @@ func _ready() -> void:
 	
 func _layout() -> void:
 	var screen := get_viewport().get_visible_rect().size
-	enemy.global_position = Vector2(screen.x * 0.5, screen.y * ENEMY_Y_FRAC)
+	
+	var spacing = 200.0
+	var start_x = screen.x * 0.5 - (spacing * (enemies.size() - 1) / 2.0)
+	
+	for i in range(enemies.size()):
+		enemies[i].global_position = Vector2(start_x + i * spacing, screen.y * ENEMY_Y_FRAC)
 	deck_hand.position = Vector2(screen.x * 0.5, screen.y - HAND_Y_FROM_BOTTOM)
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
