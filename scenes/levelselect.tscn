@@ -1,0 +1,49 @@
+[gd_scene load_steps=2 format=3 uid="uid://nblgihicbt7p"]
+
+[ext_resource type="Script" uid="uid://dg43sb1s3alrk" path="res://scripts/levelselect.gd" id="1_xuh2y"]
+
+[node name="levelselect" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_xuh2y")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 424.0
+offset_top = 49.0
+offset_right = 911.0
+offset_bottom = 152.0
+theme_override_font_sizes/font_size = 75
+text = "LEVEL SELECT"
+
+[node name="GridContainer" type="GridContainer" parent="."]
+layout_mode = 0
+offset_left = 494.0
+offset_top = 210.0
+offset_right = 849.0
+offset_bottom = 425.0
+columns = 5
+
+[node name="level 1" type="Button" parent="GridContainer"]
+layout_mode = 2
+text = "Level 1"
+
+[node name="level 2" type="Button" parent="GridContainer"]
+layout_mode = 2
+text = "Level 2
+"
+
+[node name="level 3" type="Button" parent="GridContainer"]
+layout_mode = 2
+text = "Level 3"
+
+[node name="level 4" type="Button" parent="GridContainer"]
+layout_mode = 2
+text = "Level 4
+"
+
+[connection signal="pressed" from="GridContainer/level 1" to="." method="_on_level_1_pressed"]

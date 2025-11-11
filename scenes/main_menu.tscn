@@ -1,0 +1,43 @@
+[gd_scene load_steps=2 format=3 uid="uid://cwyeeubmalrm1"]
+
+[ext_resource type="Script" uid="uid://bok63xk0uj1wk" path="res://scripts/main_menu.gd" id="1_l6cm7"]
+
+[node name="mainmenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_l6cm7")
+
+[node name="title" type="Label" parent="."]
+layout_mode = 0
+offset_left = 428.0
+offset_top = 10.0
+offset_right = 863.0
+offset_bottom = 219.0
+theme_override_font_sizes/font_size = 75
+text = "CARD GAME
+"
+
+[node name="play button" type="Button" parent="."]
+layout_mode = 0
+offset_left = 577.0
+offset_top = 222.0
+offset_right = 658.0
+offset_bottom = 265.0
+text = "play
+"
+
+[node name="quit button" type="Button" parent="."]
+layout_mode = 0
+offset_left = 579.0
+offset_top = 410.0
+offset_right = 660.0
+offset_bottom = 453.0
+text = "quit
+"
+
+[connection signal="pressed" from="play button" to="." method="_on_play_button_pressed"]
+[connection signal="pressed" from="quit button" to="." method="_on_quit_button_pressed"]

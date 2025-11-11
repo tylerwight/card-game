@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dagt0ili1yuc1"]
+
+[ext_resource type="Script" uid="uid://quwui5itehfc" path="res://scripts/encounter.gd" id="1_lp88p"]
+
+[node name="Encounter" type="Node2D"]
+script = ExtResource("1_lp88p")
