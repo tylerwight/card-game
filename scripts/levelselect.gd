@@ -16,7 +16,7 @@ func _on_level_1_pressed() -> void:
 	var encounter = scene_encounter.instantiate()
 	encounter.title = "Level 1"
 	encounter.enemies_data.push_back(EnemyDb.get_enemy("badboy"))
-	encounter.enemies_data.push_back(EnemyDb.get_enemy("badboy"))
+	encounter.enemies_data.push_back(EnemyDb.get_enemy("goodboy"))
 	
 	get_node("/root").add_child(encounter)
 	#get_tree().root.add_child(encounter)

@@ -25,6 +25,7 @@ func _ready() -> void:
 	var enemy: Node2D
 	for enemy_data in enemies_data:
 		enemy = scene_enemy.instantiate()
+		enemy.setup_enemy(enemy_data)
 		world_root.add_child(enemy)
 		enemies.push_back(enemy)
 	
