@@ -13,8 +13,8 @@ var enemies: EnemyDb.EnemyData = EnemyDb.get_enemy("badboy")
 var deck_hand: Node2D
 var enemy: Node2D
 
-# Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	EventBus.card_played.connect(_on_card_played)
 	var scene_deck_hand = preload("res://scenes/deck_hand.tscn")
 	deck_hand = scene_deck_hand.instantiate()
 	ui_layer.add_child(deck_hand)
@@ -30,9 +30,6 @@ func _ready() -> void:
 	get_viewport().size_changed.connect(_layout)
 		
 	
-
-
-
 func _layout() -> void:
 	var screen := get_viewport().get_visible_rect().size
 	enemy.global_position = Vector2(screen.x * 0.5, screen.y * ENEMY_Y_FRAC)
@@ -41,3 +38,6 @@ func _layout() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	pass
+
+func _on_card_played(card_info: CardDb.CardData) -> void:
+	print("Encounter detected card played:", card_info.name)
