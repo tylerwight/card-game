@@ -15,7 +15,7 @@ script = ExtResource("1_6u4wf")
 position = Vector2(0, 0.5)
 shape = SubResource("RectangleShape2D_6u4wf")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="sprite" type="Sprite2D" parent="."]
 texture = ExtResource("2_6u4wf")
 
 [connection signal="input_event" from="cardbody" to="." method="_on_cardbody_input_event"]
