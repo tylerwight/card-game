@@ -17,8 +17,9 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-Main="*res://scripts/main.gd"
 CardDb="*res://scripts/card_db.gd"
+EnemyDb="*res://scripts/enemy_db.gd"
+Main="*res://scripts/main.gd"
 
 [display]
 

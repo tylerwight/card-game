@@ -15,5 +15,7 @@ func _on_level_1_pressed() -> void:
 	var scene_encounter = preload("res://scenes/encounter.tscn")
 	var encounter = scene_encounter.instantiate()
 	encounter.title = "Level 1"
-	get_tree().root.add_child(encounter)
+	get_node("/root").add_child(encounter)
+	#get_tree().root.add_child(encounter)
+	hide()
 	pass # Replace with function body.
