@@ -1,5 +1,9 @@
 extends Node
-signal card_played(card: CardDb.CardData)
+#signal card_played(card: CardDB.CardData)
+signal card_clicked(card: NodeCard)
+signal enemy_clicked(enemy: NodeEnemy)
+signal card_played(card: NodeCard, enemy: NodeEnemy)
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:

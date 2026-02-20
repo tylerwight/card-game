@@ -10,7 +10,7 @@ class EnemyData:
 	@export var block: int = 0 
 	@export var heal_std: int = 0
 	@export var block_std: int = 0
-
+	
 
 var enemies_global: Dictionary = {}
 
@@ -19,14 +19,14 @@ func _ready() -> void:
 	_add_enemy("badboy", {
 		"name": "Bad Boy",
 		"description": "Oooo he bad",
-		"texture_path": "res://assets/bringer-of-death.png",
+		"texture_path": "res://assets/badboy/idle.png",
 		"health": 100
 	})
 	
 	_add_enemy("goodboy", {
 		"name": "Good Boy",
 		"description": "Oooo he Good",
-		"texture_path": "res://assets/bringer-of-death.png",
+		"texture_path": "res://assets/goodboy/idle.png",
 		"health": 100
 	})
 	
@@ -56,4 +56,4 @@ func _add_enemy(id: String, data: Dictionary) -> void:
 
 
 func get_enemy(id: String) -> EnemyData:
-	return enemies_global.get(id) 
+	return enemies_global.get(id).duplicate()

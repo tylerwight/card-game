@@ -19,4 +19,7 @@ func _on_quit_button_pressed() -> void:
 
 func _on_play_button_pressed() -> void:
 	start_game.emit()
-	hide()
+	
+	
+	#get_tree().root.print_tree()
+	#ui.hide_all() # also doesn't work

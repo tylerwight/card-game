@@ -12,13 +12,10 @@ func _process(delta: float) -> void:
 
 
 func _on_level_1_pressed() -> void:
-	var scene_encounter = preload("res://scenes/encounter.tscn")
-	var encounter = scene_encounter.instantiate()
-	encounter.title = "Level 1"
-	encounter.enemies_data.push_back(EnemyDb.get_enemy("badboy"))
-	encounter.enemies_data.push_back(EnemyDb.get_enemy("goodboy"))
+	var player_manager := get_tree().get_first_node_in_group("player_manager")
 	
-	get_node("/root").add_child(encounter)
-	#get_tree().root.add_child(encounter)
-	hide()
-	pass # Replace with function body.
+	var enemies: Array[EnemyDB.EnemyData]
+	enemies.push_back(EnemyDB.get_enemy("badboy"))
+	enemies.push_back(EnemyDB.get_enemy("goodboy"))
+	Main.hide_ui()
+	Main.create_encounter(player_manager, enemies, "Level 1")
