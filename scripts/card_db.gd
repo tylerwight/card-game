@@ -32,22 +32,47 @@ var cards_global: Dictionary = {}
 
 func _ready() -> void:
 	
-	_add_card("attack_basic", {
-		"name": "Attack",
-		"description": "Deals damage to one enemy.",
-		"texture_path": "res://assets/test_card_attack.png",
+	_add_card("strike", {
+		"name": "Strike",
+		"description": "Deals 6 damage to one enemy.",
+		"texture_path": "res://assets/cards/red_card_attack.png",
 		"cost_mana": 1,
-		"damage_melee": 25,
+		"damage_melee": 6,
 		"effect": CardEffects.EffectAttack.new()
 	})
-	_add_card("defend_basic", {
+	_add_card("defend", {
 		"name": "Defend",
-		"description": "Applies Block to one enemy",
-		"texture_path": "res://assets/test_card_defend.png",
+		"description": "Applies 5 Block to player",
+		"texture_path": "res://assets/cards/red_card_block.png",
 		"cost_mana": 1,
 		"block_std": 5,
 		"needs_target": false,
 		"effect": CardEffects.EffectDefend.new()
+	})
+	_add_card("bash", {
+		"name": "Bash",
+		"description": "Deal 8 damage. Apply 2 Vulnerable",
+		"texture_path": "res://assets/cards/red_card_block.png",
+		"cost_mana": 2,
+		"damage_melee": 8,
+		"vulnerable": 2,
+		"effect": CardEffects.EffectBash.new()
+	})
+	_add_card("anger", {
+		"name": "Anger",
+		"description": "Deal 6 damage. Add a copy of this card into your discard pile.",
+		"texture_path": "res://assets/cards/red_card_attack.png",
+		"cost_mana": 0,
+		"damage_melee": 6,
+		"effect": CardEffects.EffectAnger.new()
+	})
+	_add_card("bodyslam", {
+		"name": "Body Slam",
+		"description": "Deal damage equal to your block",
+		"texture_path": "res://assets/cards/red_card_attack.png",
+		"cost_mana": 1,
+		"damage_melee": 0,
+		"effect": CardEffects.EffectBodySlam.new()
 	})
 
 func _process(delta: float) -> void:
@@ -74,7 +99,11 @@ func _add_card(id: String, data: Dictionary) -> void:
 	cards_global[id] = c
 
 func get_card(id: String) -> CardData:
-	return cards_global.get(id).duplicate()
+	var found = cards_global.get(id).duplicate()
+	if found == null:
+		print("ERROR: Couldn't find card: ", id)
+		
+	return found
 
 
 

@@ -8,6 +8,8 @@ size = Vector2(997.5, 474)
 [node name="Encounter" type="Node2D"]
 script = ExtResource("1_lp88p")
 
+[node name="Background" type="Sprite2D" parent="."]
+
 [node name="World" type="Node2D" parent="."]
 
 [node name="playable_area" type="CharacterBody2D" parent="World"]
@@ -36,13 +38,6 @@ offset_top = 605.0
 offset_right = 1209.0
 offset_bottom = 636.0
 text = "End Turn"
-
-[node name="Label" type="Label" parent="."]
-offset_left = 270.0
-offset_top = 12.0
-offset_right = 823.0
-offset_bottom = 173.0
-text = "FIGHT!"
 
 [connection signal="input_event" from="World/playable_area" to="." method="_on_playable_area_input_event"]
 [connection signal="pressed" from="UI/end_turn" to="." method="_on_end_turn_pressed"]

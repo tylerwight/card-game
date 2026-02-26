@@ -21,12 +21,15 @@ func create_encounter(player_manager: Node2D, enemies: Array[EnemyDB.EnemyData],
 	encounter.player = scene_player.instantiate()
 	
 	
+	
 	for enemy in enemies:
 		encounter.enemies_data.push_back(enemy)
 		
 		
 	get_node("/root").add_child(encounter)
 	encounter.world_root.add_child(encounter.player)
+	
+	encounter.set_background("res://assets/backgrounds/green_mountain.png")
 
 func _ready() -> void:
 	pass
@@ -43,6 +46,7 @@ static func build_sprite_animation(texture: Texture2D, frame_w: int, frame_h: in
 
 	frames.add_animation(anim_name)
 	frames.set_animation_loop(anim_name, true)
+	frames.set_animation_speed(anim_name, 5)
 
 	for i in frame_count:
 		var atlas := AtlasTexture.new()

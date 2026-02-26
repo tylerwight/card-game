@@ -10,7 +10,14 @@ class EnemyData:
 	@export var block: int = 0 
 	@export var heal_std: int = 0
 	@export var block_std: int = 0
+	@export var vulnerable: int = 0
+	@export var behavior: EnemyBehaviors.EnemyBehavior
 	
+	func take_turn(player: NodePlayer, enemy: NodeEnemy) -> void:
+		if behavior:
+			behavior.take_turn(player, enemy)
+		else:
+			print("No behavior set for enemy", name)
 
 var enemies_global: Dictionary = {}
 
@@ -20,14 +27,16 @@ func _ready() -> void:
 		"name": "Bad Boy",
 		"description": "Oooo he bad",
 		"texture_path": "res://assets/badboy/idle.png",
-		"health": 100
+		"health": 32,
+		"behavior": EnemyBehaviors.BehaviorBadboy.new()
 	})
 	
 	_add_enemy("goodboy", {
 		"name": "Good Boy",
 		"description": "Oooo he Good",
 		"texture_path": "res://assets/goodboy/idle.png",
-		"health": 100
+		"health": 35,
+		"behavior": EnemyBehaviors.BehaviorGoodboy.new()
 	})
 	
 

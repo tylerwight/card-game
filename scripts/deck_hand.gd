@@ -25,17 +25,16 @@ func draw_hand(amount: int = draw_size):
 	for i in range(amount):
 		print("on I: ", i, " deck size: ", deck.cards.size())
 		if deck.cards.size() > 0 and hand.cards.size() < hand_size_max:
-			#hand.cards.push_back(deck.cards.pop_front())
 			hand.add_card_to_deck(deck.pull_card_from_deck())
-		if deck.cards.size() == 0:
+		elif deck.cards.size() == 0:
 			print("shuffle drawing: ", amount - i)
 			shuffle_discard()
-			i = i - 1
+			hand.add_card_to_deck(deck.pull_card_from_deck())
 
 func render_hand():
 	var old_hand = get_children()
 	for card in old_hand:
-		card.call_deferred("queue_free")
+		card.queue_free()
 		
 	for card in hand.cards:
 		var card_node = card_scene.instantiate()
@@ -58,6 +57,7 @@ func _ready() -> void:
 	deck = deck_reference.duplicate()
 	hand.name = "HAND"
 	discard.name = "DISCARD"
+	deck.cards.shuffle()
 	draw_hand()
 	render_hand()
 
@@ -66,20 +66,23 @@ var frame_counter := 0
 func _process(delta: float) -> void:
 	frame_counter += 1
 	if frame_counter % 3 == 0:
-		refresh_layout()
+		pass
 
 
 func refresh_layout() -> void:
-	var cards := get_children()
+	var cards: Array[NodeCard] = []
+	for child in get_children():
+		if child is NodeCard and not child.is_queued_for_deletion():
+			cards.append(child)
+
 	var count := cards.size()
 	if count == 0:
 		return
 
-	var spacing := 120.0                     # horizontal distance between cards
+	var spacing := 120.0
 	var total_width := spacing * (count - 1)
-
-	var hand_y := 0                          # cards sit at deck_hand.position.y
-	var start_x := -total_width * 0.5        # makes the hand centered
+	var start_x := -total_width * 0.5
+	var hand_y := 0.0
 
 	for i in range(count):
 		var card := cards[i]

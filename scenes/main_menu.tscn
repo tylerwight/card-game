@@ -1,6 +1,11 @@
-[gd_scene load_steps=2 format=3 uid="uid://cwyeeubmalrm1"]
+[gd_scene load_steps=3 format=3 uid="uid://cwyeeubmalrm1"]
 
 [ext_resource type="Script" uid="uid://bok63xk0uj1wk" path="res://scripts/main_menu.gd" id="1_l6cm7"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_l6cm7"]
+font_size = 75
+outline_size = 13
+outline_color = Color(0, 0, 0, 1)
 
 [node name="mainmenu" type="Control"]
 layout_mode = 3
@@ -17,9 +22,9 @@ offset_left = 428.0
 offset_top = 10.0
 offset_right = 863.0
 offset_bottom = 219.0
-theme_override_font_sizes/font_size = 75
 text = "CARD GAME
 "
+label_settings = SubResource("LabelSettings_l6cm7")
 
 [node name="play button" type="Button" parent="."]
 layout_mode = 0
