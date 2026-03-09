@@ -31,6 +31,17 @@ func create_encounter(player_manager: Node2D, enemies: Array[EnemyDB.EnemyData],
 	
 	encounter.set_background("res://assets/backgrounds/green_mountain.png")
 
+func create_card_picker(cards: Array[CardDB.CardData]):
+	var scene_picker = preload("res://scenes/card_picker.tscn")
+	var picker = scene_picker.instantiate()
+	
+	get_node("/root").add_child(picker)
+	picker.setup_picker(cards, "Pick a card bub", 1, false)
+
+	
+	
+		
+	
 func _ready() -> void:
 	pass
 	

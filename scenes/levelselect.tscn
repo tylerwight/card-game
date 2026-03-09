@@ -46,4 +46,13 @@ layout_mode = 2
 text = "Level 4
 "
 
+[node name="choose deck" type="Button" parent="."]
+layout_mode = 0
+offset_left = 56.0
+offset_top = 56.0
+offset_right = 125.0
+offset_bottom = 88.0
+text = "choose deck"
+
 [connection signal="pressed" from="GridContainer/level 1" to="." method="_on_level_1_pressed"]
+[connection signal="pressed" from="choose deck" to="." method="_on_choose_deck_pressed"]

@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://tn73ob2ays8c" path="res://scripts/enemy.gd" id="1_7p1mj"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7p1mj"]
-size = Vector2(73, 89)
+size = Vector2(40.5, 51.5)
 
 [node name="enemy" type="Node2D"]
 script = ExtResource("1_7p1mj")
@@ -11,7 +11,6 @@ script = ExtResource("1_7p1mj")
 [node name="enemybody" type="CharacterBody2D" parent="."]
 
 [node name="enemycol" type="CollisionShape2D" parent="enemybody"]
-position = Vector2(36, -1)
 shape = SubResource("RectangleShape2D_7p1mj")
 
 [connection signal="input_event" from="enemybody" to="." method="_on_enemybody_input_event"]

@@ -16,7 +16,7 @@ var block_label: Label
 func setup_player() -> void:
 	print("I am player:")
 	var texture: Texture2D = load("res://assets/player/idle.png")
-	var sprite := NodeMain.build_sprite_animation(texture, 128, 128, 4, "idle")
+	var sprite := NodeMain.build_sprite_animation(texture, 140, 140, 11, "idle")
 	sprite.flip_h = false
 	add_child(sprite)
 	self.scale += Vector2(1, 1)
@@ -65,8 +65,9 @@ func _setup_hp_label() -> void:
 	hp_label = Label.new()
 	hp_label.name = "HpLabel"
 	hp_label.z_index = 1000 # draw on top of enemy
-	hp_label.position = Vector2(-100, -125) # tweak for your sprite size
-	hp_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	hp_label.position = Vector2(-100, -210) # tweak for your sprite size
+	hp_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	var screen := get_viewport().get_visible_rect().size
 
 	# Optional: make it readable
 	hp_label.add_theme_color_override("font_color", Color.WHITE)
@@ -83,7 +84,7 @@ func _setup_mana_label() -> void:
 	mana_label = Label.new()
 	mana_label.name = "ManaLabel"
 	mana_label.z_index = 1000 # draw on top of enemy
-	mana_label.position = Vector2(-100, 125) # tweak for your sprite size
+	mana_label.position = Vector2(-100, 100) # tweak for your sprite size
 	mana_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 
 	# Optional: make it readable
@@ -104,7 +105,7 @@ func _setup_block_label() -> void:
 	block_label = Label.new()
 	block_label.name = "HpLabel"
 	block_label.z_index = 1000 # draw on top of enemy
-	block_label.position = Vector2(-40, 60) # tweak for your sprite size
+	block_label.position = Vector2(-10, 10) # tweak for your sprite size
 	block_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 
 	# Optional: make it readable

@@ -26,7 +26,7 @@ func _ready() -> void:
 	_add_enemy("badboy", {
 		"name": "Bad Boy",
 		"description": "Oooo he bad",
-		"texture_path": "res://assets/badboy/idle.png",
+		"texture_path": "res://assets/badboy/",
 		"health": 32,
 		"behavior": EnemyBehaviors.BehaviorBadboy.new()
 	})
@@ -34,7 +34,23 @@ func _ready() -> void:
 	_add_enemy("goodboy", {
 		"name": "Good Boy",
 		"description": "Oooo he Good",
-		"texture_path": "res://assets/goodboy/idle.png",
+		"texture_path": "res://assets/goodboy/",
+		"health": 35,
+		"behavior": EnemyBehaviors.BehaviorGoodboy.new()
+	})
+	
+	_add_enemy("orc", {
+		"name": "Orc",
+		"description": "Zug Zug",
+		"texture_path": "res://assets/orc/",
+		"health": 35,
+		"behavior": EnemyBehaviors.BehaviorGoodboy.new()
+	})
+	
+	_add_enemy("skeleton", {
+		"name": "Skeleton",
+		"description": " *bone rattles* ",
+		"texture_path": "res://assets/skeleton/",
 		"health": 35,
 		"behavior": EnemyBehaviors.BehaviorGoodboy.new()
 	})

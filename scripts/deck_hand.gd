@@ -74,7 +74,6 @@ func refresh_layout() -> void:
 	for child in get_children():
 		if child is NodeCard and not child.is_queued_for_deletion():
 			cards.append(child)
-
 	var count := cards.size()
 	if count == 0:
 		return
@@ -82,11 +81,19 @@ func refresh_layout() -> void:
 	var spacing := 120.0
 	var total_width := spacing * (count - 1)
 	var start_x := -total_width * 0.5
-	var hand_y := 0.0
+	var arc_height := 18.0   # how much the edges dip down vs center
+	var max_rotation := 6.0  # max tilt in degrees at the edges
 
 	for i in range(count):
 		var card := cards[i]
-		card.position = Vector2(start_x + i * spacing, hand_y)
+		# t goes from -1 (leftmost) to +1 (rightmost)
+		var t := -1.0 if count == 1 else (float(i) / (count - 1)) * 2.0 - 1.0
+
+		var x := start_x + i * spacing
+		var y := t * t * arc_height  # parabola: center is highest, edges dip down
+		card.position = Vector2(x, y)
+		card.home_position = Vector2(x, y)
+		card.rotation_degrees = t * max_rotation
 		
 		
 func print_status() -> void:

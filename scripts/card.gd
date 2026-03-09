@@ -7,6 +7,20 @@ var encounter: Node2D
 var desc_label: Label
 var cost_label: Label
 
+
+const BASE_SCALE := Vector2(2.0, 2.0)
+const HOVER_SCALE := Vector2(2.5, 2.5)
+const SCALE_SPEED := 12.0
+const HOVER_LIFT_AMOUNT := 110.0  # pixels to rise on hover
+
+var lift_offset := Vector2.ZERO
+var target_lift_offset := Vector2.ZERO
+var home_position := Vector2.ZERO
+
+var base_z_index := 0
+var target_scale := BASE_SCALE
+
+
 func setup_card(card: CardDB.CardData):
 	card_info = card
 
@@ -14,14 +28,14 @@ func _ready() -> void:
 	$cardbody.input_pickable = true
 	var sprite:= Sprite2D.new()
 	deck_hand = get_parent()
-	encounter = get_parent().get_parent().get_parent()
+	#encounter = get_parent().get_parent().get_parent()
 	encounter = get_tree().get_first_node_in_group("encounter")
 	if not (deck_hand or encounter):
 		print("couldn't find deck hand or encounter")
 	
 	sprite.texture = load(card_info.texture_path)
 	add_child(sprite)
-	self.scale += Vector2(0.5, 0.5)
+	self.scale  = BASE_SCALE
 	_setup_desc_label()
 	_setup_cost_label()
 	_update_desc_label()
@@ -39,12 +53,23 @@ func discard():
 
 
 func _process(delta: float) -> void:
-	pass
-	
+	var t := 1.0 - exp(-SCALE_SPEED * delta)
+	scale = scale.lerp(target_scale, t)
+	lift_offset = lift_offset.lerp(target_lift_offset, t)
+	if encounter.selected_card != self:
+		position = home_position + lift_offset
 
 func _on_cardbody_mouse_entered() -> void:
-	pass # Replace with function body.
+	target_scale = HOVER_SCALE
+	target_lift_offset = Vector2(0, -HOVER_LIFT_AMOUNT)
+	base_z_index = z_index
+	z_index = 1001
 
+func _on_cardbody_mouse_exited() -> void:
+	if encounter.selected_card != self:
+		target_scale = BASE_SCALE
+		z_index = base_z_index
+	target_lift_offset = Vector2.ZERO
 
 
 func _on_cardbody_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
@@ -77,7 +102,7 @@ func _setup_cost_label() -> void:
 	cost_label = Label.new()
 	cost_label.name = "CostLabel"
 	#cost_label.z_index = 1000 # draw on top of enemy
-	cost_label.position = Vector2(-12, -63) # tweak for your sprite size
+	cost_label.position = Vector2(-78, -63) # tweak for your sprite size
 	cost_label.size = Vector2(90, 0)  # set width of text box
 	cost_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	cost_label.autowrap_mode = TextServer.AUTOWRAP_WORD

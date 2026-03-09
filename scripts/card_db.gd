@@ -35,7 +35,7 @@ func _ready() -> void:
 	_add_card("strike", {
 		"name": "Strike",
 		"description": "Deals 6 damage to one enemy.",
-		"texture_path": "res://assets/cards/red_card_attack.png",
+		"texture_path": "res://assets/cards/green_card_attack_strike.png",
 		"cost_mana": 1,
 		"damage_melee": 6,
 		"effect": CardEffects.EffectAttack.new()
@@ -43,7 +43,7 @@ func _ready() -> void:
 	_add_card("defend", {
 		"name": "Defend",
 		"description": "Applies 5 Block to player",
-		"texture_path": "res://assets/cards/red_card_block.png",
+		"texture_path": "res://assets/cards/green_card_attack_defend.png",
 		"cost_mana": 1,
 		"block_std": 5,
 		"needs_target": false,
@@ -52,7 +52,7 @@ func _ready() -> void:
 	_add_card("bash", {
 		"name": "Bash",
 		"description": "Deal 8 damage. Apply 2 Vulnerable",
-		"texture_path": "res://assets/cards/red_card_block.png",
+		"texture_path": "res://assets/cards/green_card_attack_bash.png",
 		"cost_mana": 2,
 		"damage_melee": 8,
 		"vulnerable": 2,
@@ -61,7 +61,7 @@ func _ready() -> void:
 	_add_card("anger", {
 		"name": "Anger",
 		"description": "Deal 6 damage. Add a copy of this card into your discard pile.",
-		"texture_path": "res://assets/cards/red_card_attack.png",
+		"texture_path": "res://assets/cards/green_card_attack_anger.png",
 		"cost_mana": 0,
 		"damage_melee": 6,
 		"effect": CardEffects.EffectAnger.new()
@@ -69,7 +69,7 @@ func _ready() -> void:
 	_add_card("bodyslam", {
 		"name": "Body Slam",
 		"description": "Deal damage equal to your block",
-		"texture_path": "res://assets/cards/red_card_attack.png",
+		"texture_path": "res://assets/cards/green_card_attack_bodyslam.png",
 		"cost_mana": 1,
 		"damage_melee": 0,
 		"effect": CardEffects.EffectBodySlam.new()

@@ -1,0 +1,20 @@
+[gd_scene load_steps=2 format=3 uid="uid://dcr4fpw8vypp4"]
+
+[ext_resource type="Script" uid="uid://vrkyr5sf1skx" path="res://scripts/card_picker.gd" id="1_b72lg"]
+
+[node name="card picker" type="Node2D"]
+script = ExtResource("1_b72lg")
+
+[node name="UI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1279.0
+offset_bottom = 715.0
+
+[node name="grid" type="GridContainer" parent="UI"]
+layout_mode = 0
+offset_left = 262.0
+offset_top = 85.0
+offset_right = 973.0
+offset_bottom = 635.0
+columns = 5

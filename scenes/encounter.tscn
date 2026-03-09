@@ -1,14 +1,17 @@
-[gd_scene load_steps=3 format=3 uid="uid://dagt0ili1yuc1"]
+[gd_scene load_steps=4 format=3 uid="uid://dagt0ili1yuc1"]
 
 [ext_resource type="Script" uid="uid://quwui5itehfc" path="res://scripts/encounter.gd" id="1_lp88p"]
+[ext_resource type="PackedScene" uid="uid://btstgwqmjdu7o" path="res://scenes/encounter_art_green.tscn" id="2_eu4s7"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_lp88p"]
-size = Vector2(997.5, 474)
+size = Vector2(997.5, 447)
 
 [node name="Encounter" type="Node2D"]
 script = ExtResource("1_lp88p")
 
 [node name="Background" type="Sprite2D" parent="."]
+
+[node name="encounter_art_green" parent="." instance=ExtResource("2_eu4s7")]
 
 [node name="World" type="Node2D" parent="."]
 
@@ -17,7 +20,7 @@ position = Vector2(590, 244)
 input_pickable = true
 
 [node name="Playable_area_col" type="CollisionShape2D" parent="World/playable_area"]
-position = Vector2(42, 70)
+position = Vector2(40, -19.5)
 shape = SubResource("RectangleShape2D_lp88p")
 
 [node name="UI" type="Control" parent="."]

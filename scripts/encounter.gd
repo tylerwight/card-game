@@ -5,9 +5,9 @@ class_name NodeEncounter
 # add selecting enemies
 #add text rendernig of things like HP, mana, etc.
 
-const HAND_Y_FROM_BOTTOM := 120.0
-const HAND_SPACING := 140.0
-const ENEMY_Y_FRAC := 0.50  # 20% from top
+const HAND_Y_FROM_BOTTOM := 75.0
+const ENEMY_Y_FRAC := 0.601
+const PLAYER_Y_FRAC:= 0.59
 const CARD_DRAG_BOX_HALF := Vector2(100.0, 80.0)  # (left/right, up)
 const CARD_DRAG_SPEED := 10.0                      # higher = snappier
 const CARD_DRAG_SOFTNESS := 0.75                   # 0..1, higher = more slowdown near edge
@@ -129,9 +129,11 @@ func _on_end_turn_pressed() -> void:
 	
 	
 func clear_selected_card() -> void:
-		selected_card.global_position = selected_card_home_pos
-		selected_card.z_index = selected_card_prev_z
-		selected_card = null
+	selected_card.target_scale = selected_card.BASE_SCALE
+	selected_card.target_lift_offset = Vector2.ZERO
+	selected_card.global_position = selected_card_home_pos
+	selected_card.z_index = selected_card_prev_z
+	selected_card = null
 
 ######################
 ####UTILITY/SETUP#####
@@ -171,19 +173,9 @@ func _card_movement(delta: float) -> void:
 	if selected_card == null:
 		return
 
-	var anchor := Vector2.ZERO
-	if selected_card:
-		anchor = selected_card_home_pos
-		
-	var mouse := get_viewport().get_mouse_position()
-	var raw_offset := mouse - anchor
-	# Keep it mostly above the hand and not below
-	raw_offset.y = min(raw_offset.y, 0.0)
+	var screen := get_viewport().get_visible_rect().size
+	var target_pos := Vector2(screen.x * 0.5, screen.y * 0.76)
 
-	var target_offset := _soft_box_offset(raw_offset, CARD_DRAG_BOX_HALF, CARD_DRAG_SOFTNESS)
-	var target_pos := anchor + target_offset
-
-	# Smooth follow (frame-rate independent)
 	var t := 1.0 - exp(-CARD_DRAG_SPEED * delta)
 	selected_card.global_position = selected_card.global_position.lerp(target_pos, t)
 	
@@ -191,13 +183,13 @@ func _card_movement(delta: float) -> void:
 func _layout() -> void:
 	var screen := get_viewport().get_visible_rect().size
 	
-	var enemy_spacing = 100.0
+	var enemy_spacing = 150.0
 	var start_x = screen.x * 0.75 - (enemy_spacing * (enemies.size() - 1) / 2.0)
 	
 	for i in range(enemies.size()):
 		enemies[i].global_position = Vector2(start_x + i * enemy_spacing, screen.y * ENEMY_Y_FRAC)
 		
-	player.global_position = Vector2(300, screen.y * ENEMY_Y_FRAC)
+	player.global_position = Vector2(250, screen.y * PLAYER_Y_FRAC)
 	deck_hand.position = Vector2(screen.x * 0.5, screen.y - HAND_Y_FROM_BOTTOM)
 
 
@@ -215,6 +207,7 @@ func _center_background() -> void:
 	# Fill screen (may crop). Use min() instead if you want "fit inside" with letterboxing.
 	var s: float = max(view_size.x / tex_size.x, view_size.y / tex_size.y)
 	background.scale = Vector2(s, s)
+	background.translate(Vector2(0, -100))
 
 
 func set_background(texture_path: String) -> void:

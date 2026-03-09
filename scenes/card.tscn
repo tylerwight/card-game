@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://badqbyw00the8" path="res://scripts/card.gd" id="1_6u4wf"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6u4wf"]
-size = Vector2(94, 127)
+size = Vector2(43, 127)
 
 [node name="Card" type="Node2D"]
 script = ExtResource("1_6u4wf")
@@ -11,8 +11,8 @@ script = ExtResource("1_6u4wf")
 [node name="cardbody" type="CharacterBody2D" parent="."]
 
 [node name="cardcol" type="CollisionShape2D" parent="cardbody"]
-position = Vector2(0, 0.5)
 shape = SubResource("RectangleShape2D_6u4wf")
 
 [connection signal="input_event" from="cardbody" to="." method="_on_cardbody_input_event"]
 [connection signal="mouse_entered" from="cardbody" to="." method="_on_cardbody_mouse_entered"]
+[connection signal="mouse_exited" from="cardbody" to="." method="_on_cardbody_mouse_exited"]
