@@ -6,6 +6,7 @@ var deck_hand: Node2D
 var encounter: Node2D
 var desc_label: Label
 var cost_label: Label
+var title_label: Label
 
 
 const BASE_SCALE := Vector2(2.0, 2.0)
@@ -81,22 +82,37 @@ func _on_cardbody_input_event(viewport: Node, event: InputEvent, shape_idx: int)
 	
 	
 func _setup_desc_label() -> void:
+	#desc
 	desc_label = Label.new()
 	desc_label.name = "DescLabel"
 	#desc_label.z_index = 1000 # draw on top of enemy
-	desc_label.position = Vector2(-40, 25) # tweak for your sprite size
-	desc_label.size = Vector2(80, 0)  # set width of text box
-	desc_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	desc_label.position = Vector2(-35, 20) # tweak for your sprite size
+	desc_label.size = Vector2(75, 0)  # set width of text box
+	desc_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD
 
-	# Optional: make it readable
 	desc_label.add_theme_color_override("font_color", Color.WHITE)
 	desc_label.add_theme_constant_override("outline_size", 4)
 	desc_label.add_theme_color_override("font_outline_color", Color.BLACK)
-	desc_label.add_theme_font_size_override("font_size", 8)
+	desc_label.add_theme_font_size_override("font_size", 7)
 
 	add_child(desc_label)
 	
+	#title
+	title_label = Label.new()
+	title_label.name = "TitleLabel"
+	#title_label.z_index = 1000 # draw on top of enemy
+	title_label.position = Vector2(-33, 6) # tweak for your sprite size
+	title_label.size = Vector2(80, 0)  # set width of text box
+	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	title_label.autowrap_mode = TextServer.AUTOWRAP_WORD
+
+	title_label.add_theme_color_override("font_color", Color.WHITE)
+	title_label.add_theme_constant_override("outline_size", 4)
+	title_label.add_theme_color_override("font_outline_color", Color.BLACK)
+	title_label.add_theme_font_size_override("font_size", 8)
+
+	add_child(title_label)
 	
 func _setup_cost_label() -> void:
 	cost_label = Label.new()
@@ -123,3 +139,4 @@ func _update_cost_label() -> void:
 func _update_desc_label() -> void:
 	if desc_label:
 		desc_label.text = card_info.description
+		title_label.text = card_info.name

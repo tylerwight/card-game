@@ -5,6 +5,7 @@ var player_deck: Array[CardDB.CardData]
 # Called when the node enters the scene tree for the first time.
 var hp_label: Label
 var health := 100
+var max_hp := 100
 var player_name := "Player 1"
 var block := 0
 var mana := 3
@@ -12,13 +13,30 @@ var mana_max := 3
 var vulnerable := 0
 var mana_label: Label
 var block_label: Label
+var hp_bar: ProgressBar
+var hp_bar_label: Label
+var hp_bar_display_value: float = 0.0
+const HP_BAR_SPEED := 5.0
+
+var sprite: AnimatedSprite2D
 
 func setup_player() -> void:
-	print("I am player:")
-	var texture: Texture2D = load("res://assets/player/idle.png")
-	var sprite := NodeMain.build_sprite_animation(texture, 140, 140, 11, "idle")
+	sprite = NodeMain.build_animated_sprite()
 	sprite.flip_h = false
+	
+	var idle_tex: Texture2D = load("res://assets/player/idle.png")
+	NodeMain.add_animation(sprite, idle_tex, 140, 140, 11, "idle")
+	var attack_tex: Texture2D = load("res://assets/player/attack.png")
+	NodeMain.add_animation(sprite, attack_tex, 140, 140, 6, "attack", 8.0, false)
+	var death_tex: Texture2D = load("res://assets/player/death.png")
+	NodeMain.add_animation(sprite, death_tex, 140, 140, 9, "death", 8.0, false)
+	var hit_tex: Texture2D = load("res://assets/player/hit.png")
+	NodeMain.add_animation(sprite, hit_tex, 140, 140, 4, "hit", 8.0, false)
+	
 	add_child(sprite)
+	sprite.play("idle")
+	sprite.animation_finished.connect(_on_animation_finished)
+	
 	self.scale += Vector2(1, 1)
 	_setup_hp_label()
 	_update_hp_label()
@@ -26,6 +44,7 @@ func setup_player() -> void:
 	_update_mana_label()
 	_setup_block_label()
 	_update_block_label()
+	_setup_hp_bar()
 	
 
 func damage(amount: int) -> void:
@@ -58,6 +77,8 @@ func _process(delta: float) -> void:
 	_update_hp_label()
 	_update_mana_label()
 	_update_block_label()
+	_update_hp_bar_label(delta)
+	
 	if health <= 0:
 		print("DEAD DEAD DEAD")
 	
@@ -120,3 +141,62 @@ func _setup_block_label() -> void:
 func _update_block_label() -> void:
 	if block_label:
 		block_label.text = "BLK: %d" % block
+		
+		
+
+func _setup_hp_bar() -> void:
+	hp_bar = ProgressBar.new()
+	hp_bar.name = "HpBar"
+	hp_bar.z_index = 900
+	hp_bar.position = Vector2(-20, 20)
+	hp_bar.call_deferred("set_size", Vector2(40, 4)) # defer it cause otherwise some size stuff doesn't work
+	hp_bar.min_value = 0
+	hp_bar.max_value = max_hp
+	hp_bar.value = health
+	hp_bar.show_percentage = false  # we'll draw our own text
+	hp_bar.z_as_relative = false
+
+	#Colors
+	var fill_style = StyleBoxFlat.new()
+	fill_style.bg_color = Color(0.8, 0.1, 0.1)
+	fill_style.border_color = Color.BLACK
+	fill_style.set_border_width_all(1)
+	hp_bar.add_theme_stylebox_override("fill", fill_style)
+
+	var bg_style = StyleBoxFlat.new()
+	bg_style.bg_color = Color(0.2, 0.2, 0.2)
+	bg_style.border_color = Color.BLACK
+	bg_style.set_border_width_all(1)
+	hp_bar.add_theme_stylebox_override("background", bg_style)
+
+	#Label on top of the bar
+	hp_bar_label = Label.new()
+	hp_bar_label.z_index = 900
+	hp_bar_label.set_anchors_preset(Control.PRESET_FULL_RECT)
+	hp_bar_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	hp_bar_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	hp_bar_label.add_theme_color_override("font_color", Color.WHITE)
+	hp_bar_label.add_theme_constant_override("outline_size", 3)
+	hp_bar_label.add_theme_color_override("font_outline_color", Color.BLACK)
+	hp_bar_label.add_theme_font_size_override("font_size", 6)
+	hp_bar_label.position = Vector2(0, 5)
+	hp_bar_label.z_as_relative = false
+	hp_bar.add_child(hp_bar_label)
+
+	add_child(hp_bar)
+
+func _update_hp_bar_label(delta: float) -> void:
+	if hp_bar:
+		hp_bar.value = health
+		hp_bar_display_value = lerp(hp_bar_display_value, float(health), 1.0 - exp(-HP_BAR_SPEED * delta))
+		hp_bar.value = hp_bar_display_value
+		hp_bar_label.text = "%d / %d" % [health, max_hp]
+		
+		
+		
+		
+		
+
+
+func _on_animation_finished() -> void:
+	sprite.play("idle")

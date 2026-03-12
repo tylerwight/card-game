@@ -11,10 +11,29 @@ anchors_preset = 0
 offset_right = 1279.0
 offset_bottom = 715.0
 
-[node name="grid" type="GridContainer" parent="UI"]
+[node name="ColorRect" type="ColorRect" parent="UI"]
 layout_mode = 0
-offset_left = 262.0
-offset_top = 85.0
-offset_right = 973.0
-offset_bottom = 635.0
-columns = 5
+offset_right = 1284.0
+offset_bottom = 724.0
+color = Color(0.050465316, 0.15423349, 0.20007786, 0.56078434)
+
+[node name="ScrollContainer" type="ScrollContainer" parent="UI"]
+layout_mode = 0
+offset_left = 140.0
+offset_top = 58.0
+offset_right = 1160.0
+offset_bottom = 627.0
+
+[node name="grid" type="GridContainer" parent="UI/ScrollContainer"]
+layout_mode = 2
+columns = 4
+
+[node name="Button" type="Button" parent="UI"]
+layout_mode = 0
+offset_left = 581.0
+offset_top = 664.0
+offset_right = 630.0
+offset_bottom = 695.0
+text = "Done"
+
+[connection signal="pressed" from="UI/Button" to="." method="_on_button_pressed"]

@@ -104,6 +104,8 @@ func _on_card_played(player: NodePlayer, card: NodeCard, enemy: NodeEnemy):
 	if player.mana >= card.card_info.cost_mana:
 		player.mana -= card.card_info.cost_mana
 		card.cast(player, enemy)
+		player.sprite.play("attack")
+		if enemy: enemy.sprite.play("hit")
 	else:
 		print("NOT ENOUGH MANA")
 		
@@ -126,6 +128,9 @@ func _on_end_turn_pressed() -> void:
 	#deck_hand.print_status()
 	deck_hand.render_hand()
 	player.end_turn()
+	for enemy in enemies:
+		enemy.sprite.play("attack")
+		await enemy.sprite.animation_finished
 	
 	
 func clear_selected_card() -> void:

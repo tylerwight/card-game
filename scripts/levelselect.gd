@@ -23,7 +23,9 @@ func _on_level_1_pressed() -> void:
 
 func _on_choose_deck_pressed() -> void:
 	var player_manager := get_tree().get_first_node_in_group("player_manager")
-	Main.create_card_picker(player_manager.deck.cards)
-	
-		
+	var picked_cards = await Main.create_card_picker(player_manager.deck.cards)
+	for card in picked_cards:
+		print(card.name)
+
+
 	

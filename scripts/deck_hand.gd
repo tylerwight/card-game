@@ -9,7 +9,7 @@ var deck_reference: CardDB.DeckPlayable
 @onready var exhausted: CardDB.DeckPlayable = CardDB.DeckPlayable.new()
 
 @onready var hand_size_max = 10
-@onready var draw_size = 4
+@onready var draw_size = 5
 @onready var card_scene = preload("res://scenes/card.tscn")
 
 func shuffle_discard():
@@ -23,7 +23,7 @@ func draw_hand(amount: int = draw_size):
 	print("drawing: ", amount)
 	
 	for i in range(amount):
-		print("on I: ", i, " deck size: ", deck.cards.size())
+		#print("on I: ", i, " deck size: ", deck.cards.size())
 		if deck.cards.size() > 0 and hand.cards.size() < hand_size_max:
 			hand.add_card_to_deck(deck.pull_card_from_deck())
 		elif deck.cards.size() == 0:

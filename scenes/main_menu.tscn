@@ -1,11 +1,13 @@
-[gd_scene load_steps=3 format=3 uid="uid://cwyeeubmalrm1"]
+[gd_scene load_steps=4 format=3 uid="uid://cwyeeubmalrm1"]
 
 [ext_resource type="Script" uid="uid://bok63xk0uj1wk" path="res://scripts/main_menu.gd" id="1_l6cm7"]
+[ext_resource type="Texture2D" uid="uid://ch8nveemfa2cg" path="res://assets/backgrounds/green_mountain.png" id="2_ekxnf"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_l6cm7"]
 font_size = 75
 outline_size = 13
 outline_color = Color(0, 0, 0, 1)
+shadow_size = 18
 
 [node name="mainmenu" type="Control"]
 layout_mode = 3
@@ -16,15 +18,21 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_l6cm7")
 
+[node name="background" type="Sprite2D" parent="."]
+position = Vector2(867, 487.00003)
+scale = Vector2(0.75, 0.75)
+texture = ExtResource("2_ekxnf")
+
 [node name="title" type="Label" parent="."]
 layout_mode = 0
-offset_left = 428.0
-offset_top = 10.0
-offset_right = 863.0
-offset_bottom = 219.0
-text = "CARD GAME
-"
+offset_left = 390.0
+offset_top = 8.0
+offset_right = 869.0
+offset_bottom = 220.375
+text = "CARDBOUND
+KNIGHT"
 label_settings = SubResource("LabelSettings_l6cm7")
+horizontal_alignment = 1
 
 [node name="play button" type="Button" parent="."]
 layout_mode = 0

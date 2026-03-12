@@ -7,12 +7,12 @@ func set_deck_default() -> void:
 	if deck == null:
 		deck = CardDB.DeckPlayable.new()
 	deck.clear_deck_full()
-	#for i in range(5):
-		#deck.add_card_to_deck(CardDB.cards_global.get("strike"))
-		#deck.add_card_to_deck(CardDB.cards_global.get("defend"))
+	for i in range(5):
+		deck.add_card_to_deck(CardDB.cards_global.get("strike"))
+		deck.add_card_to_deck(CardDB.cards_global.get("defend"))
 	deck.add_card_to_deck(CardDB.cards_global.get("bash"))
 	deck.add_card_to_deck(CardDB.cards_global.get("anger"))
-	deck.add_card_to_deck(CardDB.cards_global.get("defend"))
+	#deck.add_card_to_deck(CardDB.cards_global.get("defend"))
 	deck.add_card_to_deck(CardDB.cards_global.get("bodyslam"))
 		
 
