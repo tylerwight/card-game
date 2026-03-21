@@ -3,3 +3,7 @@
 .godot/
 /android/
 *.uid
+Card game.pck
+Card game.sh
+Card game.x86_64.tar.gz
+*.tmp

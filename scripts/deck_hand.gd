@@ -21,12 +21,13 @@ func shuffle_discard():
 
 func draw_hand(amount: int = draw_size):
 	print("drawing: ", amount)
+	var total_cards = deck.cards.size() + hand.cards.size() + discard.cards.size()
 	
 	for i in range(amount):
 		#print("on I: ", i, " deck size: ", deck.cards.size())
 		if deck.cards.size() > 0 and hand.cards.size() < hand_size_max:
 			hand.add_card_to_deck(deck.pull_card_from_deck())
-		elif deck.cards.size() == 0:
+		elif deck.cards.size() == 0 and total_cards > hand.cards.size():
 			print("shuffle drawing: ", amount - i)
 			shuffle_discard()
 			hand.add_card_to_deck(deck.pull_card_from_deck())

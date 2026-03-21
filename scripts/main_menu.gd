@@ -5,6 +5,8 @@ signal start_game()
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	#for card_id in CardDB.cards_global:
+		#CardDB.cards_global[card_id].print_self()
 	pass
 
 

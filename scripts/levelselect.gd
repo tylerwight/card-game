@@ -22,10 +22,16 @@ func _on_level_1_pressed() -> void:
 
 
 func _on_choose_deck_pressed() -> void:
+	var cards_global_array: Array[CardDB.CardData]
+	for key in CardDB.cards_global:
+		cards_global_array.append(CardDB.cards_global[key])
+		
+		
 	var player_manager := get_tree().get_first_node_in_group("player_manager")
-	var picked_cards = await Main.create_card_picker(player_manager.deck.cards)
+	var picked_cards = await Main.create_card_picker(cards_global_array, "Pick 1 card to add to deck", 1, false)
 	for card in picked_cards:
 		print(card.name)
+		player_manager.deck.add_card_to_deck(card)
 
 
 	

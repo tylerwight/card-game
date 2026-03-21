@@ -11,7 +11,12 @@ class EnemyData:
 	@export var heal_std: int = 0
 	@export var block_std: int = 0
 	@export var vulnerable: int = 0
+	@export var weak: int = 0
 	@export var behavior: EnemyBehaviors.EnemyBehavior
+	
+	func roll_intents() -> void:
+		if behavior:
+			behavior.roll_intents(self)
 	
 	func take_turn(player: NodePlayer, enemy: NodeEnemy) -> void:
 		if behavior:

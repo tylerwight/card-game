@@ -3,6 +3,8 @@ signal cards_picked(cards: Array[CardDB.CardData])
 @onready var ui_layer: Control = $UI
 @onready var grid: GridContainer = $UI/ScrollContainer/grid
 @onready var overlay: ColorRect = $UI/overlay
+@onready var titlenode: Label = $UI/Title
+
 var title = "Select a card"
 var pick_count = 1
 var skippable = false
@@ -14,7 +16,7 @@ func setup_picker(cards: Array[CardDB.CardData], p_title: String, p_pick_count: 
 	title = p_title
 	pick_count = p_pick_count
 	skippable = p_skippable
-
+	titlenode.text = title
 	for card in cards:
 		var control = Control.new()
 		var texture_rect = TextureRect.new()
@@ -51,7 +53,8 @@ func _add_card_labels(control: Control, card: CardDB.CardData) -> void:
 	clip_box.position = Vector2(70, 180)
 	clip_box.size = Vector2(120, 80)        # this is your hard boundary
 	clip_box.clip_contents = false         # clips anything inside to this box
-
+	clip_box.mouse_filter = Control.MOUSE_FILTER_PASS
+	
 	var desc_label = Label.new()
 	desc_label.text = card.description
 	desc_label.position = Vector2(0, 0)     # position relative to clip_box now

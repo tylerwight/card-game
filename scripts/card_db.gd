@@ -4,6 +4,7 @@ class CardData:
 	extends Resource
 	@export var id: String = "default"
 	@export var name: String = "default"
+	@export var type: String = "default123"
 	@export var description: String = "The default card"
 	@export var texture_path: String = "res://assets/test_card.png"
 	@export var cost_mana: int = 1
@@ -14,14 +15,24 @@ class CardData:
 	@export var effect: CardEffects.CardEffect
 	@export var end: CardEffects.CardEffect
 	@export var vulnerable: int = 0
+	@export var weak: int = 0
 
-	
+	func card_playable(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> Dictionary:
+		return effect.card_playable(card, player, enemy)
 	
 	func cast(card: NodeCard, player: NodePlayer, enemy: NodeEnemy) -> void:
 		if effect:
 			effect.cast(card, player, enemy)
 		else:
 			print("No effect set for card ", id)
+			
+		
+	func print_self() -> void:
+		print("=== CardData: ", name, " ===")
+		for property in get_property_list():
+			# Filter to only @export vars (usage flag 4096 = PROPERTY_USAGE_SCRIPT_VARIABLE)
+			if property.usage & PROPERTY_USAGE_SCRIPT_VARIABLE:
+				print(property.name, ": ", get(property.name))
 			
 
 var cards_global: Dictionary = {}
@@ -34,6 +45,7 @@ func _ready() -> void:
 	
 	_add_card("strike", {
 		"name": "Strike",
+		"type": "attack",
 		"description": "Deals 6 damage to one enemy.",
 		"texture_path": "res://assets/cards/green_card_attack_strike.png",
 		"cost_mana": 1,
@@ -42,6 +54,7 @@ func _ready() -> void:
 	})
 	_add_card("defend", {
 		"name": "Defend",
+		"type": "skill",
 		"description": "Applies 5 Block to player",
 		"texture_path": "res://assets/cards/green_card_attack_defend.png",
 		"cost_mana": 1,
@@ -51,6 +64,7 @@ func _ready() -> void:
 	})
 	_add_card("bash", {
 		"name": "Bash",
+		"type": "attack",
 		"description": "Deal 8 damage. Apply 2 Vulnerable",
 		"texture_path": "res://assets/cards/green_card_attack_bash.png",
 		"cost_mana": 2,
@@ -60,6 +74,7 @@ func _ready() -> void:
 	})
 	_add_card("anger", {
 		"name": "Anger",
+		"type": "attack",
 		"description": "Deal 6 damage. Add a copy of this card into your discard pile.",
 		"texture_path": "res://assets/cards/green_card_attack_anger.png",
 		"cost_mana": 0,
@@ -68,11 +83,31 @@ func _ready() -> void:
 	})
 	_add_card("bodyslam", {
 		"name": "Body Slam",
+		"type": "attack",
 		"description": "Deal damage equal to your block",
 		"texture_path": "res://assets/cards/green_card_attack_bodyslam.png",
 		"cost_mana": 1,
 		"damage_melee": 0,
 		"effect": CardEffects.EffectBodySlam.new()
+	})
+	_add_card("clothesline", {
+		"name": "Clothesline",
+		"type": "attack",
+		"description": "Deal 12 damage. Apply 2 Weak",
+		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"cost_mana": 2,
+		"damage_melee": 12,
+		"weak": 2,
+		"effect": CardEffects.EffectClothesline.new()
+	})
+	_add_card("clash", {
+		"name": "Clash",
+		"type": "attack",
+		"description": "Can only be played if every card in your hand is an Attack. Deal 14 damage.",
+		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"cost_mana": 0,
+		"damage_melee": 14,
+		"effect": CardEffects.EffectClash.new()
 	})
 
 func _process(delta: float) -> void:

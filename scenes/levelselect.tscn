@@ -35,15 +35,18 @@ layout_mode = 2
 text = "Level 1"
 
 [node name="level 2" type="Button" parent="GridContainer"]
+visible = false
 layout_mode = 2
 text = "Level 2
 "
 
 [node name="level 3" type="Button" parent="GridContainer"]
+visible = false
 layout_mode = 2
 text = "Level 3"
 
 [node name="level 4" type="Button" parent="GridContainer"]
+visible = false
 layout_mode = 2
 text = "Level 4
 "
@@ -54,7 +57,7 @@ offset_left = 56.0
 offset_top = 56.0
 offset_right = 125.0
 offset_bottom = 88.0
-text = "choose deck"
+text = "Add card to deck"
 
 [connection signal="pressed" from="GridContainer/level 1" to="." method="_on_level_1_pressed"]
 [connection signal="pressed" from="choose deck" to="." method="_on_choose_deck_pressed"]

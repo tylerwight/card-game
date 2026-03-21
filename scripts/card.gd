@@ -7,7 +7,7 @@ var encounter: Node2D
 var desc_label: Label
 var cost_label: Label
 var title_label: Label
-
+var playing:= false
 
 const BASE_SCALE := Vector2(2.0, 2.0)
 const HOVER_SCALE := Vector2(2.5, 2.5)
@@ -45,6 +45,16 @@ func _ready() -> void:
 
 func cast(player: NodePlayer, enemy: NodeEnemy) -> void:
 	card_info.cast(self, player, enemy)
+
+func card_playable(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> bool:
+	if card_info.card_playable(card, player, enemy)["playable"] == true:
+		return true
+	else:
+		return false
+		
+
+func card_playable_message(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> String:
+	return card_info.card_playable(card, player, enemy)["message"]
 
 func discard():
 	var hand_index = deck_hand.hand.cards.find(card_info)

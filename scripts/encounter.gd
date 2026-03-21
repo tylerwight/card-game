@@ -11,8 +11,10 @@ const PLAYER_Y_FRAC:= 0.59
 const CARD_DRAG_BOX_HALF := Vector2(100.0, 80.0)  # (left/right, up)
 const CARD_DRAG_SPEED := 10.0                      # higher = snappier
 const CARD_DRAG_SOFTNESS := 0.75                   # 0..1, higher = more slowdown near edge
+const PLAYER_ATTACK_POS := Vector2(200, 200)
 var selected_card_home_pos: Vector2 = Vector2.ZERO
-
+var hp_label: Label
+var mana_label: Label
 
 #enum phase {
 	#DRAW,
@@ -56,16 +58,25 @@ func _ready() -> void:
 	attach_enemies()
 	attach_deck_hand()
 	_layout()
+	_setup_labels()
 	
 	
 	
-	
-func _process(delta: float) -> void:
-	_card_movement(delta)
+func clean_up_enemies() -> void:
 	for enemy in enemies:
 		if enemy.stats.health <= 0:
 			enemies.erase(enemy)
 			enemy.queue_free()
+	
+func _process(delta: float) -> void:
+	_card_movement(delta)
+	_update_labels()
+
+	if enemies.size() <= 0:
+		flash_message("YOU WIN", true, 2)
+		
+	if player.is_dead:
+		flash_message("YOU LOSE", false, 2)
 	
 	
 	
@@ -75,7 +86,13 @@ func _process(delta: float) -> void:
 
 func do_enemies_turn() -> void:
 	for enemy in enemies:
+		enemy.sprite.play("attack")
+		enemy.attack_move()
+		
+		await enemy.sprite.animation_finished
+		player.sprite.play("hit")
 		enemy.take_turn()	
+	return
 
 func _on_card_clicked(card: NodeCard) -> void:
 	print("Encounter detected clicked card:", card.card_info.name)
@@ -100,14 +117,19 @@ func _on_card_played(player: NodePlayer, card: NodeCard, enemy: NodeEnemy):
 	print("The card: " , card.name , " has been played by: ", player.player_name)
 	if enemy:
 		print("on Enemy: ", enemy.name)
-	
-	if player.mana >= card.card_info.cost_mana:
+	if card.playing == true:
+		return
+	if card.card_playable(card, player, enemy):
 		player.mana -= card.card_info.cost_mana
-		card.cast(player, enemy)
+		card.playing = true
 		player.sprite.play("attack")
+		player.attack_move()
+		await player.sprite.animation_finished
+		card.cast(player, enemy)
 		if enemy: enemy.sprite.play("hit")
+		card.playing = false
 	else:
-		print("NOT ENOUGH MANA")
+		flash_message(card.card_playable_message(card, player, enemy), false)
 		
 	selected_card = null
 	deck_hand.refresh_layout()
@@ -122,15 +144,15 @@ func _on_playable_area_input_event(viewport: Node, event: InputEvent, shape_idx:
 			clear_selected_card()
 
 func _on_end_turn_pressed() -> void:
-	do_enemies_turn()
+	
+	await do_enemies_turn()
 	deck_hand.discard_hand()
 	deck_hand.draw_hand()
 	#deck_hand.print_status()
 	deck_hand.render_hand()
 	player.end_turn()
-	for enemy in enemies:
-		enemy.sprite.play("attack")
-		await enemy.sprite.animation_finished
+	
+
 	
 	
 func clear_selected_card() -> void:
@@ -173,13 +195,67 @@ func attach_deck_hand()-> void:
 ####VISUAL####
 ##############
 
+func _setup_labels() -> void:
+	_setup_hp_label()
+	_setup_mana_label()
+	
+func _update_labels() -> void:
+	_update_hp_label()
+	_update_mana_label()
+
+func _setup_hp_label() -> void:
+	hp_label = Label.new()
+	hp_label.name = "HpLabel"
+	hp_label.z_index = 1000 # draw on top of enemy
+	hp_label.position = Vector2(0, 0) # tweak for your sprite size
+	hp_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	#var screen := get_viewport().get_visible_rect().size
+
+	# Optional: make it readable
+	hp_label.add_theme_color_override("font_color", Color.WHITE)
+	hp_label.add_theme_constant_override("outline_size", 4)
+	hp_label.add_theme_color_override("font_outline_color", Color.BLACK)
+	hp_label.add_theme_font_size_override("font_size", 25)
+
+	add_child(hp_label)
+
+func _setup_mana_label() -> void:
+	mana_label = Label.new()
+	mana_label.name = "ManaLabel"
+	mana_label.z_index = 1000 # draw on top of enemy
+	mana_label.position = Vector2(0, 650) # tweak for your sprite size
+	mana_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+
+	# Optional: make it readable
+	
+	mana_label.add_theme_color_override("font_color", Color.WHITE)
+	mana_label.add_theme_constant_override("outline_size", 4)
+	mana_label.add_theme_color_override("font_outline_color", Color.BLACK)
+	mana_label.add_theme_font_size_override("font_size", 25)
+	
+
+	add_child(mana_label)
+
+func _update_hp_label() -> void:
+	if hp_label:
+		hp_label.text = "HP: %d" % player.health
+		
+func _update_mana_label() -> void:
+	if mana_label:
+		mana_label.text = "Mana: %d/%d" % [player.mana, player.mana_max]
 
 func _card_movement(delta: float) -> void:
 	if selected_card == null:
 		return
 
 	var screen := get_viewport().get_visible_rect().size
-	var target_pos := Vector2(screen.x * 0.5, screen.y * 0.76)
+	var target_pos:= Vector2(0,0)
+	
+	if selected_card.playing == true:
+		
+		target_pos = Vector2(screen.x * 0.5, screen.y * 0.25)
+	else:
+		target_pos = Vector2(screen.x * 0.5, screen.y * 0.76)
 
 	var t := 1.0 - exp(-CARD_DRAG_SPEED * delta)
 	selected_card.global_position = selected_card.global_position.lerp(target_pos, t)
@@ -193,9 +269,11 @@ func _layout() -> void:
 	
 	for i in range(enemies.size()):
 		enemies[i].global_position = Vector2(start_x + i * enemy_spacing, screen.y * ENEMY_Y_FRAC)
+		enemies[i].home_pos = enemies[i].position
 		
 	player.global_position = Vector2(250, screen.y * PLAYER_Y_FRAC)
 	deck_hand.position = Vector2(screen.x * 0.5, screen.y - HAND_Y_FROM_BOTTOM)
+	
 
 
 func _center_background() -> void:
@@ -250,3 +328,50 @@ func _ease_axis(n: float, softness: float) -> float:
 	var eased := 1.0 - pow(1.0 - a, 3.0) # cubic ease-out
 	var mixed = lerp(a, eased, softness)
 	return sign(n) * mixed
+	
+	
+func flash_message(text: String, good: bool = true, linger: float = 1) -> void:
+	# Container - auto-sizes to content
+	var panel = PanelContainer.new()
+	
+	# Style the background
+	var style = StyleBoxFlat.new()
+	style.bg_color = Color(0, 0, 0, 0.7)
+	style.content_margin_left = 16
+	style.content_margin_right = 16
+	style.content_margin_top = 8
+	style.content_margin_bottom = 8
+	style.corner_radius_top_left = 6
+	style.corner_radius_top_right = 6
+	style.corner_radius_bottom_left = 6
+	style.corner_radius_bottom_right = 6
+	panel.add_theme_stylebox_override("panel", style)
+	panel.z_index = 2000
+	add_child(panel)
+
+	# Label
+	var label = Label.new()
+	label.text = text
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.add_theme_font_size_override("font_size", 20)
+	label.add_theme_color_override("font_color", Color.YELLOW if good else Color.RED)
+	label.add_theme_constant_override("outline_size", 3)
+	label.add_theme_color_override("font_outline_color", Color.BLACK)
+	panel.add_child(label)
+
+	# Wait one frame so the container has calculated its size before centering
+	await get_tree().process_frame
+	var screen := get_viewport().get_visible_rect().size
+	panel.position = Vector2(
+		screen.x * 0.5 - panel.size.x * 0.5,
+		screen.y * 0.4
+	)
+
+	# Animate: fade in, hold, fade out
+	var tween = create_tween()
+	panel.modulate.a = 0.0
+	tween.tween_property(panel, "modulate:a", 1.0, 0.15)
+	tween.tween_interval(0.8 * linger)
+	tween.tween_property(panel, "modulate:a", 0.0, 0.3 * linger)
+	await tween.finished
+	panel.queue_free()

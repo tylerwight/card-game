@@ -17,8 +17,13 @@ var hp_bar: ProgressBar
 var hp_bar_label: Label
 var hp_bar_display_value: float = 0.0
 const HP_BAR_SPEED := 5.0
-
+const MOVE_SPEED := 12.0
+var target_pos := Vector2(0,0)
+var home_pos := Vector2(0,0)
 var sprite: AnimatedSprite2D
+var is_attacking := false
+var is_dead := false
+
 
 func setup_player() -> void:
 	sprite = NodeMain.build_animated_sprite()
@@ -38,10 +43,10 @@ func setup_player() -> void:
 	sprite.animation_finished.connect(_on_animation_finished)
 	
 	self.scale += Vector2(1, 1)
-	_setup_hp_label()
-	_update_hp_label()
+	#_setup_hp_label()
+	#_update_hp_label()
 	_setup_mana_label()
-	_update_mana_label()
+	#_update_mana_label()
 	_setup_block_label()
 	_update_block_label()
 	_setup_hp_bar()
@@ -72,34 +77,25 @@ func end_turn() -> void:
 func _ready() -> void:
 	setup_player()
 	print("PLAYER NODE NAME IS: ", self.name)
+	target_pos = position
+	home_pos = position
+	print("at pos:", target_pos)
 	
 func _process(delta: float) -> void:
-	_update_hp_label()
-	_update_mana_label()
+	#_update_hp_label()
+	#_update_mana_label()
 	_update_block_label()
 	_update_hp_bar_label(delta)
+	#var t := 1.0 - exp(-MOVE_SPEED * delta)
+	#position = position.lerp(target_pos, t)
 	
-	if health <= 0:
-		print("DEAD DEAD DEAD")
+	if health <= 0 and not is_dead:
+		is_dead = true
+		sprite.play("death")
 	
-func _setup_hp_label() -> void:
-	hp_label = Label.new()
-	hp_label.name = "HpLabel"
-	hp_label.z_index = 1000 # draw on top of enemy
-	hp_label.position = Vector2(-100, -210) # tweak for your sprite size
-	hp_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-	var screen := get_viewport().get_visible_rect().size
 
-	# Optional: make it readable
-	hp_label.add_theme_color_override("font_color", Color.WHITE)
-	hp_label.add_theme_constant_override("outline_size", 4)
-	hp_label.add_theme_color_override("font_outline_color", Color.BLACK)
 
-	add_child(hp_label)
 
-func _update_hp_label() -> void:
-	if hp_label:
-		hp_label.text = "HP: %d" % health
 		
 func _setup_mana_label() -> void:
 	mana_label = Label.new()
@@ -116,9 +112,7 @@ func _setup_mana_label() -> void:
 
 	add_child(mana_label)
 
-func _update_mana_label() -> void:
-	if mana_label:
-		mana_label.text = "Mana: %d/%d" % [mana, mana_max]
+
 		
 		
 		
@@ -195,8 +189,15 @@ func _update_hp_bar_label(delta: float) -> void:
 		
 		
 		
-		
+func attack_move() -> void:
+	is_attacking = true
+	var tween = create_tween()
+	tween.tween_property(self, "position", home_pos + Vector2(500, 0), 1.0).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
+	tween.tween_property(self, "position", home_pos, 0.3).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
+	await tween.finished
+	is_attacking = false
 
 
 func _on_animation_finished() -> void:
-	sprite.play("idle")
+	if not is_dead:
+		sprite.play("idle")

@@ -14,8 +14,12 @@ const BASE_SCALE := Vector2(2.0, 2.0)
 const HOVER_SCALE := Vector2(2.5, 2.5)
 const SCALE_SPEED := 12.0
 
+var is_attacking = false
+var home_pos := Vector2(0,0)
 var max_hp = 0
 var sprite: AnimatedSprite2D
+var is_dead := false
+@onready var active_encounter: NodeEncounter = get_tree().get_first_node_in_group("encounter")
 
 func setup_enemy(data: EnemyDB.EnemyData) -> void:
 	stats = data
@@ -38,7 +42,7 @@ func setup_enemy(data: EnemyDB.EnemyData) -> void:
 	sprite.play("idle")
 	sprite.animation_finished.connect(_on_animation_finished)
 	
-	stats.behavior.randomize()
+	stats.roll_intents()
 	self.scale  = BASE_SCALE
 
 
@@ -49,15 +53,17 @@ func _ready() -> void:
 	_setup_hitting_label()
 	_update_hitting_label()
 	
+	print("============= Home pos: ", home_pos, "E pos: ", position)
+	
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	_update_hp_label(delta)
-	if stats.health <= 0:
-		print("ENEMY DEAD")
-		self.queue_free()
-
+	
+	if stats.health <= 0 and not is_dead:
+		is_dead = true
+		die()
 
 
 func damage_melee(amount: int) -> void:
@@ -79,18 +85,23 @@ func _on_enemybody_input_event(viewport: Node, event: InputEvent, shape_idx: int
 			EventBus.enemy_clicked.emit(self)
 
 func take_turn() -> void:
+
 	stats.take_turn(player, self)
-	stats.behavior.randomize()
+	stats.roll_intents()
 	_update_hitting_label()
 	
 func apply_vulnerable(amount: int) -> void:
 	stats.vulnerable += amount
 
+func apply_weak(amount: int) -> void:
+	stats.weak += amount
+
 #################
 ###Graphics
 ##################
 func _on_animation_finished() -> void:
-	sprite.play("idle")
+	if not is_dead:
+		sprite.play("idle")
 	
 	
 func _setup_hp_label() -> void:
@@ -159,3 +170,18 @@ func _setup_hitting_label() -> void:
 func _update_hitting_label() -> void:
 	if hitting_label:
 		hitting_label.text = "Attacking: %d" % stats.behavior.actual_damage
+		
+func die() -> void:
+	sprite.play("death")
+	await sprite.animation_finished
+	await get_tree().create_timer(1.0).timeout
+	active_encounter.clean_up_enemies()
+		
+		
+func attack_move() -> void:
+	is_attacking = true
+	var tween = create_tween()
+	tween.tween_property(self, "position", home_pos - Vector2(500, 0), 1.0).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
+	tween.tween_property(self, "position", home_pos, 0.3).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
+	await tween.finished
+	is_attacking = false
