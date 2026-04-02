@@ -2,6 +2,7 @@ extends Node2D
 class_name NodePlayer
 
 var player_deck: Array[CardDB.CardData]
+var player_effects: Array[PlayerEffects.PlayerEffect]
 # Called when the node enters the scene tree for the first time.
 var hp_label: Label
 var health := 100
@@ -10,7 +11,8 @@ var player_name := "Player 1"
 var block := 0
 var mana := 3
 var mana_max := 3
-var vulnerable := 0
+
+
 var mana_label: Label
 var block_label: Label
 var hp_bar: ProgressBar
@@ -24,6 +26,7 @@ var sprite: AnimatedSprite2D
 var is_attacking := false
 var is_dead := false
 
+@onready var encounter := Main.get_tree().get_first_node_in_group("encounter")
 
 func setup_player() -> void:
 	sprite = NodeMain.build_animated_sprite()
@@ -52,27 +55,79 @@ func setup_player() -> void:
 	_setup_hp_bar()
 	
 
-func damage(amount: int) -> void:
-	if vulnerable > 0:
-		amount = amount * 1.5
+func get_damage(amount: int) -> int:
+	var damage_dict = {"value": amount} # make a dictionary to pass by reference
+	for effect in player_effects:
+		effect.process_attacked_player(encounter, damage_dict)
+	amount = damage_dict["value"]
 		
+	return amount
+
+func damage(amount: int) -> void:
+	
+	amount = get_damage(amount)
 	var block_used: int = min(block, amount)
 	block -= block_used
 
 	var hp_damage: int = amount - block_used
+	
 	if hp_damage > 0:
 		health -= hp_damage
+	print("PLAYER HP DOWN : ", hp_damage)
 
 func block_add(amount: int) -> void:
 	block = block + amount
 	
 	
+func apply_weak(amount: int) -> void:
+	var found_weak = false
+	
+	for effect in player_effects:
+		if effect is PlayerEffects.WeakEffect:
+			effect.weak += amount
+			found_weak = true
+	
+	if found_weak == false:
+		var tmp = PlayerEffects.WeakEffect.new()
+		tmp.weak += amount
+		player_effects.append(tmp)
+	
+func apply_strength(amount: int) -> void:
+	var found_str = false
+	
+	for effect in player_effects:
+		if effect is PlayerEffects.StrengthEffect:
+			effect.strength += amount
+			found_str = true
+	
+	if found_str == false:
+		var tmp = PlayerEffects.StrengthEffect.new()
+		tmp.strength += amount
+		player_effects.append(tmp)
+	
+func apply_vulnerable(amount: int) -> void:
+	var found_vulnerable = false
+	for effect in player_effects:
+		if effect is PlayerEffects.VulnerableEffect:
+			effect.vulnerable += amount
+			found_vulnerable = true
+			
+	if found_vulnerable == false:
+		var tmp = PlayerEffects.VulnerableEffect.new()
+		tmp.vulnerable += amount
+		player_effects.append(tmp)
+	
+	
 func end_turn() -> void:
+	for effect in player_effects.duplicate():
+		effect.process_end_player(encounter, null)
+		if effect.deleteme == true:
+			player_effects.erase(effect)
+		
 	if block > 0:
 		block = 0 
 	mana = mana_max
-	if vulnerable > 0:
-		vulnerable -= 1
+
 
 func _ready() -> void:
 	setup_player()
@@ -80,6 +135,10 @@ func _ready() -> void:
 	target_pos = position
 	home_pos = position
 	print("at pos:", target_pos)
+	apply_strength(2)
+	apply_vulnerable(2)
+	#apply_weak(2)
+	EventBus.top_of_round.emit()
 	
 func _process(delta: float) -> void:
 	#_update_hp_label()

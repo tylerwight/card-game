@@ -3,7 +3,9 @@ extends Node
 signal card_clicked(card: NodeCard)
 signal enemy_clicked(enemy: NodeEnemy)
 signal card_played(card: NodeCard, enemy: NodeEnemy)
-
+signal enemy_hover_enter(enemy: NodeEnemy)
+signal enemy_hover_exit(enemy: NodeEnemy)
+signal top_of_round()
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:

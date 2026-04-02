@@ -14,3 +14,5 @@ script = ExtResource("1_7p1mj")
 shape = SubResource("RectangleShape2D_7p1mj")
 
 [connection signal="input_event" from="enemybody" to="." method="_on_enemybody_input_event"]
+[connection signal="mouse_entered" from="enemybody" to="." method="_on_enemybody_mouse_entered"]
+[connection signal="mouse_exited" from="enemybody" to="." method="_on_enemybody_mouse_exited"]

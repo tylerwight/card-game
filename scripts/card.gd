@@ -2,11 +2,11 @@ extends Node2D
 class_name NodeCard
 
 var card_info: CardDB.CardData = CardDB.get_card("strike")
-var deck_hand: Node2D
+var deck_hand: NodeDeckHand
 var encounter: Node2D
-var desc_label: Label
+var desc_label: RichTextLabel
 var cost_label: Label
-var title_label: Label
+var title_label: RichTextLabel
 var playing:= false
 
 const BASE_SCALE := Vector2(2.0, 2.0)
@@ -23,7 +23,7 @@ var target_scale := BASE_SCALE
 
 
 func setup_card(card: CardDB.CardData):
-	card_info = card
+	card_info = card.duplicate()
 
 func _ready() -> void:
 	$cardbody.input_pickable = true
@@ -39,7 +39,7 @@ func _ready() -> void:
 	self.scale  = BASE_SCALE
 	_setup_desc_label()
 	_setup_cost_label()
-	_update_desc_label()
+	_update_desc_label(card_info.get_description(), card_info.name)
 	_update_cost_label()
 
 
@@ -57,11 +57,21 @@ func card_playable_message(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy
 	return card_info.card_playable(card, player, enemy)["message"]
 
 func discard():
+	print("trying to discard: ", card_info.name)
 	var hand_index = deck_hand.hand.cards.find(card_info)
+
 	deck_hand.discard.add_card_to_deck(card_info)
-	deck_hand.hand.cards.remove_at(hand_index)
+	if hand_index:
+		deck_hand.hand.cards.remove_at(hand_index)
 	self.call_deferred("queue_free")
 
+func exhaust():
+	var hand_index = deck_hand.hand.cards.find(card_info)
+	
+	deck_hand.exhausted.add_card_to_deck(card_info)
+	if hand_index:
+		deck_hand.hand.cards.remove_at(hand_index)
+	self.call_deferred("queue_free")
 
 func _process(delta: float) -> void:
 	var t := 1.0 - exp(-SCALE_SPEED * delta)
@@ -81,7 +91,11 @@ func _on_cardbody_mouse_exited() -> void:
 		target_scale = BASE_SCALE
 		z_index = base_z_index
 	target_lift_offset = Vector2.ZERO
-
+	
+func upgrade() -> void:
+	card_info.upgrade()
+	_update_desc_label(card_info.get_description(), card_info.name)
+	_update_cost_label()
 
 func _on_cardbody_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
 	if event is InputEventMouseButton:
@@ -93,7 +107,9 @@ func _on_cardbody_input_event(viewport: Node, event: InputEvent, shape_idx: int)
 	
 func _setup_desc_label() -> void:
 	#desc
-	desc_label = Label.new()
+	desc_label = RichTextLabel.new()
+	desc_label.bbcode_enabled = true
+	desc_label.fit_content = true
 	desc_label.name = "DescLabel"
 	#desc_label.z_index = 1000 # draw on top of enemy
 	desc_label.position = Vector2(-35, 20) # tweak for your sprite size
@@ -104,12 +120,15 @@ func _setup_desc_label() -> void:
 	desc_label.add_theme_color_override("font_color", Color.WHITE)
 	desc_label.add_theme_constant_override("outline_size", 4)
 	desc_label.add_theme_color_override("font_outline_color", Color.BLACK)
-	desc_label.add_theme_font_size_override("font_size", 7)
+	desc_label.add_theme_font_size_override("normal_font_size", 7)
+	desc_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 	add_child(desc_label)
 	
 	#title
-	title_label = Label.new()
+	title_label = RichTextLabel.new()
+	title_label.bbcode_enabled = true
+	title_label.fit_content = true
 	title_label.name = "TitleLabel"
 	#title_label.z_index = 1000 # draw on top of enemy
 	title_label.position = Vector2(-33, 6) # tweak for your sprite size
@@ -120,8 +139,9 @@ func _setup_desc_label() -> void:
 	title_label.add_theme_color_override("font_color", Color.WHITE)
 	title_label.add_theme_constant_override("outline_size", 4)
 	title_label.add_theme_color_override("font_outline_color", Color.BLACK)
-	title_label.add_theme_font_size_override("font_size", 8)
-
+	title_label.add_theme_font_size_override("normal_font_size", 8)
+	title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	
 	add_child(title_label)
 	
 func _setup_cost_label() -> void:
@@ -132,7 +152,7 @@ func _setup_cost_label() -> void:
 	cost_label.size = Vector2(90, 0)  # set width of text box
 	cost_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	cost_label.autowrap_mode = TextServer.AUTOWRAP_WORD
-
+	cost_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	# Optional: make it readable
 	cost_label.add_theme_color_override("font_color", Color.WHITE)
 	cost_label.add_theme_constant_override("outline_size", 4)
@@ -146,7 +166,9 @@ func _update_cost_label() -> void:
 	if cost_label:
 		cost_label.text = str(card_info.cost_mana)
 
-func _update_desc_label() -> void:
+func _update_desc_label(desc: String, title: String) -> void:
 	if desc_label:
-		desc_label.text = card_info.description
-		title_label.text = card_info.name
+		desc_label.text = desc
+		title_label.text = title
+		#desc_label.text = card_info.description
+		#title_label.text = card_info.name

@@ -49,34 +49,51 @@ func setup_enemy(data: EnemyDB.EnemyData) -> void:
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	$enemybody.input_pickable = true
+	stats.node = self
 	_setup_hp_label()
 	_setup_hitting_label()
 	_update_hitting_label()
-	
+	EventBus.top_of_round.connect(_top_of_round)
 	print("============= Home pos: ", home_pos, "E pos: ", position)
 	
 
+func _top_of_round():
+	_update_hitting_label()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	_update_hp_label(delta)
-	
+	#_update_hitting_label()
 	if stats.health <= 0 and not is_dead:
 		is_dead = true
 		die()
 
 
+
+func get_damage(amount: int) -> int: 
+	var damage_dict = {"value": amount} # make a dictionary to pass by reference
+	for effect in stats.player_effects:
+		effect.process_attacked_enemy(active_encounter, self, damage_dict)
+	amount = damage_dict["value"]
+	
+	print("getting enemy damage. HP before: ", stats.health, " Final damage: ", amount)
+	return amount
+
 func damage_melee(amount: int) -> void:
-	print("enemy hp before: ", stats.health)
-	if stats.vulnerable > 0:
-		amount = amount * 1.5
+	print("enemy hp before: ", stats.health, " hitting for base of: ", amount)
+	
+	amount = get_damage(amount)
+	
 	var block_used: int = min(stats.block, amount)
 	stats.block -= block_used
 
 	var hp_damage: int = amount - block_used
 	if hp_damage > 0:
 		stats.health -= hp_damage
-	print("enemy hp after: ", stats.health)
+	print("enemy hp after: ", stats.health, " enemy took: ", hp_damage)
+
+
+
 
 func _on_enemybody_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
 	if event is InputEventMouseButton:
@@ -84,18 +101,66 @@ func _on_enemybody_input_event(viewport: Node, event: InputEvent, shape_idx: int
 			print("trying to send event")
 			EventBus.enemy_clicked.emit(self)
 
-func take_turn() -> void:
+func _on_enemybody_mouse_entered() -> void:
+	EventBus.enemy_hover_enter.emit(self)
 
+
+func _on_enemybody_mouse_exited() -> void:
+	EventBus.enemy_hover_exit.emit(self)
+
+
+
+func take_turn() -> void:
 	stats.take_turn(player, self)
 	stats.roll_intents()
+	
+	for effect in stats.player_effects.duplicate():
+		effect.process_end_enemy(active_encounter)
+		if effect.deleteme == true:
+			stats.player_effects.erase(effect)
+			
 	_update_hitting_label()
 	
-func apply_vulnerable(amount: int) -> void:
-	stats.vulnerable += amount
-
 func apply_weak(amount: int) -> void:
-	stats.weak += amount
-
+	var found_weak = false
+	
+	for effect in stats.player_effects:
+		if effect is PlayerEffects.WeakEffect:
+			effect.weak += amount
+			found_weak = true
+	
+	if found_weak == false:
+		var tmp = PlayerEffects.WeakEffect.new()
+		tmp.weak += amount
+		stats.player_effects.append(tmp)
+	
+func apply_strength(amount: int) -> void:
+	var found_str = false
+	
+	for effect in stats.player_effects:
+		if effect is PlayerEffects.StrengthEffect:
+			effect.strength += amount
+			found_str = true
+	
+	if found_str == false:
+		var tmp = PlayerEffects.StrengthEffect.new()
+		tmp.strength += amount
+		stats.player_effects.append(tmp)
+	
+func apply_vulnerable(amount: int) -> void:
+	var found_vulnerable = false
+	for effect in stats.player_effects:
+		if effect is PlayerEffects.VulnerableEffect:
+			effect.vulnerable += amount
+			found_vulnerable = true
+			
+	if found_vulnerable == false:
+		var tmp = PlayerEffects.VulnerableEffect.new()
+		tmp.vulnerable += amount
+		stats.player_effects.append(tmp)
+	
+	
+	
 #################
 ###Graphics
 ##################
@@ -169,7 +234,7 @@ func _setup_hitting_label() -> void:
 
 func _update_hitting_label() -> void:
 	if hitting_label:
-		hitting_label.text = "Attacking: %d" % stats.behavior.actual_damage
+		hitting_label.text = "Attacking: %d" % active_encounter.player.get_damage(stats.behavior.actual_damage)
 		
 func die() -> void:
 	sprite.play("death")

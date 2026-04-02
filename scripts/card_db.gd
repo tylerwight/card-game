@@ -6,9 +6,11 @@ class CardData:
 	@export var name: String = "default"
 	@export var type: String = "default123"
 	@export var description: String = "The default card"
+	@export var dynamic_desc: String = "the default"
 	@export var texture_path: String = "res://assets/test_card.png"
 	@export var cost_mana: int = 1
 	@export var damage_melee: int = 1 
+	@export var damage_actual: int = 0
 	@export var heal_std: int = 0
 	@export var block_std: int = 0
 	@export var needs_target: bool = true
@@ -16,16 +18,49 @@ class CardData:
 	@export var end: CardEffects.CardEffect
 	@export var vulnerable: int = 0
 	@export var weak: int = 0
+	@export var strength: int = 0
+	@export var discard_to_exhuast: bool = false
+	@export var upgraded = false
+
+	func populate_damage_actual(encounter: NodeEncounter, card: NodeCard):
+		damage_actual = damage_melee
+		
+		var effects = encounter.player.player_effects
+		for effect in effects:
+			effect.process_attacking_player(encounter, card)
+			
+		#print("card actual damage is: ", damage_actual, "   coming from damage_melee: ", damage_melee)
 
 	func card_playable(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> Dictionary:
 		return effect.card_playable(card, player, enemy)
 	
 	func cast(card: NodeCard, player: NodePlayer, enemy: NodeEnemy) -> void:
+		print("====CASTING CARD==== ", card.card_info.name)
 		if effect:
 			effect.cast(card, player, enemy)
 		else:
 			print("No effect set for card ", id)
 			
+			
+	func upgrade() -> void:
+		effect.upgrade(self)	
+		
+	func get_description() -> String:
+		var tmp_text = description
+		tmp_text = tmp_text.replace("~dmg~", str(damage_melee))		
+		tmp_text = tmp_text.replace("~blk~", str(block_std))
+		tmp_text = tmp_text.replace("~vul~", str(vulnerable))	
+		tmp_text = tmp_text.replace("~weak~", str(weak))	
+		return tmp_text
+		
+	func get_dynamic_desc(damage: int) -> String:
+		var tmp_text = dynamic_desc
+		tmp_text = tmp_text.replace("~dmg~", str(damage))
+		tmp_text = tmp_text.replace("~blk~", str(block_std))
+		tmp_text = tmp_text.replace("~vul~", str(vulnerable))	
+		tmp_text = tmp_text.replace("~weak~", str(weak))	
+		return tmp_text
+		
 		
 	func print_self() -> void:
 		print("=== CardData: ", name, " ===")
@@ -46,7 +81,8 @@ func _ready() -> void:
 	_add_card("strike", {
 		"name": "Strike",
 		"type": "attack",
-		"description": "Deals 6 damage to one enemy.",
+		"description": "Deals ~dmg~ damage to one enemy.",
+		"dynamic_desc": "Deals [color=green]~dmg~[/color] damage to one enemy.",
 		"texture_path": "res://assets/cards/green_card_attack_strike.png",
 		"cost_mana": 1,
 		"damage_melee": 6,
@@ -55,7 +91,8 @@ func _ready() -> void:
 	_add_card("defend", {
 		"name": "Defend",
 		"type": "skill",
-		"description": "Applies 5 Block to player",
+		"description": "Applies ~blk~ block to player",
+		"dynamic_desc": "Applies [color=green]~blk~[/color] block to player",
 		"texture_path": "res://assets/cards/green_card_attack_defend.png",
 		"cost_mana": 1,
 		"block_std": 5,
@@ -65,7 +102,8 @@ func _ready() -> void:
 	_add_card("bash", {
 		"name": "Bash",
 		"type": "attack",
-		"description": "Deal 8 damage. Apply 2 Vulnerable",
+		"description": "Deal ~dmg~ damage. Apply ~vul~ Vulnerable",
+		"dynamic_desc": "Deal [color=green]~dmg~[/color] damage. Apply ~vul~ Vulnerable",
 		"texture_path": "res://assets/cards/green_card_attack_bash.png",
 		"cost_mana": 2,
 		"damage_melee": 8,
@@ -75,7 +113,8 @@ func _ready() -> void:
 	_add_card("anger", {
 		"name": "Anger",
 		"type": "attack",
-		"description": "Deal 6 damage. Add a copy of this card into your discard pile.",
+		"description": "Deal ~dmg~ damage. Add a copy of this card into your discard pile.",
+		"dynamic_desc": "Deal [color=green]~dmg~[/color] damage. Add a copy of this card into your discard pile.",
 		"texture_path": "res://assets/cards/green_card_attack_anger.png",
 		"cost_mana": 0,
 		"damage_melee": 6,
@@ -85,6 +124,7 @@ func _ready() -> void:
 		"name": "Body Slam",
 		"type": "attack",
 		"description": "Deal damage equal to your block",
+		"dynamic_desc": "Deal damage equal to your block",
 		"texture_path": "res://assets/cards/green_card_attack_bodyslam.png",
 		"cost_mana": 1,
 		"damage_melee": 0,
@@ -93,7 +133,8 @@ func _ready() -> void:
 	_add_card("clothesline", {
 		"name": "Clothesline",
 		"type": "attack",
-		"description": "Deal 12 damage. Apply 2 Weak",
+		"description": "Deal ~dmg~ damage. Apply ~weak~ Weak",
+		"dynamic_desc": "Deal [color=green]~dmg~[/color] damage. Apply ~weak~ Weak",
 		"texture_path": "res://assets/cards/green_card_attack_strike.png",
 		"cost_mana": 2,
 		"damage_melee": 12,
@@ -108,6 +149,62 @@ func _ready() -> void:
 		"cost_mana": 0,
 		"damage_melee": 14,
 		"effect": CardEffects.EffectClash.new()
+	})
+	_add_card("inflame", {
+		"name": "Inflame",
+		"type": "power",
+		"description": "Gain 2 Strength",
+		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"cost_mana": 1,
+		"strength": 2,
+		"needs_target": false,
+		"effect": CardEffects.EffectInflame.new()
+	})
+	_add_card("cleave", {
+		"name": "Cleave",
+		"type": "attack",
+		"description": "Deal 8 damage to ALL enemies",
+		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"cost_mana": 1,
+		"needs_target": false,
+		"effect": CardEffects.EffectCleave.new()
+	})
+	_add_card("flex", {
+		"name": "Flex",
+		"type": "skill",
+		"description": "Add 2 strength. At the end of yoru turn remove 2 strength.",
+		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"cost_mana": 0,
+		"strength": 2,
+		"needs_target": false,
+		"effect": CardEffects.EffectFlex.new()
+	})
+	_add_card("havoc", {
+		"name": "Havoc",
+		"type": "skill",
+		"description": "	Play the top card of your draw pile and Exhaust it.",
+		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"cost_mana": 1,
+		"needs_target": false,
+		"effect": CardEffects.EffectHavoc.new()
+	})
+	_add_card("headbutt", {
+		"name": "Headbutt",
+		"type": "attack",
+		"description": "	Deal 9 damage. Place a card from your discard pile on top of your draw pile.",
+		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"cost_mana": 1,
+		"damage_melee": 9,
+		"effect": CardEffects.EffectHeadbutt.new()
+	})
+	_add_card("heavyblade", {
+		"name": "Heavy Blade",
+		"type": "attack",
+		"description": "	Deal 14 damage. Strength affects Heavy Blade 3 times.",
+		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"cost_mana": 2,
+		"damage_melee": 14,
+		"effect": CardEffects.EffectHeavyblade.new()
 	})
 
 func _process(delta: float) -> void:
@@ -152,9 +249,17 @@ class DeckPlayable:
 	func add_card_to_deck(card: CardData) -> void:
 		cards.push_back(card)
 		
+	func add_card_to_deck_front(card: CardData) -> void:
+		cards.push_front(card)
+		
 	func pull_card_from_deck() -> CardData:
 		return cards.pop_front()
 		
+	func pull_random_from_deck() -> CardData:
+		if cards.is_empty():
+			return null
+		return cards.pop_at(randi() % cards.size())
+	
 	func clear_deck_full() -> void:
 		cards.clear()
 		name = "Default Deck"

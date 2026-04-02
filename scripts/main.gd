@@ -26,7 +26,7 @@ func create_encounter(player_manager: Node2D, enemies: Array[EnemyDB.EnemyData],
 		encounter.enemies_data.push_back(enemy)
 		
 		
-	get_node("/root").add_child(encounter)
+	get_node("/root/Main").add_child(encounter)
 	encounter.world_root.add_child(encounter.player)
 	
 	encounter.set_background("res://assets/backgrounds/green_mountain.png")
@@ -37,6 +37,7 @@ func create_card_picker(cards: Array[CardDB.CardData], title: String, required_c
 	
 	get_node("/root").add_child(picker)
 	picker.setup_picker(cards, title, required_count, skippable)
+	picker.z_index = 2000
 	
 	return await picker.cards_picked
 
@@ -71,6 +72,10 @@ static func add_animation(sprite: AnimatedSprite2D, texture: Texture2D, frame_w:
 		atlas.region = Rect2(i * frame_w, 0, frame_w, frame_h)
 		frames.add_frame(anim_name, atlas)
 
+func print_player_effects(effects: Array[PlayerEffects.PlayerEffect]) -> void:
+	print("=== Effects (%d) ===" % effects.size())
+	for effect in effects:
+		print(effect.print())
 
 #THIS NEEDS REMOVED BUT MAY BE IN USE
 static func build_sprite_animation(texture: Texture2D, frame_w: int, frame_h: int, frame_count: int, anim_name: String) -> AnimatedSprite2D:

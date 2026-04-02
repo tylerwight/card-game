@@ -10,19 +10,25 @@ class EnemyData:
 	@export var block: int = 0 
 	@export var heal_std: int = 0
 	@export var block_std: int = 0
-	@export var vulnerable: int = 0
-	@export var weak: int = 0
 	@export var behavior: EnemyBehaviors.EnemyBehavior
+	@export var player_effects: Array[PlayerEffects.PlayerEffect]
+	var node: NodeEnemy = null
 	
 	func roll_intents() -> void:
 		if behavior:
 			behavior.roll_intents(self)
+			
+	func refresh_effects_attack() -> void:
+		if behavior:
+			behavior.refresh_effects_attack(self)
 	
 	func take_turn(player: NodePlayer, enemy: NodeEnemy) -> void:
 		if behavior:
 			behavior.take_turn(player, enemy)
 		else:
 			print("No behavior set for enemy", name)
+			
+
 
 var enemies_global: Dictionary = {}
 

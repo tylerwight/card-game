@@ -9,16 +9,18 @@ class EnemyBehavior:
 		
 	func roll_intents(enemy: EnemyDB.EnemyData):
 		actual_damage = randi_range(base_damage - damage_variance, base_damage + damage_variance)
-		if enemy.weak > 0:
-			actual_damage = actual_damage * 0.75
+		for effect in enemy.player_effects:
+			effect.process_attacking_enemy(null, enemy.node)
 		
-	@warning_ignore("unused_parameter")
+	func refresh_effects_attack(enemy: EnemyDB.EnemyData) -> void:
+		for effect in enemy.player_effects:
+			effect.process_attacking_enemy(null, enemy.node)
+		
 	func take_turn(player: NodePlayer,  enemy: NodeEnemy) -> void:
 		pass
 		
 	func end_turn(enemy: NodeEnemy) -> void:
-		if enemy.stats.vulnerable > 0:
-			enemy.stats.vulnerable -= 1
+		pass
 		
 		
 class BehaviorGoodboy:

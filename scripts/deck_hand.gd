@@ -12,6 +12,7 @@ var deck_reference: CardDB.DeckPlayable
 @onready var draw_size = 5
 @onready var card_scene = preload("res://scenes/card.tscn")
 
+
 func shuffle_discard():
 	for card in discard.cards:
 		deck.add_card_to_deck(card)
@@ -33,7 +34,7 @@ func draw_hand(amount: int = draw_size):
 			hand.add_card_to_deck(deck.pull_card_from_deck())
 
 func render_hand():
-	var old_hand = get_children()
+	var old_hand = get_card_nodes()
 	for card in old_hand:
 		card.queue_free()
 		
@@ -43,11 +44,18 @@ func render_hand():
 		add_child(card_node)
 	refresh_layout()
 
+func get_card_nodes() -> Array[NodeCard]:
+	var card_nodes: Array[NodeCard] = []
+	for child in get_children():
+		if child is NodeCard:
+			card_nodes.append(child)
+	return card_nodes
+
 func discard_hand():
 	for card in hand.cards:
 		discard.add_card_to_deck(card)
 	hand.cards.clear()
-	var rendered_cards = get_children()
+	var rendered_cards = get_card_nodes()
 	for card in rendered_cards:
 		card.call_deferred("queue_free")
 		
@@ -58,6 +66,8 @@ func _ready() -> void:
 	deck = deck_reference.duplicate()
 	hand.name = "HAND"
 	discard.name = "DISCARD"
+	exhausted.name = "EXHAUSTED"
+	deck.name = "DECK"
 	deck.cards.shuffle()
 	draw_hand()
 	render_hand()
@@ -98,8 +108,10 @@ func refresh_layout() -> void:
 		
 		
 func print_status() -> void:
-	discard.print_deck()
+	deck.print_deck()
 	print("=====")
 	hand.print_deck()
-	print("====")
-	deck.print_deck()
+	print("=====")
+	discard.print_deck()
+	print("=====")
+	exhausted.print_deck()

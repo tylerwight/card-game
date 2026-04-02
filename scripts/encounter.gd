@@ -16,23 +16,9 @@ var selected_card_home_pos: Vector2 = Vector2.ZERO
 var hp_label: Label
 var mana_label: Label
 
-#enum phase {
-	#DRAW,
-	#UPKEEP,
-	#MAIN,
-	#RTS,
-	#CLEANUP
-#}
-#
-#enum turn {
-	#PLAYER_1,
-	#ENEMIES
-#}
-#
-#var encounter_phase := phase.MAIN
-#var encounter_turn := turn.PLAYER_1
 var selected_card: NodeCard = null
 var selected_card_prev_z = null
+var hovered_enemy: NodeEnemy = null
 
 
 var title: String = "big title!"
@@ -44,13 +30,13 @@ var player_deck: CardDB.DeckPlayable
 @onready var ui_layer: Control = $UI
 @onready var background: Sprite2D = $Background
 
-var deck_hand: Node2D
+var deck_hand: NodeDeckHand
 var enemies: Array[NodeEnemy]
 var player: NodePlayer
 
 
 ###############
-####Builtin####
+####Builtin/setup####
 ###############
 func _ready() -> void:
 	add_to_group("encounter")
@@ -59,7 +45,6 @@ func _ready() -> void:
 	attach_deck_hand()
 	_layout()
 	_setup_labels()
-	
 	
 	
 func clean_up_enemies() -> void:
@@ -78,24 +63,12 @@ func _process(delta: float) -> void:
 	if player.is_dead:
 		flash_message("YOU LOSE", false, 2)
 	
-	
-	
 ################
-####GAMEPLAY####
-################
-
-func do_enemies_turn() -> void:
-	for enemy in enemies:
-		enemy.sprite.play("attack")
-		enemy.attack_move()
-		
-		await enemy.sprite.animation_finished
-		player.sprite.play("hit")
-		enemy.take_turn()	
-	return
-
+#####SIGNALS#####
+#################
 func _on_card_clicked(card: NodeCard) -> void:
-	print("Encounter detected clicked card:", card.card_info.name)
+	card.upgrade()
+	#print("Encounter detected clicked card:", card.card_info.name)
 	if (selected_card == card):
 		clear_selected_card()
 		return
@@ -103,7 +76,7 @@ func _on_card_clicked(card: NodeCard) -> void:
 	selected_card_home_pos = card.global_position
 	selected_card_prev_z = selected_card.z_index
 	selected_card.z_index = 1000
-	print("Selected card: ", selected_card.card_info.name)
+	#print("Selected card: ", selected_card.card_info.name)
 	
 
 func _on_enemy_clicked(enemy: NodeEnemy):
@@ -121,11 +94,13 @@ func _on_card_played(player: NodePlayer, card: NodeCard, enemy: NodeEnemy):
 		return
 	if card.card_playable(card, player, enemy):
 		player.mana -= card.card_info.cost_mana
+		card.card_info.populate_damage_actual(self, card)
+		#card.card_info.get_dynamic_desc()
 		card.playing = true
 		player.sprite.play("attack")
 		player.attack_move()
 		await player.sprite.animation_finished
-		card.cast(player, enemy)
+		await card.cast(player, enemy)
 		if enemy: enemy.sprite.play("hit")
 		card.playing = false
 	else:
@@ -133,6 +108,8 @@ func _on_card_played(player: NodePlayer, card: NodeCard, enemy: NodeEnemy):
 		
 	selected_card = null
 	deck_hand.refresh_layout()
+	print("After Card Played")
+	
 	
 
 func _on_playable_area_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
@@ -144,23 +121,86 @@ func _on_playable_area_input_event(viewport: Node, event: InputEvent, shape_idx:
 			clear_selected_card()
 
 func _on_end_turn_pressed() -> void:
-	
 	await do_enemies_turn()
 	deck_hand.discard_hand()
 	deck_hand.draw_hand()
-	#deck_hand.print_status()
+	deck_hand.print_status()
 	deck_hand.render_hand()
 	player.end_turn()
+	print("After turn end")
+	EventBus.top_of_round.emit()
+	
+
+func _on_enemy_hover_enter(enemy: NodeEnemy) -> void:
+	hovered_enemy = enemy
+	if selected_card:
+		var true_dmg = get_true_damage(player, selected_card, hovered_enemy)
+		print("TRUE DAMGE: ", true_dmg)
+		selected_card._update_desc_label(selected_card.card_info.get_dynamic_desc(true_dmg), selected_card.card_info.name)
+
+func _on_enemy_hover_exit(enemy: NodeEnemy) -> void:
+	hovered_enemy = null
+	for card in deck_hand.get_card_nodes():
+		card._update_desc_label(card.card_info.get_description(), card.card_info.name)
+		
+func _top_of_round():
+	print("#######NEW ROUND########")
+	print("PLAYER EFFECTS")
+	Main.print_player_effects(player.player_effects)
+	print("\n ENEMY EFFECTS")
+	for enemy in enemies:
+		Main.print_player_effects(enemy.stats.player_effects)
+		
+
+################
+####GAMEPLAY####
+################
+
+
+func get_true_damage(player: NodePlayer, card: NodeCard, enemy: NodeEnemy):
+	card.card_info.populate_damage_actual(self, card)
+	var total = enemy.get_damage(card.card_info.damage_actual)
+	return total
+	
+	
+func do_enemies_turn() -> void:
+	for enemy in enemies:
+		enemy.sprite.play("attack")
+		enemy.attack_move()
+		
+		await enemy.sprite.animation_finished
+		player.sprite.play("hit")
+		enemy.take_turn()	
+	return
+
+
+
+func spawn_and_play_card(card_info: CardDB.CardData) -> void:
+	var card = deck_hand.card_scene.instantiate()
+	card.setup_card(card_info)
+	card.card_info.discard_to_exhuast = true
+	deck_hand.add_child(card)
+	
+	card.card_info.populate_damage_actual(self, card)
+	card.playing = true
+	player.sprite.play("attack")
+	player.attack_move()
+	await player.sprite.animation_finished
+	
+	var enemy = enemies.pick_random()
+	card.cast(player, enemy)
+	if enemy: enemy.sprite.play("hit")
+	card.playing = false
 	
 
 	
-	
 func clear_selected_card() -> void:
-	selected_card.target_scale = selected_card.BASE_SCALE
-	selected_card.target_lift_offset = Vector2.ZERO
-	selected_card.global_position = selected_card_home_pos
-	selected_card.z_index = selected_card_prev_z
-	selected_card = null
+	if selected_card:
+		selected_card.target_scale = selected_card.BASE_SCALE
+		selected_card.target_lift_offset = Vector2.ZERO
+		selected_card.global_position = selected_card_home_pos
+		selected_card.z_index = selected_card_prev_z
+		selected_card = null
 
 ######################
 ####UTILITY/SETUP#####
@@ -180,6 +220,9 @@ func connect_signals()-> void:
 	EventBus.card_clicked.connect(_on_card_clicked)
 	EventBus.enemy_clicked.connect(_on_enemy_clicked)
 	EventBus.card_played.connect(_on_card_played)
+	EventBus.enemy_hover_enter.connect(_on_enemy_hover_enter)
+	EventBus.enemy_hover_exit.connect(_on_enemy_hover_exit)
+	EventBus.top_of_round.connect(_top_of_round)
 	get_viewport().size_changed.connect(_layout)
 
 func attach_deck_hand()-> void:
