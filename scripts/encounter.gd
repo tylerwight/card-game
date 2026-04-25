@@ -93,7 +93,7 @@ func _on_card_played(player: NodePlayer, card: NodeCard, enemy: NodeEnemy):
 	if card.playing == true:
 		return
 	if card.card_playable(card, player, enemy):
-		player.mana -= card.card_info.cost_mana
+		player.mana -= card.card_info.get_cost(card, player)
 		card.card_info.populate_damage_actual(self, card)
 		#card.card_info.get_dynamic_desc()
 		card.playing = true
@@ -109,6 +109,9 @@ func _on_card_played(player: NodePlayer, card: NodeCard, enemy: NodeEnemy):
 	selected_card = null
 	deck_hand.refresh_layout()
 	print("After Card Played")
+	print("\n ENEMY EFFECTS")
+	for enem in enemies:
+		Main.print_player_effects(enem.stats.player_effects)
 	
 	
 
@@ -122,14 +125,17 @@ func _on_playable_area_input_event(viewport: Node, event: InputEvent, shape_idx:
 
 func _on_end_turn_pressed() -> void:
 	await do_enemies_turn()
-	deck_hand.discard_hand()
-	deck_hand.draw_hand()
-	deck_hand.print_status()
-	deck_hand.render_hand()
+	refresh_hand()
+
 	player.end_turn()
 	print("After turn end")
 	EventBus.top_of_round.emit()
 	
+
+func refresh_hand() -> void:
+	deck_hand.discard_hand()
+	deck_hand.draw_hand(true)
+	deck_hand.render_hand()
 
 func _on_enemy_hover_enter(enemy: NodeEnemy) -> void:
 	hovered_enemy = enemy
@@ -150,6 +156,8 @@ func _top_of_round():
 	print("\n ENEMY EFFECTS")
 	for enemy in enemies:
 		Main.print_player_effects(enemy.stats.player_effects)
+		
+	deck_hand.print_status()
 		
 
 ################

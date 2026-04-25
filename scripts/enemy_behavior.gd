@@ -12,6 +12,10 @@ class EnemyBehavior:
 		for effect in enemy.player_effects:
 			effect.process_attacking_enemy(null, enemy.node)
 		
+		if actual_damage < 0:
+			actual_damage = 0
+		
+		
 	func refresh_effects_attack(enemy: EnemyDB.EnemyData) -> void:
 		for effect in enemy.player_effects:
 			effect.process_attacking_enemy(null, enemy.node)

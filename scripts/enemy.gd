@@ -147,6 +147,10 @@ func apply_strength(amount: int) -> void:
 		tmp.strength += amount
 		stats.player_effects.append(tmp)
 	
+	stats.refresh_effects_attack()
+	_update_hitting_label()
+	
+	
 func apply_vulnerable(amount: int) -> void:
 	var found_vulnerable = false
 	for effect in stats.player_effects:

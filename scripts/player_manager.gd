@@ -8,8 +8,8 @@ func set_deck_default() -> void:
 		deck = CardDB.DeckPlayable.new()
 	deck.clear_deck_full()
 	for i in range(2):
-		deck.add_card_to_deck(CardDB.cards_global.get("strike"))
-		deck.add_card_to_deck(CardDB.cards_global.get("defend"))
+		deck.add_card_to_deck(CardDB.get_card("strike"))
+		deck.add_card_to_deck(CardDB.get_card("defend"))
 		
 
 func _ready() -> void:

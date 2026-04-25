@@ -23,7 +23,7 @@ var target_scale := BASE_SCALE
 
 
 func setup_card(card: CardDB.CardData):
-	card_info = card.duplicate()
+	card_info = card
 
 func _ready() -> void:
 	$cardbody.input_pickable = true
@@ -39,8 +39,8 @@ func _ready() -> void:
 	self.scale  = BASE_SCALE
 	_setup_desc_label()
 	_setup_cost_label()
-	_update_desc_label(card_info.get_description(), card_info.name)
-	_update_cost_label()
+	_update_labels()
+
 
 
 func cast(player: NodePlayer, enemy: NodeEnemy) -> void:
@@ -58,20 +58,28 @@ func card_playable_message(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy
 
 func discard():
 	print("trying to discard: ", card_info.name)
-	var hand_index = deck_hand.hand.cards.find(card_info)
-
 	deck_hand.discard.add_card_to_deck(card_info)
-	if hand_index:
-		deck_hand.hand.cards.remove_at(hand_index)
+	deck_hand.hand.remove_card(card_info)
 	self.call_deferred("queue_free")
 
 func exhaust():
-	var hand_index = deck_hand.hand.cards.find(card_info)
-	
 	deck_hand.exhausted.add_card_to_deck(card_info)
-	if hand_index:
-		deck_hand.hand.cards.remove_at(hand_index)
+	deck_hand.hand.remove_card(card_info)
 	self.call_deferred("queue_free")
+	
+	for effect in encounter.player.player_effects.duplicate():
+		effect.process_exhaust_player(encounter)
+
+func remove():
+	deck_hand.hand.remove_card(card_info)
+	self.call_deferred("queue_free")
+
+func move_to_top_of_draw_pile():
+	print("trying to move to top of draw pile: ", card_info.name)
+	deck_hand.deck.add_card_to_deck_front(card_info)
+	deck_hand.hand.remove_card(card_info)
+	self.call_deferred("queue_free")
+
 
 func _process(delta: float) -> void:
 	var t := 1.0 - exp(-SCALE_SPEED * delta)
@@ -161,10 +169,13 @@ func _setup_cost_label() -> void:
 
 	add_child(cost_label)
 
+func _update_labels() -> void:
+	_update_desc_label(card_info.get_description(), card_info.name)
+	_update_cost_label()
 
 func _update_cost_label() -> void:
 	if cost_label:
-		cost_label.text = str(card_info.cost_mana)
+		cost_label.text = str(card_info.get_cost(self, encounter.player))
 
 func _update_desc_label(desc: String, title: String) -> void:
 	if desc_label:

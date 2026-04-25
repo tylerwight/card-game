@@ -56,7 +56,7 @@ func _add_card_labels(control: Control, card: CardDB.CardData) -> void:
 	clip_box.mouse_filter = Control.MOUSE_FILTER_PASS
 	
 	var desc_label = Label.new()
-	desc_label.text = card.description
+	desc_label.text = card.get_description()
 	desc_label.position = Vector2(0, 0)     # position relative to clip_box now
 	desc_label.size = Vector2(150, 100)
 	desc_label.set_deferred("size", Vector2(150, 100))

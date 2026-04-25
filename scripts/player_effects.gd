@@ -19,6 +19,10 @@ class PlayerEffect:
 		pass
 	func process_end_enemy(_encounter: NodeEncounter) -> void:
 		pass
+	func process_draw_player(_encounter: NodeEncounter, drawcount: int) -> int:
+		return drawcount
+	func process_exhaust_player(_encounter: NodeEncounter) -> void:
+		pass
 
 
 
@@ -70,7 +74,9 @@ class StrengthEffect:
 		card.card_info.damage_actual = card.card_info.damage_actual + strength
 		
 	func process_attacking_enemy(_encounter: NodeEncounter, enemy: NodeEnemy) -> void:
+		print("Processing enemy str. Damage before: ", enemy.stats.behavior.actual_damage)
 		enemy.stats.behavior.actual_damage = int(enemy.stats.behavior.actual_damage + strength)
+		print("enemy str after: ", enemy.stats.behavior.actual_damage)
 		
 	func process_end_player(_encounter: NodeEncounter, _card: NodeCard) -> void:
 		if strength == 0:
@@ -129,3 +135,52 @@ class FlexEffect:
 		
 		
 		
+class BattleTranceEffect:
+	extends PlayerEffect
+	
+	func print() -> String:
+		return "PlayerEffect(BattleTrance)"
+		
+	func _init():
+		type = "draw"
+	
+	
+	func process_draw_player(_encounter: NodeEncounter, _drawcount: int) -> int:
+		print("BATTLE TRANCE STOPPING DRAW")
+		return 0
+		
+	func process_end_player(encounter: NodeEncounter, _card: NodeCard) -> void:
+		deleteme = true
+
+
+class CombustEffect:
+	extends PlayerEffect
+	var hp_loss = 1
+	var damage = 5
+	
+	func print() -> String:
+		return "PlayerEffect(Combust)"
+		
+	func _init():
+		type = "end"
+		
+	func process_end_player(encounter: NodeEncounter, _card: NodeCard) -> void:
+		encounter.player.remove_hp(hp_loss)
+		for enemy in encounter.enemies:
+			enemy.damage_melee(damage)
+
+
+class DarkembraceEffect:
+	extends PlayerEffect
+	
+	func print() -> String:
+		return "PlayerEffect(Dark Embrace)"
+		
+	func _init():
+		type = "end"
+	func process_exhaust_player(encounter: NodeEncounter) -> void:
+		print("DARK EMBRACE")
+		encounter.deck_hand.draw_hand(false, 1)
+		encounter.deck_hand.render_hand()
+		
+	

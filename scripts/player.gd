@@ -11,6 +11,7 @@ var player_name := "Player 1"
 var block := 0
 var mana := 3
 var mana_max := 3
+var hp_loss_count := 0
 
 
 var mana_label: Label
@@ -73,7 +74,14 @@ func damage(amount: int) -> void:
 	
 	if hp_damage > 0:
 		health -= hp_damage
-	print("PLAYER HP DOWN : ", hp_damage)
+	
+	hp_loss_count += 1
+	print("PLAYER HP DOWN : ", hp_damage, "  hp_loss_count: = ", hp_loss_count)
+	encounter.deck_hand.update_card_labels()
+
+func remove_hp(amount: int) -> void:
+	#ignore block and player effects
+	health -= amount
 
 func block_add(amount: int) -> void:
 	block = block + amount
@@ -127,16 +135,20 @@ func end_turn() -> void:
 	if block > 0:
 		block = 0 
 	mana = mana_max
+	
 
 
+func end_combat() -> void:
+	hp_loss_count = 0
+	
 func _ready() -> void:
 	setup_player()
 	print("PLAYER NODE NAME IS: ", self.name)
 	target_pos = position
 	home_pos = position
 	print("at pos:", target_pos)
-	apply_strength(2)
-	apply_vulnerable(2)
+	#apply_strength(2)
+	#apply_vulnerable(2)
 	#apply_weak(2)
 	EventBus.top_of_round.emit()
 	

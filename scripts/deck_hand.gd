@@ -20,8 +20,17 @@ func shuffle_discard():
 	deck.cards.shuffle()
 	
 
-func draw_hand(amount: int = draw_size):
+func draw_hand(inital_draw: bool, amount: int = draw_size):
 	print("drawing: ", amount)
+	
+	if inital_draw == false:
+		for effect in active_encounter.player.player_effects.duplicate():
+			amount = effect.process_draw_player(active_encounter, amount)
+			if effect.deleteme == true:
+				active_encounter.player.player_effects.erase(effect)
+			
+			
+	print("draw after draw effects:", amount)
 	var total_cards = deck.cards.size() + hand.cards.size() + discard.cards.size()
 	
 	for i in range(amount):
@@ -32,6 +41,9 @@ func draw_hand(amount: int = draw_size):
 			print("shuffle drawing: ", amount - i)
 			shuffle_discard()
 			hand.add_card_to_deck(deck.pull_card_from_deck())
+
+
+
 
 func render_hand():
 	var old_hand = get_card_nodes()
@@ -53,7 +65,10 @@ func get_card_nodes() -> Array[NodeCard]:
 
 func discard_hand():
 	for card in hand.cards:
-		discard.add_card_to_deck(card)
+		if card.ethereal == true:
+			exhausted.add_card_to_deck(card)
+		else:
+			discard.add_card_to_deck(card)
 	hand.cards.clear()
 	var rendered_cards = get_card_nodes()
 	for card in rendered_cards:
@@ -62,14 +77,14 @@ func discard_hand():
 
 
 func _ready() -> void:
-	var active_encounter = get_parent()
+	active_encounter = Main.get_tree().get_first_node_in_group("encounter")
 	deck = deck_reference.duplicate()
 	hand.name = "HAND"
 	discard.name = "DISCARD"
 	exhausted.name = "EXHAUSTED"
 	deck.name = "DECK"
 	deck.cards.shuffle()
-	draw_hand()
+	draw_hand(true)
 	render_hand()
 
 
@@ -78,6 +93,14 @@ func _process(delta: float) -> void:
 	frame_counter += 1
 	if frame_counter % 3 == 0:
 		pass
+
+func update_card_labels() -> void:
+	var cards: Array[NodeCard] = []
+	for child in get_children():
+		if child is NodeCard and not child.is_queued_for_deletion():
+			cards.append(child)
+			child._update_labels()
+	
 
 
 func refresh_layout() -> void:
