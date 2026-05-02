@@ -165,6 +165,12 @@ func apply_vulnerable(amount: int) -> void:
 	
 	
 	
+func has_vulnerable() -> bool:
+	for effect in stats.player_effects:
+		if effect is PlayerEffects.VulnerableEffect:
+			return true
+	
+	return false
 #################
 ###Graphics
 ##################

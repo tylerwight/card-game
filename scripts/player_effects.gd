@@ -15,12 +15,16 @@ class PlayerEffect:
 		pass
 	func process_attacked_enemy(_encounter: NodeEncounter, _enemy: NodeEnemy, _damage: Dictionary) -> void:
 		pass
+	func process_card_played(_encounter: NodeEncounter, _enemy: NodeEnemy, _card: NodeCard) -> void:
+		pass
 	func process_end_player(_encounter: NodeEncounter, _card: NodeCard) -> void:
 		pass
 	func process_end_enemy(_encounter: NodeEncounter) -> void:
 		pass
-	func process_draw_player(_encounter: NodeEncounter, drawcount: int) -> int:
+	func process_calculate_draw_player(_encounter: NodeEncounter, drawcount: int) -> int:
 		return drawcount
+	func process_on_draw_player(_encounter: NodeEncounter, _card: CardDB.CardData) -> void:
+		pass
 	func process_exhaust_player(_encounter: NodeEncounter) -> void:
 		pass
 
@@ -142,10 +146,10 @@ class BattleTranceEffect:
 		return "PlayerEffect(BattleTrance)"
 		
 	func _init():
-		type = "draw"
+		type = "drawcount"
 	
 	
-	func process_draw_player(_encounter: NodeEncounter, _drawcount: int) -> int:
+	func process_calculate_draw_player(_encounter: NodeEncounter, _drawcount: int) -> int:
 		print("BATTLE TRANCE STOPPING DRAW")
 		return 0
 		
@@ -184,3 +188,95 @@ class DarkembraceEffect:
 		encounter.deck_hand.render_hand()
 		
 	
+class EvolveEffect:
+	extends PlayerEffect
+	var draw = 0
+	func print() -> String:
+		return "PlayerEffect(Evolve)"
+		
+	func _init():
+		type = "ondraw"
+	
+	
+	func process_on_draw_player(encounter: NodeEncounter, card: CardDB.CardData) -> void:
+		print("EVOLVE CHECKING")
+		if card.type == "status":
+			print("FOUND STATUS - drawing: ", draw)
+			encounter.deck_hand.draw_hand(false, draw)
+		
+class FireBreathingEffect:
+	extends PlayerEffect
+	var dmg = 0
+	func print() -> String:
+		return "PlayerEffect(Evolve)"
+		
+	func _init():
+		type = "ondraw"
+	
+	
+	func process_on_draw_player(encounter: NodeEncounter, card: CardDB.CardData) -> void:
+		print("FIREBREATHING CHECKING")
+		if card.type == "status" or card.type == "curse":
+			for enemy in encounter.enemies:
+				enemy.damage_melee(dmg)
+
+
+class FlameBarrierEffect:
+	extends PlayerEffect
+	func _init():
+		type = "attacked"
+	var dmg = 0
+	func print() -> String:
+		return "PlayerEffect(FlameBarrier:%s)" % dmg
+		
+	func process_attacked_player(encounter: NodeEncounter, _damage: Dictionary) -> void:
+		var random_enemy = encounter.enemies.pick_random()
+		random_enemy.damage_melee(dmg)
+	
+		
+	func process_end_player(_encounter: NodeEncounter, _card: NodeCard) -> void:
+		deleteme = true
+
+
+class InflameEffect:
+	extends PlayerEffect
+	
+	func print() -> String:
+		return "PlayerEffect(Inflame:%s)"
+		
+	func _init():
+		type = "end"
+	
+class MetallicizeEffect:
+	extends PlayerEffect
+	var block = 0
+	
+	func print() -> String:
+		return "PlayerEffect(Metallicize: %s)" % block
+		
+	func _init():
+		type = "end"
+		
+	func process_end_player(encounter: NodeEncounter, _card: NodeCard) -> void:
+		print("ADDING BLOCK TO PLAYER")
+		encounter.player.block += block
+
+
+
+class RageEffect:
+	extends PlayerEffect
+	var block = 3
+	
+	func print() -> String:
+		return "PlayerEffect(Rage: %s)"
+		
+	func _init():
+		type = "end"
+		
+	func process_card_played(encounter: NodeEncounter, _enemy: NodeEnemy, card: NodeCard) -> void:
+		if card.card_info.type == "attack":
+			encounter.player.block_add(block)
+		
+		
+	func process_end_player(_encounter: NodeEncounter, _card: NodeCard) -> void:
+		deleteme = true

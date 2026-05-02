@@ -25,7 +25,7 @@ func draw_hand(inital_draw: bool, amount: int = draw_size):
 	
 	if inital_draw == false:
 		for effect in active_encounter.player.player_effects.duplicate():
-			amount = effect.process_draw_player(active_encounter, amount)
+			amount = effect.process_calculate_draw_player(active_encounter, amount)
 			if effect.deleteme == true:
 				active_encounter.player.player_effects.erase(effect)
 			
@@ -36,13 +36,21 @@ func draw_hand(inital_draw: bool, amount: int = draw_size):
 	for i in range(amount):
 		#print("on I: ", i, " deck size: ", deck.cards.size())
 		if deck.cards.size() > 0 and hand.cards.size() < hand_size_max:
-			hand.add_card_to_deck(deck.pull_card_from_deck())
+			var tmp_card = deck.pull_card_from_deck()
+			player_effect_on_draw(tmp_card)
+			hand.add_card_to_deck(tmp_card)
+			
 		elif deck.cards.size() == 0 and total_cards > hand.cards.size():
 			print("shuffle drawing: ", amount - i)
 			shuffle_discard()
-			hand.add_card_to_deck(deck.pull_card_from_deck())
+			
+			var tmp_card = deck.pull_card_from_deck()
+			player_effect_on_draw(tmp_card)
+			hand.add_card_to_deck(tmp_card)
 
-
+func player_effect_on_draw(card: CardDB.CardData) -> void:
+	for effect in active_encounter.player.player_effects:
+		effect.process_on_draw_player(active_encounter, card)
 
 
 func render_hand():

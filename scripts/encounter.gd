@@ -101,6 +101,7 @@ func _on_card_played(player: NodePlayer, card: NodeCard, enemy: NodeEnemy):
 		player.attack_move()
 		await player.sprite.animation_finished
 		await card.cast(player, enemy)
+		player_effects_card_played(player, card, enemy)
 		if enemy: enemy.sprite.play("hit")
 		card.playing = false
 	else:
@@ -114,6 +115,11 @@ func _on_card_played(player: NodePlayer, card: NodeCard, enemy: NodeEnemy):
 		Main.print_player_effects(enem.stats.player_effects)
 	
 	
+func player_effects_card_played(_player: NodePlayer, card: NodeCard, enemy: NodeEnemy):
+	for effect in player.player_effects:
+		effect.process_card_played(self, enemy, card)
+		
+
 
 func _on_playable_area_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
 	if event is InputEventMouseButton:

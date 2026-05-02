@@ -162,8 +162,8 @@ func _ready() -> void:
 	_add_card("inflame", {
 		"name": "Inflame",
 		"type": "power",
-		"description": "Gain 2 Strength",
-		"dynamic_desc": "Gain 2 Strength",
+		"description": "Gain ~str~ Strength",
+		"dynamic_desc": "Gain ~str~ Strength",
 		"texture_path": "res://assets/cards/green_card_attack_strike.png",
 		"cost_mana": 1,
 		"strength": 2,
@@ -433,13 +433,166 @@ func _ready() -> void:
 		"description": "Deal ~dmg~ damage. If the enemy is Vulnerable, gain 1 energy and draw 1 card.",
 		"dynamic_desc": "Deal [color=green]~dmg~[/color] damage. If the enemy is Vulnerable, gain 1 energy and draw 1 card.",
 		"texture_path": "res://assets/cards/green_card_attack_strike.png",
-		"cost_mana": 2,
-		"damage_melee": 18,
-		"effect": CardEffects.EffectCarnage.new()
+		"cost_mana": 1,
+		"damage_melee": 5,
+		"effect": CardEffects.EffectDropkick.new()
 	})		
+	_add_card("dualwield", {#revisit
+		"name": "Dual Wield",
+		"type": "skill",
+		"description": "Create 1 copy of an Attack or Power card in your hand.",
+		"dynamic_desc": "Create 1 copy of an Attack or Power card in your hand.",
+		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"cost_mana": 1,
+		"needs_target": false,
+		"effect": CardEffects.EffectDualwield.new()
+	})		
+	_add_card("entrench", {#revisit
+		"name": "Entrench",
+		"type": "skill",
+		"description": "Double your block.",
+		"dynamic_desc": "Double your block.",
+		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"cost_mana": 2,
+		"needs_target": false,
+		"effect": CardEffects.EffectEntrench.new()
+	})		
+	_add_card("evolve", {#revisit
+		"name": "Evolve",
+		"type": "power",
+		"description": "Whenever you draw a Status card, draw 1 card.",
+		"dynamic_desc": "Whenever you draw a Status card, draw 1 card.",
+		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"cost_mana": 1,
+		"needs_target": false,
+		"effect": CardEffects.EffectEvolve.new()
+	})
+	_add_card("firebreathing", {#revisit
+		"name": "Fire Breathing",
+		"type": "power",
+		"description": "Whenever you draw a Status or Curse card, deal 6 damage to all enemies.",
+		"dynamic_desc": "Whenever you draw a Status or Curse card, deal 6 damage to all enemies.",
+		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"cost_mana": 1,
+		"needs_target": false,
+		"effect": CardEffects.EffectFirebreathing.new()
+	})
+	_add_card("flamebarrier", {#revisit
+		"name": "Flame Barrier",
+		"type": "skill",
+		"description": "Gain ~blk~ Block. Whenever you are attacked this turn, deal 4 damage to random enemy",
+		"dynamic_desc": "Gain ~blk Block. Whenever you are attacked this turn, deal 4 damage to random enemy",
+		"texture_path": "res://assets/cards/green_card_attack_defend.png",
+		"cost_mana": 2,
+		"block_std": 12,
+		"needs_target": false,
+		"effect": CardEffects.EffectFlameBarrier.new()
+	})	
+	_add_card("ghostlyarmor", {#revisit
+		"name": "Ghostly Armor",
+		"type": "skill",
+		"description": "Gain ~blk~ block. Ethereal.",
+		"dynamic_desc": "Gain ~blk~ block. Ethereal.",
+		"texture_path": "res://assets/cards/green_card_attack_defend.png",
+		"cost_mana": 1,
+		"block_std": 10,
+		"needs_target": false,
+		"ethereal": true,
+		"effect": CardEffects.EffectGhostlyArmor.new()
+	})	
+	_add_card("hemokinesis", {
+		"name": "Hemokinesis",
+		"type": "attack",
+		"description": "Lose 2 HP. Deal ~dmg~ damage.",
+		"dynamic_desc": "Lose 2 HP. Deal [color=green]~dmg~[/color] damage.",
+		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"cost_mana": 1,
+		"damage_melee": 15,
+		"effect": CardEffects.EffectHemokinesis.new()
+	})
+	_add_card("infernalblade", {
+		"name": "Infernal Blade",
+		"type": "skill",
+		"description": "Add a random Attack to your hand. It costs 0 this turn. Exhaust.",
+		"dynamic_desc": "Add a random Attack to your hand. It costs 0 this turn. Exhaust.",
+		"texture_path": "res://assets/cards/green_card_attack_defend.png",
+		"cost_mana": 1,
+		"needs_target": false,
+		"effect": CardEffects.EffectInfernalBlade.new()
+	})
+	_add_card("intimidate", {
+		"name": "Intimidate",
+		"type": "skill",
+		"description": "Apply 1 Weak to ALL enemies. Exhaust.",
+		"dynamic_desc": "Apply 1 Weak to ALL enemies. Exhaust.",
+		"texture_path": "res://assets/cards/green_card_attack_defend.png",
+		"cost_mana": 0,
+		"needs_target": false,
+		"effect": CardEffects.EffectIntimidate.new()
+	})
+	_add_card("metallicize", {# BUG - NEED 2 END TURN TRIGGERS FOR PLAYER - BEFORE AND AFTER ENEMIES ATTACK
+		"name": "Metallicize",
+		"type": "power",
+		"description": "	At the end of your turn, gain 3 Block..",
+		"dynamic_desc": "	At the end of your turn, gain 3 Block.",
+		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"cost_mana": 1,
+		"needs_target": false,
+		"effect": CardEffects.EffectMetallicize.new()
+	})	
+	_add_card("powerthrough", {
+		"name": "Power Through",
+		"type": "skill",
+		"description": "Add 2 Wounds to your hand. Gain ~blk~ Block.",
+		"dynamic_desc": "Add 2 Wounds to your hand. Gain [color=green]~blk~[/color] Block.",
+		"texture_path": "res://assets/cards/green_card_attack_defend.png",
+		"cost_mana": 1,
+		"block_std": 15,
+		"needs_target": false,
+		"effect": CardEffects.EffectPowerThrough.new()
+	})
+	_add_card("rage", {#revisit
+		"name": "Rage",
+		"type": "skill",
+		"description": "	Whenever you play an Attack this turn, gain 3 Block.",
+		"dynamic_desc": "Whenever you play an Attack this turn, gain 3 Block.",
+		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"cost_mana": 0,
+		"needs_target": false,
+		"effect": CardEffects.EffectRage.new()
+	})	
+	_add_card("rampage", {
+		"name": "Rampage",
+		"type": "attack",
+		"description": "Deals ~dmg~ damage. Increase this card's damage by 5 this combat.",
+		"dynamic_desc": "Deals [color=green]~dmg~[/color] damage. Increase this card's damage by 5 this combat.",
+		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"cost_mana": 1,
+		"damage_melee": 8,
+		"effect": CardEffects.EffectRampage.new()
+	})
+	_add_card("dazed", {#revisit
+		"name": "Dazed",
+		"type": "status",
+		"description": "Unplayable. Ethereal.",
+		"dynamic_desc": "Unplayable. Ethereal.",
+		"ethereal": true,
+		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"cost_mana": 0,
+		"effect": CardEffects.EffectDazed.new()
+	})	
+	_add_card("recklesscharge", {#revisit
+		"name": "Reckless Charge",
+		"type": "attack",
+		"description": "Deal ~dmg~ damage. Shuffle a Dazed into your draw pile.",
+		"dynamic_desc": "Deal [color=green]~dmg~[/color] damage. Shuffle a Dazed into your draw pile.",
+		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"cost_mana": 0,
+		"damage_melee": 7,
+		"effect": CardEffects.EffectRecklessCharge.new()
+	})	
 
-
-	
+		
 func _process(delta: float) -> void:
 	pass
 	
@@ -470,7 +623,15 @@ func get_card(id: String) -> CardData:
 		
 	return found
 
+func get_random_card(type: String = "") -> CardData:
+	var pool = cards_global.values().filter(func(card): return type == "" or card.type == type)
 
+	if pool.is_empty():
+		print("ERROR: No cards found for type: ", type)
+		return null
+
+	return pool.pick_random().duplicate()
+	
 
 class DeckPlayable:
 	extends Resource
@@ -491,6 +652,9 @@ class DeckPlayable:
 		
 	func pull_card_from_deck() -> CardData:
 		return cards.pop_front()
+		
+	func peak_at(index: int) -> CardData:
+		return cards[index]
 		
 	func pull_random_from_deck() -> CardData:
 		if cards.is_empty():

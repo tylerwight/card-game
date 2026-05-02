@@ -30,6 +30,7 @@ class CardEffect:
 		else:
 			card.discard()
 			
+		encounter.deck_hand.render_hand()
 
 
 
@@ -163,6 +164,10 @@ class EffectInflame:
 	extends CardEffect
 	func cast(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> void:
 		player.apply_strength(card.card_info.strength)
+		
+		var tmp = PlayerEffects.InflameEffect.new()
+		player.player_effects.append(tmp)
+		
 		end(card, player, enemy)
 		
 	func upgrade(card: CardDB.CardData) -> void:
@@ -385,7 +390,6 @@ class EffectPommelstrike:
 		
 		encounter.deck_hand.draw_hand(false, draw)
 		end(card, player, enemy)
-		encounter.deck_hand.render_hand()
 	
 	func upgrade(card: CardDB.CardData) -> void:
 		if card.upgraded:
@@ -404,7 +408,6 @@ class EffectShrugitoff:
 		
 		encounter.deck_hand.draw_hand(false, draw)
 		end(card, player, enemy)
-		encounter.deck_hand.render_hand()
 	
 	func upgrade(card: CardDB.CardData) -> void:
 		if card.upgraded:
@@ -504,7 +507,6 @@ class EffectWarcry:
 		encounter.deck_hand.draw_hand(false, draw)
 		
 		end(card, player, enemy)
-		encounter.deck_hand.render_hand()
 		
 		if encounter.deck_hand.discard.cards.size() > 0:
 			var picked_cards: Array[CardDB.CardData] = await Main.create_card_picker(encounter.deck_hand.hand.cards, "Pick a card to add to top of deck", 1, false)
@@ -568,7 +570,6 @@ class EffectBattletrance:
 			player.player_effects.append(tmp)		
 		
 		end(card, player, enemy)
-		encounter.deck_hand.render_hand()
 	
 	func upgrade(card: CardDB.CardData) -> void:
 		if card.upgraded:
@@ -641,7 +642,6 @@ class EffectBurningpact:
 		encounter.deck_hand.draw_hand(false, draw)
 		end(card, player, enemy)
 		
-		encounter.deck_hand.render_hand()
 	
 	func upgrade(card: CardDB.CardData) -> void:
 		if card.upgraded:
@@ -724,3 +724,298 @@ class EffectDisarm:
 		card.strength = -3
 		card.upgraded = true
 		card.name = "[color=green]" + card.name + "+[/color]"	
+
+
+class EffectDropkick:
+	extends CardEffect
+	func cast(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> void:
+		enemy.damage_melee(card.card_info.damage_actual)
+		if enemy.has_vulnerable():
+			player.mana += 1
+			encounter.deck_hand.draw_hand(false, 1)
+			
+		end(card, player, enemy)
+	
+	func upgrade(card: CardDB.CardData) -> void:
+		if card.upgraded:
+			return
+		card.damage_melee = 8
+		card.upgraded = true
+		card.name = "[color=green]" + card.name + "+[/color]"
+
+class EffectDualwield:
+	extends CardEffect
+	var copies = 1
+	
+	func cast(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> void:
+		encounter.deck_hand.print_status()
+		var tmp_deck: Array[CardDB.CardData]
+		
+		if encounter.deck_hand.hand.cards.size() > 0:
+			
+			for tmp_card in encounter.deck_hand.hand.cards:
+				if tmp_card.type == "attack" or tmp_card.type == "power":
+					tmp_deck.append(tmp_card)
+					print("DUAL WIELD found one: ", tmp_card.name)
+					
+					
+			var picked_cards = await Main.create_card_picker(tmp_deck, "Pick a card to create a copy of", 1, false)
+		
+			for crd in picked_cards:
+				if crd:
+					encounter.deck_hand.hand.add_card_to_deck(crd)
+				
+		
+		encounter.deck_hand.print_status()
+		end(card, player, enemy)
+
+	func upgrade(card: CardDB.CardData) -> void:
+		if card.upgraded:
+			return
+		copies = 2
+		card.upgraded = true
+		card.name = "[color=green]" + card.name + "+[/color]"	
+
+
+class EffectEntrench:
+	extends CardEffect
+	func cast(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> void:
+		if not enemy == null:
+			print("WTF? Why was I sent an enemy")
+		player.block_add(player.block)
+		
+		end(card, player, enemy)
+		
+	func upgrade(card: CardDB.CardData) -> void:
+		if card.upgraded:
+			return
+		card.cost_mana = 1
+		card.upgraded = true
+		card.name = "[color=green]" + card.name + "+[/color]"
+
+class EffectEvolve:
+	extends CardEffect
+	var draw = 1
+	func cast(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> void:
+	
+		var tmp = PlayerEffects.EvolveEffect.new()
+		tmp.draw = draw
+		player.player_effects.append(tmp)
+		
+		end(card, player, enemy)
+		
+	func upgrade(card: CardDB.CardData) -> void:
+		if card.upgraded:
+			return
+		draw = 2
+		card.upgraded = true
+		card.name = "[color=green]" + card.name + "+[/color]"	
+		card.description = "Whenever you draw a Status card, draw [color=green]2[/color] card."
+		card.dynamic_desc = "Whenever you draw a Status card, draw [color=green]2[/color] card."
+
+class EffectFirebreathing:
+	extends CardEffect
+	var dmg = 6
+	func cast(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> void:
+	
+		var tmp = PlayerEffects.FireBreathingEffect.new()
+		tmp.dmp = dmg
+		player.player_effects.append(tmp)
+		
+		end(card, player, enemy)
+		
+	func upgrade(card: CardDB.CardData) -> void:
+		if card.upgraded:
+			return
+		dmg = 10
+		card.upgraded = true
+		card.name = "[color=green]" + card.name + "+[/color]"	
+		card.description = "Whenever you draw a Status or Curse card, deal 10 damage to all enemies."
+		card.dynamic_desc = "Whenever you draw a Status or Curse card, deal 10 damage to all enemies."
+
+
+
+class EffectFlameBarrier:
+	extends CardEffect
+	var dmg = 4
+	func cast(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> void:
+		player.block_add(card.card_info.block_std)
+		
+		var tmp = PlayerEffects.FlameBarrierEffect.new()
+		tmp.dmg = dmg
+		player.player_effects.append(tmp)
+		
+		end(card, player, enemy)
+		
+	func upgrade(card: CardDB.CardData) -> void:
+		if card.upgraded:
+			return
+		card.block_std = 16
+		card.upgraded = true
+		card.name = "[color=green]" + card.name + "+[/color]"	
+
+
+class EffectGhostlyArmor:
+	extends CardEffect
+	func cast(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> void:
+		player.block_add(card.card_info.block_std)
+		end(card, player, enemy)
+		
+	func upgrade(card: CardDB.CardData) -> void:
+		if card.upgraded:
+			return
+		card.block_std = 13
+		card.upgraded = true
+		card.name = "[color=green]" + card.name + "+[/color]"	
+
+
+class EffectHemokinesis:
+	extends CardEffect
+	func cast(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> void:
+		player.remove_hp(2)
+		enemy.damage_melee(card.card_info.damage_actual)
+		
+		end(card, player, enemy)
+	
+	func upgrade(card: CardDB.CardData) -> void:
+		if card.upgraded:
+			return
+		card.damage_melee = 20
+		card.upgraded = true
+		card.name = "[color=green]" + card.name + "+[/color]"
+
+class EffectInfernalBlade:
+	extends CardEffect
+	func cast(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> void:
+		var random_card = CardDB.get_random_card("attack")
+		random_card.cost_mana = 0
+		encounter.deck_hand.hand.add_card_to_deck(random_card)
+		end(card, player, enemy)
+	
+	func upgrade(card: CardDB.CardData) -> void:
+		if card.upgraded:
+			return
+		card.cost_mana = 0
+		card.upgraded = true
+		card.name = "[color=green]" + card.name + "+[/color]"
+		
+		
+	func end(card: NodeCard, _player: NodePlayer,  _enemy: NodeEnemy) -> void:
+		await card.exhaust()
+		encounter.deck_hand.render_hand()
+		
+class EffectIntimidate:
+	extends CardEffect
+	func cast(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> void:
+		for emy in encounter.enemies:
+			emy.apply_weak(card.card_info.weak)
+			
+			
+		end(card, player, enemy)
+		
+	func upgrade(card: CardDB.CardData) -> void:
+		if card.upgraded:
+			return
+		card.weak = 2
+		card.upgraded = true
+		card.name = "[color=green]" + card.name + "+[/color]"	
+	
+	func end(card: NodeCard, _player: NodePlayer,  _enemy: NodeEnemy) -> void:
+		card.exhaust()
+
+
+class EffectMetallicize:
+	extends CardEffect
+	var block = 3
+	func cast(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> void:
+	
+		var tmp = PlayerEffects.MetallicizeEffect.new()
+		tmp.block = block
+		player.player_effects.append(tmp)
+		
+		end(card, player, enemy)
+		
+	func upgrade(card: CardDB.CardData) -> void:
+		if card.upgraded:
+			return
+		block = 4
+		card.upgraded = true
+		card.name = "[color=green]" + card.name + "+[/color]"	
+
+
+
+class EffectPowerThrough:
+	extends CardEffect
+	func cast(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> void:
+		player.block_add(card.card_info.block_std)
+		
+		var tmp_card: CardDB.CardData = CardDB.get_card("wound")
+		encounter.deck_hand.hand.add_card_to_deck(tmp_card)
+		encounter.deck_hand.hand.add_card_to_deck(tmp_card)
+		
+		end(card, player, enemy)
+	
+	func upgrade(card: CardDB.CardData) -> void:
+		if card.upgraded:
+			return
+		card.block_std = 20
+		card.upgraded = true
+		card.name = "[color=green]" + card.name + "+[/color]"
+
+
+
+class EffectRage:
+	extends CardEffect
+	var block = 3
+	func cast(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> void:
+	
+		var tmp = PlayerEffects.RageEffect.new()
+		tmp.block = block
+		player.player_effects.append(tmp)
+		
+		end(card, player, enemy)
+		
+	func upgrade(card: CardDB.CardData) -> void:
+		if card.upgraded:
+			return
+		block = 5
+		card.upgraded = true
+		card.name = "[color=green]" + card.name + "+[/color]"	
+
+class EffectRampage:
+	extends CardEffect
+	var dmg_increase = 5
+	func cast(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> void:
+		enemy.damage_melee(card.card_info.damage_actual)
+		card.card_info.damage_melee += dmg_increase
+		end(card, player, enemy)
+	
+	func upgrade(card: CardDB.CardData) -> void:
+		if card.upgraded:
+			return
+		dmg_increase = 8
+		card.upgraded = true
+		card.name = "[color=green]" + card.name + "+[/color]"
+
+
+class EffectDazed:
+	extends CardEffect
+	
+	func card_playable(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> Dictionary:
+		return {"playable": false, "message": "DAZED ARE NOT PLAYABLE"}
+
+
+class EffectRecklessCharge:
+	extends CardEffect
+	func cast(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> void:
+		enemy.damage_melee(card.card_info.damage_actual)
+		var tmp_card: CardDB.CardData = CardDB.get_card("dazed")
+		encounter.deck_hand.deck.add_card_to_deck_random(tmp_card)
+		end(card, player, enemy)
+	
+	func upgrade(card: CardDB.CardData) -> void:
+		if card.upgraded:
+			return
+		card.damage_melee = 10
+		card.upgraded = true
+		card.name = "[color=green]" + card.name + "+[/color]"
