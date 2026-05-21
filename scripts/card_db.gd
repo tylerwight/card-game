@@ -591,7 +591,19 @@ func _ready() -> void:
 		"damage_melee": 7,
 		"effect": CardEffects.EffectRecklessCharge.new()
 	})	
+	_add_card("searingblow", {#revisit
+		"name": "Searing Blow",
+		"type": "attack",
+		"description": "Deal ~dmg~ damage. Can be upgraded any number of times. ",
+		"dynamic_desc": "Deal [color=green]~dmg~[/color] damage. Can be upgraded any number of times. ",
+		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"cost_mana": 2,
+		"damage_melee": 12,
+		"effect": CardEffects.EffectSearingBlow.new()
+	})	
 
+
+#SKIPPED CARDS TO REVISIT: Rupture
 		
 func _process(delta: float) -> void:
 	pass

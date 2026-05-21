@@ -1019,3 +1019,15 @@ class EffectRecklessCharge:
 		card.damage_melee = 10
 		card.upgraded = true
 		card.name = "[color=green]" + card.name + "+[/color]"
+
+class EffectSearingBlow:
+	extends CardEffect
+	func cast(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> void:
+		enemy.damage_melee(card.card_info.damage_actual)
+		
+		end(card, player, enemy)
+	
+	func upgrade(card: CardDB.CardData) -> void:
+		card.damage_melee += 4
+		card.upgraded = true
+		card.name = "[color=green]" + card.name + "+[/color]"
