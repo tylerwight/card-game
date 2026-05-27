@@ -1031,3 +1031,28 @@ class EffectSearingBlow:
 		card.damage_melee += 4
 		card.upgraded = true
 		card.name = "[color=green]" + card.name + "+[/color]"
+
+
+class EffectSecondWind:
+	extends CardEffect
+	func cast(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> void:
+		var non_attack_count = 0
+		
+		var card_nodes = encounter.deck_hand.get_card_nodes()
+		for card_node in card_nodes:
+			if card_node == card: continue #skip the card itself
+			if card_node.card_info.type != "attack":
+				non_attack_count += 1
+				card_node.exhaust()
+		
+		player.block_add(card.card_info.block_std * non_attack_count)
+		
+		end(card, player, enemy)
+	
+	func upgrade(card: CardDB.CardData) -> void:
+		if card.upgraded:
+			return
+		card.block_std = 7
+		card.upgraded = true
+		card.name = "[color=green]" + card.name + "+[/color]"
+		

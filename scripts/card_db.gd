@@ -601,7 +601,17 @@ func _ready() -> void:
 		"damage_melee": 12,
 		"effect": CardEffects.EffectSearingBlow.new()
 	})	
-
+	_add_card("secondwind", {#revisit
+		"name": "Second Wind",
+		"type": "skill",
+		"description": "Exhaust all non-Attack cards in your hand and gain ~blk~ Block for each card Exhausted.",
+		"dynamic_desc": "Exhaust all non-Attack cards in your hand and gain [color=green]~blk~[/color] Block for each card Exhausted.",
+		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"cost_mana": 1,
+		"block_std": 5,
+		"needs_target": false,
+		"effect": CardEffects.EffectSecondWind.new()
+	})	
 
 #SKIPPED CARDS TO REVISIT: Rupture
 		
