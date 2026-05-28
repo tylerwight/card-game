@@ -66,6 +66,7 @@ func exhaust():
 	deck_hand.exhausted.add_card_to_deck(card_info)
 	deck_hand.hand.remove_card(card_info)
 	self.call_deferred("queue_free")
+	card_info.on_exhaust(self, encounter.player)
 	
 	for effect in encounter.player.player_effects.duplicate():
 		effect.process_exhaust_player(encounter)

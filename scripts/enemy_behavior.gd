@@ -5,6 +5,11 @@ class EnemyBehavior:
 	extends Resource
 	var base_damage: int = 5
 	var damage_variance: int = 3
+	var intent_attack: bool = true
+	var intent_debuff: bool = false
+	var intent_buff: bool = false
+	var intent_block: bool = false
+	
 	@export var actual_damage: int = base_damage
 		
 	func roll_intents(enemy: EnemyDB.EnemyData):

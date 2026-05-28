@@ -19,6 +19,7 @@ class CardData:
 	@export var vulnerable: int = 0
 	@export var weak: int = 0
 	@export var strength: int = 0
+	@export var mana_add: int = 0
 	@export var discard_to_exhuast: bool = false
 	@export var upgraded = false
 	@export var ethereal = false
@@ -42,7 +43,10 @@ class CardData:
 		else:
 			print("No effect set for card ", id)
 			
-			
+	func on_exhaust(card: NodeCard, player: NodePlayer) -> void:
+		if effect:
+			effect.on_exhaust(card, player)
+	
 	func upgrade() -> void:
 		effect.upgrade(self)	
 		
@@ -56,6 +60,7 @@ class CardData:
 		tmp_text = tmp_text.replace("~vul~", str(vulnerable))	
 		tmp_text = tmp_text.replace("~weak~", str(weak))	
 		tmp_text = tmp_text.replace("~str~", str(strength))	
+		tmp_text = tmp_text.replace("~manaadd~", str(mana_add))
 		return tmp_text
 		
 	func get_dynamic_desc(damage: int) -> String:
@@ -65,6 +70,7 @@ class CardData:
 		tmp_text = tmp_text.replace("~vul~", str(vulnerable))	
 		tmp_text = tmp_text.replace("~weak~", str(weak))	
 		tmp_text = tmp_text.replace("~str~", str(strength))	
+		tmp_text = tmp_text.replace("~manaadd~", str(mana_add))
 		return tmp_text
 		
 	func get_cost(card: NodeCard, player: NodePlayer) -> int:
@@ -612,6 +618,38 @@ func _ready() -> void:
 		"needs_target": false,
 		"effect": CardEffects.EffectSecondWind.new()
 	})	
+	_add_card("seeingred", {#revisit
+		"name": "Seeing Red",
+		"type": "skill",
+		"description": "Gain 2 energy. Exhaust.",
+		"dynamic_desc": "Gain 2 energy. Exhaust.",
+		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"cost_mana": 1,
+		"needs_target": false,
+		"effect": CardEffects.EffectSeeingRed.new()
+	})	
+	_add_card("sentinel", {#revisit
+		"name": "Sentinel",
+		"type": "skill",
+		"description": "Gain ~blk~ Block. If this card is Exhausted, gain ~manaadd~ energy.",
+		"dynamic_desc": "Gain [color=green]~blk~[/color] Block. If this card is Exhausted, gain ~manaadd~ energy.",
+		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"cost_mana": 1,
+		"mana_add": 2,
+		"block_std": 5,
+		"needs_target": false,
+		"effect": CardEffects.EffectSentinel.new()
+	})	
+	_add_card("seversoul", {
+		"name": "Sever Soul",
+		"type": "attack",
+		"description": "Exhaust all non-Attack cards in your hand. Deal ~dmg~ damage.",
+		"dynamic_desc": "Exhaust all non-Attack cards in your hand. Deal [color=green]~dmg~[/color]  damage.",
+		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"cost_mana": 2,
+		"damage_melee": 16,
+		"effect": CardEffects.EffectSeverSoul.new()
+	})
 
 #SKIPPED CARDS TO REVISIT: Rupture
 		

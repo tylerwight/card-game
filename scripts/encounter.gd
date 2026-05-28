@@ -101,6 +101,7 @@ func _on_card_played(player: NodePlayer, card: NodeCard, enemy: NodeEnemy):
 		player.attack_move()
 		await player.sprite.animation_finished
 		await card.cast(player, enemy)
+		player.mana -= card.card_info.get_cost(card, player)
 		player_effects_card_played(player, card, enemy)
 		if enemy: enemy.sprite.play("hit")
 		card.playing = false

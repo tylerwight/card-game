@@ -93,7 +93,8 @@ func damage_melee(amount: int) -> void:
 	print("enemy hp after: ", stats.health, " enemy took: ", hp_damage)
 
 
-
+func intends_attack() -> bool:
+	return self.stats.behavior.intent_attack
 
 func _on_enemybody_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
 	if event is InputEventMouseButton:

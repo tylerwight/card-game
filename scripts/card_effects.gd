@@ -23,6 +23,15 @@ class CardEffect:
 	func upgrade(_card: CardDB.CardData) -> void:
 		pass
 		
+	func on_exhaust(_card: NodeCard, _player: NodePlayer) -> void:
+		pass
+		
+	func on_discard(_card: NodeCard, _player: NodePlayer) -> void:
+		pass
+		
+	func on_end_turn(_card: NodeCard, _player: NodePlayer) -> void:
+		pass
+		
 	func end(card: NodeCard, _player: NodePlayer,  _enemy: NodeEnemy) -> void:
 		print("ending card: ", card.card_info.name)
 		if card.card_info.discard_to_exhuast == true:
@@ -1056,3 +1065,331 @@ class EffectSecondWind:
 		card.upgraded = true
 		card.name = "[color=green]" + card.name + "+[/color]"
 		
+
+
+class EffectSeeingRed:
+	extends CardEffect
+	func cast(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> void:
+		player.mana += 2
+		
+		end(card, player, enemy)
+		
+	func upgrade(card: CardDB.CardData) -> void:
+		if card.upgraded:
+			return
+		card.cost_mana = 0
+		card.upgraded = true
+		card.name = "[color=green]" + card.name + "+[/color]"
+		
+	func end(card: NodeCard, _player: NodePlayer,  _enemy: NodeEnemy) -> void:
+		card.exhaust()
+		
+		
+class EffectSentinel:
+	extends CardEffect
+	func cast(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> void:
+		player.block_add(card.card_info.block_std)
+		
+		end(card, player, enemy)
+		
+	func upgrade(card: CardDB.CardData) -> void:
+		if card.upgraded:
+			return
+		card.block_std = 8
+		card.mana_add = 3
+		card.upgraded = true
+		card.name = "[color=green]" + card.name + "+[/color]"
+		
+	func end(card: NodeCard, _player: NodePlayer,  _enemy: NodeEnemy) -> void:
+		card.exhaust()
+		
+	func on_exhaust(card: NodeCard, player: NodePlayer) -> void:
+		player.mana += card.card_info.mana_add
+		pass
+
+
+class EffectSeverSoul:
+	extends CardEffect
+	func cast(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> void:
+		enemy.damage_melee(card.card_info.damage_actual)
+		
+		var card_nodes = encounter.deck_hand.get_card_nodes()
+		for card_node in card_nodes:
+			if card_node == card: continue #skip the card itself
+			if card_node.card_info.type != "attack":
+				card_node.exhaust()	
+					
+		end(card, player, enemy)
+	
+	func upgrade(card: CardDB.CardData) -> void:
+		if card.upgraded:
+			return
+		card.damage_melee = 22
+		card.upgraded = true
+		card.name = "[color=green]" + card.name + "+[/color]"
+
+
+class EffectShockwave:
+	extends CardEffect
+	var apply_count = 3
+	func cast(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> void:
+		for enmy in encounter.enemies:
+			enmy.apply_weak(apply_count)
+			enmy.apply_vulnerable(apply_count)
+		
+		end(card, player, enemy)
+	
+	func upgrade(card: CardDB.CardData) -> void:
+		if card.upgraded:
+			return
+		apply_count = 5
+		card.upgraded = true
+		card.name = "[color=green]" + card.name + "+[/color]"
+
+
+class EffectSpotWeakness:
+	extends CardEffect
+	var apply_count = 3
+	func cast(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> void:
+		if enemy.intends_attack():
+			player.apply_strength(card.card_info.strength)
+		end(card, player, enemy)
+	
+	func upgrade(card: CardDB.CardData) -> void:
+		if card.upgraded:
+			return
+		card.strength = 5
+		card.upgraded = true
+		card.name = "[color=green]" + card.name + "+[/color]"
+
+class EffectUppercut:
+	extends CardEffect
+	func cast(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> void:
+		enemy.damage_melee(card.card_info.damage_actual)
+		enemy.apply_weak(card.card_info.weak)
+		enemy.apply_vulnerable(card.card_info.vulnerable)
+		end(card, player, enemy)
+	
+	func upgrade(card: CardDB.CardData) -> void:
+		if card.upgraded:
+			return
+		card.weak = 2
+		card.vulnerable = 2
+		card.upgraded = true
+		card.name = "[color=green]" + card.name + "+[/color]"
+
+class EffectWhirlwind:
+	extends CardEffect
+	func cast(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> void:
+		for i in player.mana:
+			enemy.damage_melee(card.card_info.damage_actual)
+		
+		end(card, player, enemy)
+	
+	func upgrade(card: CardDB.CardData) -> void:
+		if card.upgraded:
+			return
+		card.damage_melee = 8
+		card.upgraded = true
+		card.name = "[color=green]" + card.name + "+[/color]"
+
+	func get_cost(_card: NodeCard, player: NodePlayer) -> int:
+		return player.mana
+
+class EffectBarricade:#TODO
+	extends CardEffect
+	func cast(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> void:
+		enemy.damage_melee(card.card_info.damage_actual)
+		
+		end(card, player, enemy)
+	
+	func upgrade(card: CardDB.CardData) -> void:
+		if card.upgraded:
+			return
+		card.damage_melee = 9
+		card.upgraded = true
+		card.name = "[color=green]" + card.name + "+[/color]"
+
+class EffectBerserk: #TODO
+	extends CardEffect
+	func cast(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> void:
+		enemy.damage_melee(card.card_info.damage_actual)
+		
+		end(card, player, enemy)
+	
+	func upgrade(card: CardDB.CardData) -> void:
+		if card.upgraded:
+			return
+		card.damage_melee = 9
+		card.upgraded = true
+		card.name = "[color=green]" + card.name + "+[/color]"
+		
+class EffectBludgeon:
+	extends CardEffect
+	func cast(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> void:
+		enemy.damage_melee(card.card_info.damage_actual)
+		
+		end(card, player, enemy)
+	
+	func upgrade(card: CardDB.CardData) -> void:
+		if card.upgraded:
+			return
+		card.damage_melee = 42
+		card.upgraded = true
+		card.name = "[color=green]" + card.name + "+[/color]"
+		
+		
+class EffectBrutality: #TODO
+	extends CardEffect
+	func cast(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> void:
+		enemy.damage_melee(card.card_info.damage_actual)
+		
+		end(card, player, enemy)
+	
+	func upgrade(card: CardDB.CardData) -> void:
+		if card.upgraded:
+			return
+		card.damage_melee = 9
+		card.upgraded = true
+		card.name = "[color=green]" + card.name + "+[/color]"
+		
+		
+class EffectCorruption: #TODO
+	extends CardEffect
+	func cast(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> void:
+		enemy.damage_melee(card.card_info.damage_actual)
+		
+		end(card, player, enemy)
+	
+	func upgrade(card: CardDB.CardData) -> void:
+		if card.upgraded:
+			return
+		card.damage_melee = 9
+		card.upgraded = true
+		card.name = "[color=green]" + card.name + "+[/color]"
+
+class EffectDemonForm: #TODO
+	extends CardEffect
+	func cast(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> void:
+		enemy.damage_melee(card.card_info.damage_actual)
+		
+		end(card, player, enemy)
+	
+	func upgrade(card: CardDB.CardData) -> void:
+		if card.upgraded:
+			return
+		card.damage_melee = 9
+		card.upgraded = true
+		card.name = "[color=green]" + card.name + "+[/color]"
+
+class EffectDoubleTap: #TODO
+	extends CardEffect
+	func cast(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> void:
+		enemy.damage_melee(card.card_info.damage_actual)
+		
+		end(card, player, enemy)
+	
+	func upgrade(card: CardDB.CardData) -> void:
+		if card.upgraded:
+			return
+		card.damage_melee = 9
+		card.upgraded = true
+		card.name = "[color=green]" + card.name + "+[/color]"
+		
+class EffectExhume:
+	extends CardEffect
+	func cast(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> void:
+		if encounter.deck_hand.discard.cards.size() > 0:
+			var picked_cards = await Main.create_card_picker(encounter.deck_hand.exhaust.cards, "Pick a card to add to your hand", 1, false)
+		
+			for crd in picked_cards:
+				if crd:
+					encounter.deck_hand.hand.add_card_to_deck_front(crd)
+					var removed = encounter.deck_hand.exhaust.remove_card(crd)
+					if not removed:
+						print("FAILED TO REMOVE CARD?!?!")
+		
+		end(card, player, enemy)
+	
+	func upgrade(card: CardDB.CardData) -> void:
+		if card.upgraded:
+			return
+		card.upgraded = true
+		card.name = "[color=green]" + card.name + "+[/color]"
+		
+	func end(card: NodeCard, _player: NodePlayer,  _enemy: NodeEnemy) -> void:
+		if card.upgraded:
+			card.exhaust()
+		else:
+			card.discard()
+
+class EffectFiendFire:
+	extends CardEffect
+	func cast(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> void:
+		var exhausted_count = 0
+		
+		var card_nodes = encounter.deck_hand.get_card_nodes()
+		for card_node in card_nodes:
+			if card_node == card: continue #skip the card itself
+			exhausted_count += 1
+			card_node.exhaust()
+		
+		enemy.damage_melee(card.card_info.damage_actual * exhausted_count)
+		
+		end(card, player, enemy)
+	
+	func upgrade(card: CardDB.CardData) -> void:
+		if card.upgraded:
+			return
+		card.block_std = 7
+		card.upgraded = true
+		card.name = "[color=green]" + card.name + "+[/color]"
+
+		
+class EffectBurn:
+	extends CardEffect
+	
+	func card_playable(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> Dictionary:
+		return {"playable": false, "message": "BURNS ARE NOT PLAYABLE"}
+	
+	func on_end_turn(_card: NodeCard, player: NodePlayer) -> void:
+		player.damage(2)
+
+
+class EffectImmolate:
+	extends CardEffect
+	func cast(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> void:
+		for enmy in encounter.enemies:
+			enmy.damage_melee(card.card_info.damage_actual)
+			
+		var tmp_card: CardDB.CardData = CardDB.get_card("burn")
+		encounter.deck_hand.discard.add_card_to_deck_random(tmp_card)	
+		
+		end(card, player, enemy)
+	
+	func upgrade(card: CardDB.CardData) -> void:
+		if card.upgraded:
+			return
+		card.damage_melee = 9
+		card.upgraded = true
+		card.name = "[color=green]" + card.name + "+[/color]"
+
+class EffectImpervious:
+	extends CardEffect
+	func cast(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> void:
+		if not enemy == null:
+			print("WTF? Why was I sent an enemy")
+		player.block_add(card.card_info.block_std)
+		print("Gave ", card.card_info.block_std, " block to ", player.player_name)
+		
+		end(card, player, enemy)
+		
+	func upgrade(card: CardDB.CardData) -> void:
+		if card.upgraded:
+			return
+		card.block_std = 40
+		card.upgraded = true
+		card.name = "[color=green]" + card.name + "+[/color]"
+	
+	func end(card: NodeCard, _player: NodePlayer,  _enemy: NodeEnemy) -> void:
+		card.exhaust()
