@@ -27,7 +27,8 @@ class PlayerEffect:
 		pass
 	func process_exhaust_player(_encounter: NodeEncounter) -> void:
 		pass
-
+	func process_on_gain_block(_encounter: NodeEncounter) -> void:
+		pass
 
 
 
@@ -278,5 +279,161 @@ class RageEffect:
 			encounter.player.block_add(block)
 		
 		
+	func process_end_player(_encounter: NodeEncounter, _card: NodeCard) -> void:
+		deleteme = true
+
+class JuggernautEffect:
+	extends PlayerEffect
+	var dmg = 5
+	func print() -> String:
+		return "PlayerEffect(Juggernaut)"
+		
+	func _init():
+		type = "on_gain_block"
+
+	func process_on_gain_block(encounter: NodeEncounter) -> void:
+		var random_enemy = encounter.enemies.pick_random()
+		random_enemy.damage_melee(dmg)
+
+
+
+class FeelNoPainEffect:
+	extends PlayerEffect
+	var block = 3
+
+	func print() -> String:
+		return "PlayerEffect(FeelNoPain: %s)" % block
+
+	func _init():
+		type = "exhaust"
+
+	func process_exhaust_player(encounter: NodeEncounter) -> void:
+		print("FEEL NO PAIN - gaining block: ", block)
+		encounter.player.block_add(block)
+
+
+class RuptureEffect: #FIX -- no "from_card" attribute
+	extends PlayerEffect
+	var strength_gain = 1
+
+	func print() -> String:
+		return "PlayerEffect(Rupture: %s)" % strength_gain
+
+	func _init():
+		type = "attacked"
+
+	func process_attacked_player(encounter: NodeEncounter, damage: Dictionary) -> void:
+		# Only triggers when HP is lost from playing a card (not from enemy attacks)
+		# Assumption: card-sourced HP loss sets a "from_card" flag in the damage dict
+		if damage.get("from_card", false):
+			print("RUPTURE - gaining strength: ", strength_gain)
+			encounter.player.apply_strength(strength_gain)
+			
+
+class BarricadeEffect:
+	extends PlayerEffect
+
+	func print() -> String:
+		return "PlayerEffect(Barricade)"
+
+	func _init():
+		type = "permanent"
+
+	# By default your engine likely clears block at turn start.
+	# Assumption: NodePlayer.start_turn() checks for this effect before wiping block.
+	# Add a guard in NodePlayer like:
+	#   if not has_effect(PlayerEffects.BarricadeEffect): block = 0
+
+
+class BerserkEffect:
+	extends PlayerEffect
+
+	func print() -> String:
+		return "PlayerEffect(Berserk)"
+
+	func _init():
+		type = "end"
+
+	# Triggers at the START of each turn, not end — reusing process_end_enemy
+	# as a proxy for "start of player turn" based on your turn flow.
+	# Assumption: if your encounter calls process_end_enemy at the start of the
+	# player's turn, this works. Otherwise hook into a process_start_player instead.
+	func process_end_enemy(encounter: NodeEncounter) -> void:
+		print("BERSERK - gaining 1 energy")
+		encounter.player.mana += 1
+
+
+class BrutalityEffect:
+	extends PlayerEffect
+	var innate: bool = false
+
+	func print() -> String:
+		return "PlayerEffect(Brutality, innate: %s)" % innate
+
+	func _init():
+		type = "end"
+
+	# Same assumption as Berserk — hooks into start-of-turn.
+	# Assumption: process_end_enemy fires at start of player turn.
+	func process_end_enemy(encounter: NodeEncounter) -> void:
+		print("BRUTALITY - losing 1 HP and drawing 1 card")
+		encounter.player.remove_hp(1)
+		encounter.deck_hand.draw_hand(false, 1)
+		encounter.deck_hand.render_hand()
+
+
+class CorruptionEffect:
+	extends PlayerEffect
+
+	func print() -> String:
+		return "PlayerEffect(Corruption)"
+
+	func _init():
+		type = "card_played"
+
+	# Assumption: process_card_played is called before the card resolves,
+	# so we can override its cost and flag it for exhaust here.
+	# You will also need to enforce cost=0 during card_playable checks —
+	# consider adding a process_get_cost hook similar to EffectBloodForBlood.
+	func process_card_played(encounter: NodeEncounter, _enemy: NodeEnemy, card: NodeCard) -> void:
+		if card.card_info.type == "skill":
+			print("CORRUPTION - skill costs 0 and will exhaust")
+			card.card_info.discard_to_exhuast = true
+
+
+class DemonFormEffect:
+	extends PlayerEffect
+	var strength = 2
+
+	func print() -> String:
+		return "PlayerEffect(DemonForm: %s)" % strength
+
+	func _init():
+		type = "end"
+
+	# Same start-of-turn assumption as Berserk/Brutality.
+	func process_end_enemy(encounter: NodeEncounter) -> void:
+		print("DEMON FORM - gaining %s strength" % strength)
+		encounter.player.apply_strength(strength)
+
+
+class DoubleTapEffect:
+	extends PlayerEffect
+	var taps_remaining = 1
+
+	func print() -> String:
+		return "PlayerEffect(DoubleTap: %s remaining)" % taps_remaining
+
+	func _init():
+		type = "card_played"
+		
+	func process_card_played(encounter: NodeEncounter, enemy: NodeEnemy, card: NodeCard) -> void:
+		if card.card_info.type == "attack" and taps_remaining > 0:
+			print("DOUBLE TAP - repeating attack")
+			taps_remaining -= 1
+			card.card_info.effect.cast(card, encounter.player, enemy)
+			if taps_remaining <= 0:
+				deleteme = true
+
 	func process_end_player(_encounter: NodeEncounter, _card: NodeCard) -> void:
 		deleteme = true

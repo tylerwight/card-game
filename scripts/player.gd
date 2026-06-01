@@ -112,7 +112,14 @@ func apply_strength(amount: int) -> void:
 		var tmp = PlayerEffects.StrengthEffect.new()
 		tmp.strength += amount
 		player_effects.append(tmp)
-	
+
+func get_strength() -> int:
+	for effect in player_effects:
+		if effect is PlayerEffects.StrengthEffect:
+			return effect.strength
+	return 0
+
+
 func apply_vulnerable(amount: int) -> void:
 	var found_vulnerable = false
 	for effect in player_effects:

@@ -650,6 +650,108 @@ func _ready() -> void:
 		"damage_melee": 16,
 		"effect": CardEffects.EffectSeverSoul.new()
 	})
+	_add_card("feelnopain", {
+		"name": "Feel No Pain",
+		"type": "power",
+		"description": "Whenever a card is Exhausted, gain 3 Block.",
+		"dynamic_desc": "Whenever a card is Exhausted, gain 3 Block.",
+		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"cost_mana": 1,
+		"needs_target": false,
+		"effect": CardEffects.EffectFeelNoPain.new()
+	})
+	_add_card("pummel", {
+		"name": "Pummel",
+		"type": "attack",
+		"description": "Deal 2 damage 4 times. Exhaust.",
+		"dynamic_desc": "Deal 2 damage 4 times. Exhaust.",
+		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"cost_mana": 1,
+		"damage_melee": 2,
+		"effect": CardEffects.EffectPummel.new()
+	})
+	_add_card("rupture", {
+		"name": "Rupture",
+		"type": "power",
+		"description": "Whenever you lose HP from a card, gain 1 Strength.",
+		"dynamic_desc": "Whenever you lose HP from a card, gain 1 Strength.",
+		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"cost_mana": 1,
+		"needs_target": false,
+		"effect": CardEffects.EffectRupture.new()
+	})
+	_add_card("feed", {
+		"name": "Feed",
+		"type": "attack",
+		"description": "Deal ~dmg~ damage. If this kills a non-minion enemy, gain 3 permanent Max HP. Exhaust.",
+		"dynamic_desc": "Deal [color=green]~dmg~[/color] damage. If this kills a non-minion enemy, gain 3 permanent Max HP. Exhaust.",
+		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"cost_mana": 1,
+		"damage_melee": 10,
+		"effect": CardEffects.EffectFeed.new()
+	})
+	_add_card("barricade", {
+		"name": "Barricade",
+		"type": "power",
+		"description": "Block is not removed at the start of your turn.",
+		"dynamic_desc": "Block is not removed at the start of your turn.",
+		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"cost_mana": 3,
+		"needs_target": false,
+		"effect": CardEffects.EffectBarricade.new()
+	})
+	_add_card("berserk", {
+		"name": "Berserk",
+		"type": "power",
+		"description": "Gain 2 Vulnerable. At the start of your turn, gain 1 Energy.",
+		"dynamic_desc": "Gain 2 Vulnerable. At the start of your turn, gain 1 Energy.",
+		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"cost_mana": 0,
+		"needs_target": false,
+		"effect": CardEffects.EffectBerserk.new()
+	})
+	_add_card("brutality", {
+		"name": "Brutality",
+		"type": "power",
+		"description": "At the start of your turn, lose 1 HP and draw 1 card.",
+		"dynamic_desc": "At the start of your turn, lose 1 HP and draw 1 card.",
+		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"cost_mana": 0,
+		"needs_target": false,
+		"effect": CardEffects.EffectBrutality.new()
+	})
+	_add_card("corruption", {
+		"name": "Corruption",
+		"type": "power",
+		"description": "Skills cost 0. Whenever you play a Skill, Exhaust it.",
+		"dynamic_desc": "Skills cost 0. Whenever you play a Skill, Exhaust it.",
+		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"cost_mana": 3,
+		"needs_target": false,
+		"effect": CardEffects.EffectCorruption.new()
+	})
+	_add_card("demonform", {
+		"name": "Demon Form",
+		"type": "power",
+		"description": "At the start of each turn, gain 2 Strength.",
+		"dynamic_desc": "At the start of each turn, gain 2 Strength.",
+		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"cost_mana": 3,
+		"needs_target": false,
+		"effect": CardEffects.EffectDemonForm.new()
+	})
+	_add_card("doubletap", {
+		"name": "Double Tap",
+		"type": "skill",
+		"description": "This turn, your next Attack is played twice.",
+		"dynamic_desc": "This turn, your next Attack is played twice.",
+		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"cost_mana": 1,
+		"needs_target": false,
+		"effect": CardEffects.EffectDoubleTap.new()
+	})
+
+
 
 #SKIPPED CARDS TO REVISIT: Rupture
 		

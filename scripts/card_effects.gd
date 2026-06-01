@@ -1196,31 +1196,35 @@ class EffectWhirlwind:
 	func get_cost(_card: NodeCard, player: NodePlayer) -> int:
 		return player.mana
 
-class EffectBarricade:#TODO
+class EffectBarricade:
 	extends CardEffect
-	func cast(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> void:
-		enemy.damage_melee(card.card_info.damage_actual)
-		
+	func cast(card: NodeCard, player: NodePlayer, enemy: NodeEnemy) -> void:
+		var tmp = PlayerEffects.BarricadeEffect.new()
+		player.player_effects.append(tmp)
 		end(card, player, enemy)
-	
+
 	func upgrade(card: CardDB.CardData) -> void:
 		if card.upgraded:
 			return
-		card.damage_melee = 9
+		card.cost_mana = 2
 		card.upgraded = true
 		card.name = "[color=green]" + card.name + "+[/color]"
 
-class EffectBerserk: #TODO
+class EffectBerserk:
 	extends CardEffect
-	func cast(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> void:
-		enemy.damage_melee(card.card_info.damage_actual)
-		
+	var vulnerable_amount = 2
+
+	func cast(card: NodeCard, player: NodePlayer, enemy: NodeEnemy) -> void:
+		player.apply_vulnerable(vulnerable_amount)
+
+		var tmp = PlayerEffects.BerserkEffect.new()
+		player.player_effects.append(tmp)
 		end(card, player, enemy)
-	
+
 	func upgrade(card: CardDB.CardData) -> void:
 		if card.upgraded:
 			return
-		card.damage_melee = 9
+		vulnerable_amount = 1
 		card.upgraded = true
 		card.name = "[color=green]" + card.name + "+[/color]"
 		
@@ -1239,60 +1243,71 @@ class EffectBludgeon:
 		card.name = "[color=green]" + card.name + "+[/color]"
 		
 		
-class EffectBrutality: #TODO
+class EffectBrutality:
 	extends CardEffect
-	func cast(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> void:
-		enemy.damage_melee(card.card_info.damage_actual)
-		
+
+	func cast(card: NodeCard, player: NodePlayer, enemy: NodeEnemy) -> void:
+		var tmp = PlayerEffects.BrutalityEffect.new()
+		if card.card_info.upgraded:
+			tmp.innate = true
+		player.player_effects.append(tmp)
 		end(card, player, enemy)
-	
+
 	func upgrade(card: CardDB.CardData) -> void:
 		if card.upgraded:
 			return
-		card.damage_melee = 9
 		card.upgraded = true
 		card.name = "[color=green]" + card.name + "+[/color]"
+		card.description = "Innate. At the start of your turn, lose 1 HP and draw 1 card."
+		card.dynamic_desc = "Innate. At the start of your turn, lose 1 HP and draw 1 card."
 		
 		
-class EffectCorruption: #TODO
+class EffectCorruption:
 	extends CardEffect
-	func cast(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> void:
-		enemy.damage_melee(card.card_info.damage_actual)
-		
+
+	func cast(card: NodeCard, player: NodePlayer, enemy: NodeEnemy) -> void:
+		var tmp = PlayerEffects.CorruptionEffect.new()
+		player.player_effects.append(tmp)
 		end(card, player, enemy)
-	
+
 	func upgrade(card: CardDB.CardData) -> void:
 		if card.upgraded:
 			return
-		card.damage_melee = 9
+		card.cost_mana = 2
 		card.upgraded = true
 		card.name = "[color=green]" + card.name + "+[/color]"
 
-class EffectDemonForm: #TODO
+class EffectDemonForm:
 	extends CardEffect
-	func cast(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> void:
-		enemy.damage_melee(card.card_info.damage_actual)
-		
+	var strength_per_turn = 2
+
+	func cast(card: NodeCard, player: NodePlayer, enemy: NodeEnemy) -> void:
+		var tmp = PlayerEffects.DemonFormEffect.new()
+		tmp.strength = strength_per_turn
+		player.player_effects.append(tmp)
 		end(card, player, enemy)
-	
+
 	func upgrade(card: CardDB.CardData) -> void:
 		if card.upgraded:
 			return
-		card.damage_melee = 9
+		strength_per_turn = 3
 		card.upgraded = true
 		card.name = "[color=green]" + card.name + "+[/color]"
 
-class EffectDoubleTap: #TODO
+class EffectDoubleTap:
 	extends CardEffect
-	func cast(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> void:
-		enemy.damage_melee(card.card_info.damage_actual)
-		
+	var taps = 1
+
+	func cast(card: NodeCard, player: NodePlayer, enemy: NodeEnemy) -> void:
+		var tmp = PlayerEffects.DoubleTapEffect.new()
+		tmp.taps_remaining = taps
+		player.player_effects.append(tmp)
 		end(card, player, enemy)
-	
+
 	func upgrade(card: CardDB.CardData) -> void:
 		if card.upgraded:
 			return
-		card.damage_melee = 9
+		taps = 2
 		card.upgraded = true
 		card.name = "[color=green]" + card.name + "+[/color]"
 		
@@ -1393,3 +1408,170 @@ class EffectImpervious:
 	
 	func end(card: NodeCard, _player: NodePlayer,  _enemy: NodeEnemy) -> void:
 		card.exhaust()
+
+
+class EffectLimitBreak:
+	extends CardEffect
+	func cast(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> void:
+		var tmp_str = player.get_strength()
+		player.apply_strength(tmp_str)
+		
+		end(card, player, enemy)
+		
+	func upgrade(card: CardDB.CardData) -> void:
+		if card.upgraded:
+			return
+		card.upgraded = true
+		card.name = "[color=green]" + card.name + "+[/color]"
+	
+	func end(card: NodeCard, _player: NodePlayer,  _enemy: NodeEnemy) -> void:
+		if card.upgraded == true:
+			card.discard()
+		else:
+			card.exhaust()
+
+
+class EffectJuggernaut:
+	extends CardEffect
+	var dmg = 5
+	func cast(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> void:
+		
+		var tmp = PlayerEffects.JuggernautEffect.new()
+		tmp.dmg = dmg
+		player.player_effects.append(tmp)
+		
+		end(card, player, enemy)
+		
+	func upgrade(card: CardDB.CardData) -> void:
+		if card.upgraded:
+			return
+		dmg = 7
+		card.upgraded = true
+		card.name = "[color=green]" + card.name + "+[/color]"	
+
+class EffectOffering:
+	extends CardEffect
+	var draw = 3
+	func cast(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> void:
+		player.remove_hp(6)
+		player.mana += 2
+		encounter.deck_hand.draw_hand(false, draw)
+		end(card, player, enemy)
+	
+	func upgrade(card: CardDB.CardData) -> void:
+		if card.upgraded:
+			return
+		draw = 5
+		card.upgraded = true
+		card.name = "[color=green]" + card.name + "+[/color]"
+	
+	func end(card: NodeCard, _player: NodePlayer,  _enemy: NodeEnemy) -> void:
+		card.exhaust()
+
+
+class EffectReaper:
+	extends CardEffect
+	func cast(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> void:
+		var old_hp = enemy.stats.health
+		enemy.damage_melee(card.card_info.damage_actual)
+		var hp_difference = old_hp - enemy.stats.health
+		player.health += hp_difference
+		end(card, player, enemy)
+	
+	func upgrade(card: CardDB.CardData) -> void:
+		if card.upgraded:
+			return
+		card.damage_melee = 5
+		card.upgraded = true
+		card.name = "[color=green]" + card.name + "+[/color]"
+
+
+class EffectFeelNoPain:
+	extends CardEffect
+	var block = 3
+
+	func cast(card: NodeCard, player: NodePlayer, enemy: NodeEnemy) -> void:
+		var tmp = PlayerEffects.FeelNoPainEffect.new()
+		tmp.block = block
+		player.player_effects.append(tmp)
+
+		end(card, player, enemy)
+
+	func upgrade(card: CardDB.CardData) -> void:
+		if card.upgraded:
+			return
+		block = 4
+		card.upgraded = true
+		card.name = "[color=green]" + card.name + "+[/color]"
+
+
+class EffectPummel:
+	extends CardEffect
+	var times = 4
+
+	func cast(card: NodeCard, player: NodePlayer, enemy: NodeEnemy) -> void:
+		for i in times:
+			enemy.damage_melee(card.card_info.damage_actual)
+
+		end(card, player, enemy)
+
+	func upgrade(card: CardDB.CardData) -> void:
+		if card.upgraded:
+			return
+		times = 5
+		card.upgraded = true
+		card.name = "[color=green]" + card.name + "+[/color]"
+
+	func end(card: NodeCard, _player: NodePlayer, _enemy: NodeEnemy) -> void:
+		card.exhaust()
+		encounter.deck_hand.render_hand()
+
+
+class EffectRupture:
+	extends CardEffect
+	var strength_gain = 1
+
+	func cast(card: NodeCard, player: NodePlayer, enemy: NodeEnemy) -> void:
+		var tmp = PlayerEffects.RuptureEffect.new()
+		tmp.strength_gain = strength_gain
+		player.player_effects.append(tmp)
+
+		end(card, player, enemy)
+
+	func upgrade(card: CardDB.CardData) -> void:
+		if card.upgraded:
+			return
+		strength_gain = 2
+		card.upgraded = true
+		card.name = "[color=green]" + card.name + "+[/color]"
+
+
+class EffectFeed:
+	extends CardEffect
+	var hp_gain = 3
+
+	func cast(card: NodeCard, player: NodePlayer, enemy: NodeEnemy) -> void:
+		var was_alive = not enemy.is_dead
+		var old_hp = enemy.stats.health
+
+		enemy.damage_melee(card.card_info.damage_actual)
+
+		# If enemy died from this hit (and wasn't already dead), grant permanent max HP
+		if was_alive and enemy.is_dead:
+			player.max_health += hp_gain
+			player.health += hp_gain
+			print("Feed killed enemy - gained ", hp_gain, " max HP")
+
+		end(card, player, enemy)
+
+	func upgrade(card: CardDB.CardData) -> void:
+		if card.upgraded:
+			return
+		card.damage_melee = 12
+		hp_gain = 4
+		card.upgraded = true
+		card.name = "[color=green]" + card.name + "+[/color]"
+
+	func end(card: NodeCard, _player: NodePlayer, _enemy: NodeEnemy) -> void:
+		card.exhaust()
+		encounter.deck_hand.render_hand()
