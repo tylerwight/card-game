@@ -323,8 +323,7 @@ class RuptureEffect: #FIX -- no "from_card" attribute
 		type = "attacked"
 
 	func process_attacked_player(encounter: NodeEncounter, damage: Dictionary) -> void:
-		# Only triggers when HP is lost from playing a card (not from enemy attacks)
-		# Assumption: card-sourced HP loss sets a "from_card" flag in the damage dict
+
 		if damage.get("from_card", false):
 			print("RUPTURE - gaining strength: ", strength_gain)
 			encounter.player.apply_strength(strength_gain)
@@ -339,10 +338,7 @@ class BarricadeEffect:
 	func _init():
 		type = "permanent"
 
-	# By default your engine likely clears block at turn start.
-	# Assumption: NodePlayer.start_turn() checks for this effect before wiping block.
-	# Add a guard in NodePlayer like:
-	#   if not has_effect(PlayerEffects.BarricadeEffect): block = 0
+
 
 
 class BerserkEffect:
@@ -354,10 +350,7 @@ class BerserkEffect:
 	func _init():
 		type = "end"
 
-	# Triggers at the START of each turn, not end — reusing process_end_enemy
-	# as a proxy for "start of player turn" based on your turn flow.
-	# Assumption: if your encounter calls process_end_enemy at the start of the
-	# player's turn, this works. Otherwise hook into a process_start_player instead.
+
 	func process_end_enemy(encounter: NodeEncounter) -> void:
 		print("BERSERK - gaining 1 energy")
 		encounter.player.mana += 1
@@ -373,8 +366,7 @@ class BrutalityEffect:
 	func _init():
 		type = "end"
 
-	# Same assumption as Berserk — hooks into start-of-turn.
-	# Assumption: process_end_enemy fires at start of player turn.
+
 	func process_end_enemy(encounter: NodeEncounter) -> void:
 		print("BRUTALITY - losing 1 HP and drawing 1 card")
 		encounter.player.remove_hp(1)
@@ -391,10 +383,7 @@ class CorruptionEffect:
 	func _init():
 		type = "card_played"
 
-	# Assumption: process_card_played is called before the card resolves,
-	# so we can override its cost and flag it for exhaust here.
-	# You will also need to enforce cost=0 during card_playable checks —
-	# consider adding a process_get_cost hook similar to EffectBloodForBlood.
+
 	func process_card_played(encounter: NodeEncounter, _enemy: NodeEnemy, card: NodeCard) -> void:
 		if card.card_info.type == "skill":
 			print("CORRUPTION - skill costs 0 and will exhaust")
@@ -411,7 +400,6 @@ class DemonFormEffect:
 	func _init():
 		type = "end"
 
-	# Same start-of-turn assumption as Berserk/Brutality.
 	func process_end_enemy(encounter: NodeEncounter) -> void:
 		print("DEMON FORM - gaining %s strength" % strength)
 		encounter.player.apply_strength(strength)
