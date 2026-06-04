@@ -21,6 +21,7 @@ CardDB="*res://scripts/card_db.gd"
 EnemyDB="*res://scripts/enemy_db.gd"
 EventBus="*res://scripts/event_bus.gd"
 Main="*res://scripts/main.gd"
+IconDB="*res://scripts/icon_db.gd"
 
 [display]
 

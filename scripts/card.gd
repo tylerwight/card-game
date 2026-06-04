@@ -71,6 +71,11 @@ func exhaust():
 	for effect in encounter.player.player_effects.duplicate():
 		effect.process_exhaust_player(encounter)
 
+
+func delete():
+	deck_hand.hand.remove_card(card_info)
+	self.call_deferred("queue_free")
+
 func remove():
 	deck_hand.hand.remove_card(card_info)
 	self.call_deferred("queue_free")

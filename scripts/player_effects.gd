@@ -29,6 +29,8 @@ class PlayerEffect:
 		pass
 	func process_on_gain_block(_encounter: NodeEncounter) -> void:
 		pass
+	func process_start_player(_encounter: NodeEncounter) -> void:
+		pass
 
 
 
@@ -367,11 +369,10 @@ class BrutalityEffect:
 		type = "end"
 
 
-	func process_end_enemy(encounter: NodeEncounter) -> void:
+	func process_start_player(encounter: NodeEncounter) -> void:
 		print("BRUTALITY - losing 1 HP and drawing 1 card")
 		encounter.player.remove_hp(1)
 		encounter.deck_hand.draw_hand(false, 1)
-		encounter.deck_hand.render_hand()
 
 
 class CorruptionEffect:

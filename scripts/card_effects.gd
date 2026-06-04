@@ -1260,7 +1260,9 @@ class EffectBrutality:
 		card.name = "[color=green]" + card.name + "+[/color]"
 		card.description = "Innate. At the start of your turn, lose 1 HP and draw 1 card."
 		card.dynamic_desc = "Innate. At the start of your turn, lose 1 HP and draw 1 card."
-		
+	
+	func end(card: NodeCard, _player: NodePlayer,  _enemy: NodeEnemy) -> void:
+		card.delete()
 		
 class EffectCorruption:
 	extends CardEffect

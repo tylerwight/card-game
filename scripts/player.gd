@@ -12,6 +12,7 @@ var block := 0
 var mana := 3
 var mana_max := 3
 var hp_loss_count := 0
+var player_effect_container: HFlowContainer
 
 
 var mana_label: Label
@@ -26,6 +27,8 @@ var home_pos := Vector2(0,0)
 var sprite: AnimatedSprite2D
 var is_attacking := false
 var is_dead := false
+const ICON_SCALE := Vector2(0.5, 0.5)
+
 
 @onready var encounter := Main.get_tree().get_first_node_in_group("encounter")
 
@@ -99,6 +102,8 @@ func apply_weak(amount: int) -> void:
 		var tmp = PlayerEffects.WeakEffect.new()
 		tmp.weak += amount
 		player_effects.append(tmp)
+		
+	refresh_icons()
 	
 func apply_strength(amount: int) -> void:
 	var found_str = false
@@ -112,6 +117,8 @@ func apply_strength(amount: int) -> void:
 		var tmp = PlayerEffects.StrengthEffect.new()
 		tmp.strength += amount
 		player_effects.append(tmp)
+		
+	refresh_icons()
 
 func get_strength() -> int:
 	for effect in player_effects:
@@ -131,6 +138,8 @@ func apply_vulnerable(amount: int) -> void:
 		var tmp = PlayerEffects.VulnerableEffect.new()
 		tmp.vulnerable += amount
 		player_effects.append(tmp)
+		
+	refresh_icons()
 	
 	
 func end_turn() -> void:
@@ -143,6 +152,13 @@ func end_turn() -> void:
 		block = 0 
 	mana = mana_max
 	
+	
+func start_turn() -> void:
+	for effect in player_effects.duplicate():
+		effect.process_start_player(encounter)
+		if effect.deleteme == true:
+			player_effects.erase(effect)
+	refresh_icons()
 
 
 func end_combat() -> void:
@@ -154,9 +170,15 @@ func _ready() -> void:
 	target_pos = position
 	home_pos = position
 	print("at pos:", target_pos)
-	#apply_strength(2)
-	#apply_vulnerable(2)
-	#apply_weak(2)
+	player_effect_container = HFlowContainer.new()
+	player_effect_container.name = "player_effect_container"
+	player_effect_container.position = Vector2(-50, 30)  # adjust to sit below your player sprite
+	player_effect_container.size = Vector2(100, 50)     # width controls when icons wrap
+	player_effect_container.alignment = FlowContainer.ALIGNMENT_CENTER
+	add_child(player_effect_container)
+	apply_strength(2)
+	apply_vulnerable(2)
+	apply_weak(2)
 	EventBus.top_of_round.emit()
 	
 func _process(delta: float) -> void:
@@ -171,6 +193,58 @@ func _process(delta: float) -> void:
 		is_dead = true
 		sprite.play("death")
 	
+#func add_icon(id: String) -> void:
+	#if has_icon(id):
+		#return
+	#var icon = IconDB.create_icon_node(id)
+	#icon.icon_scale(ICON_SCALE)
+	#player_effect_container.add_child(icon)
+
+func remove_icon(id: String) -> void:
+	for child in player_effect_container.get_children():
+		if child.data.id == id:
+			child.queue_free()
+			return
+
+func has_icon(id: String) -> bool:
+	for child in player_effect_container.get_children():
+		if child.data.id == id:
+			return true
+	return false
+
+func refresh_icons() -> void:
+	# Build a map of what effects currently exist and their values
+	var effect_map: Dictionary = {}
+	for effect in player_effects:
+		if effect is PlayerEffects.StrengthEffect:
+			effect_map["strength"] = effect.strength
+		elif effect is PlayerEffects.WeakEffect:
+			effect_map["weak"] = effect.weak
+		elif effect is PlayerEffects.VulnerableEffect:
+			effect_map["vulnerable"] = effect.vulnerable
+
+	# Remove icons that no longer have an effect
+	for child in player_effect_container.get_children():
+		if not effect_map.has(child.data.id):
+			child.queue_free()
+
+	# Add or update icons that should exist
+	for id in effect_map:
+		if not has_icon(id):
+			var icon = IconDB.create_icon_node(id)
+			icon.icon_scale(ICON_SCALE)
+			player_effect_container.add_child(icon)
+		# update count whether new or existing
+		# use call_deferred since queue_free above is deferred
+		var icon = get_icon_node(id)
+		if icon:
+			icon.update_count(effect_map[id])
+
+func get_icon_node(id: String) -> Control:
+	for child in player_effect_container.get_children():
+		if child.data.id == id:
+			return child
+	return null
 
 
 

@@ -165,6 +165,8 @@ func _top_of_round():
 		Main.print_player_effects(enemy.stats.player_effects)
 		
 	deck_hand.print_status()
+	
+	player.start_turn()
 		
 
 ################

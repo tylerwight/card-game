@@ -47,6 +47,7 @@ func draw_hand(inital_draw: bool, amount: int = draw_size):
 			var tmp_card = deck.pull_card_from_deck()
 			player_effect_on_draw(tmp_card)
 			hand.add_card_to_deck(tmp_card)
+	render_hand()
 
 func player_effect_on_draw(card: CardDB.CardData) -> void:
 	for effect in active_encounter.player.player_effects:
