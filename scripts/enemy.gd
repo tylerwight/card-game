@@ -13,12 +13,14 @@ const HP_BAR_SPEED := 5.0
 const BASE_SCALE := Vector2(2.0, 2.0)
 const HOVER_SCALE := Vector2(2.5, 2.5)
 const SCALE_SPEED := 12.0
+const ICON_SCALE := Vector2(0.5, 0.5)
 
 var is_attacking = false
 var home_pos := Vector2(0,0)
 var max_hp = 0
 var sprite: AnimatedSprite2D
 var is_dead := false
+var enemy_effect_container : HFlowContainer
 @onready var active_encounter: NodeEncounter = get_tree().get_first_node_in_group("encounter")
 
 func setup_enemy(data: EnemyDB.EnemyData) -> void:
@@ -53,6 +55,12 @@ func _ready() -> void:
 	_setup_hp_label()
 	_setup_hitting_label()
 	_update_hitting_label()
+	enemy_effect_container = HFlowContainer.new()
+	enemy_effect_container.name = "enemy_effect_container"
+	enemy_effect_container.alignment = FlowContainer.ALIGNMENT_CENTER
+	enemy_effect_container.position = Vector2(-50, 30)
+	enemy_effect_container.size = Vector2(100, 50)
+	add_child(enemy_effect_container)
 	EventBus.top_of_round.connect(_top_of_round)
 	print("============= Home pos: ", home_pos, "E pos: ", position)
 	
@@ -134,6 +142,7 @@ func apply_weak(amount: int) -> void:
 		var tmp = PlayerEffects.WeakEffect.new()
 		tmp.weak += amount
 		stats.player_effects.append(tmp)
+	refresh_icons()
 	
 func apply_strength(amount: int) -> void:
 	var found_str = false
@@ -150,7 +159,7 @@ func apply_strength(amount: int) -> void:
 	
 	stats.refresh_effects_attack()
 	_update_hitting_label()
-	
+	refresh_icons()
 	
 func apply_vulnerable(amount: int) -> void:
 	var found_vulnerable = false
@@ -163,7 +172,7 @@ func apply_vulnerable(amount: int) -> void:
 		var tmp = PlayerEffects.VulnerableEffect.new()
 		tmp.vulnerable += amount
 		stats.player_effects.append(tmp)
-	
+	refresh_icons()
 	
 	
 func has_vulnerable() -> bool:
@@ -172,9 +181,59 @@ func has_vulnerable() -> bool:
 			return true
 	
 	return false
+	
+	
+
+	
+	
 #################
 ###Graphics
 ##################
+
+
+
+
+func refresh_icons() -> void:
+	var effect_map: Dictionary = {}
+	for effect in stats.player_effects:
+		if effect.icon_id != "":
+			effect_map[effect.icon_id] = effect.get_icon_count()
+
+	for icon in enemy_effect_container.get_children():
+		if not effect_map.has(icon.data.id):
+			icon.queue_free()
+
+	for effect_title in effect_map:
+		if not has_icon(effect_title):
+			var icon = IconDB.create_icon_node(effect_title)
+			icon.icon_scale(ICON_SCALE)
+			enemy_effect_container.add_child(icon)
+
+		var icon = get_icon_node(effect_title)
+		if icon:
+			icon.update_count(effect_map[effect_title])
+
+func remove_icon(id: String) -> void:
+	for child in enemy_effect_container.get_children():
+		if child.data.id == id:
+			child.queue_free()
+			return
+
+func has_icon(id: String) -> bool:
+	for child in enemy_effect_container.get_children():
+		if child.data.id == id:
+			return true
+	return false
+
+func get_icon_node(id: String) -> Control:
+	for child in enemy_effect_container.get_children():
+		if child.data.id == id:
+			return child
+	return null
+
+
+
+
 func _on_animation_finished() -> void:
 	if not is_dead:
 		sprite.play("idle")

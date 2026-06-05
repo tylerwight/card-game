@@ -174,9 +174,6 @@ class EffectInflame:
 	func cast(card: NodeCard, player: NodePlayer,  enemy: NodeEnemy) -> void:
 		player.apply_strength(card.card_info.strength)
 		
-		var tmp = PlayerEffects.InflameEffect.new()
-		player.player_effects.append(tmp)
-		
 		end(card, player, enemy)
 		
 	func upgrade(card: CardDB.CardData) -> void:

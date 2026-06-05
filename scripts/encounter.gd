@@ -93,7 +93,6 @@ func _on_card_played(player: NodePlayer, card: NodeCard, enemy: NodeEnemy):
 	if card.playing == true:
 		return
 	if card.card_playable(card, player, enemy):
-		player.mana -= card.card_info.get_cost(card, player)
 		card.card_info.populate_damage_actual(self, card)
 		#card.card_info.get_dynamic_desc()
 		card.playing = true
@@ -104,6 +103,7 @@ func _on_card_played(player: NodePlayer, card: NodeCard, enemy: NodeEnemy):
 		player.mana -= card.card_info.get_cost(card, player)
 		player_effects_card_played(player, card, enemy)
 		if enemy: enemy.sprite.play("hit")
+		player.refresh_icons()
 		card.playing = false
 	else:
 		flash_message(card.card_playable_message(card, player, enemy), false)

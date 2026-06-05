@@ -172,7 +172,7 @@ func _ready() -> void:
 	print("at pos:", target_pos)
 	player_effect_container = HFlowContainer.new()
 	player_effect_container.name = "player_effect_container"
-	player_effect_container.position = Vector2(-50, 30)  # adjust to sit below your player sprite
+	player_effect_container.position = Vector2(-55, 30)  # adjust to sit below your player sprite
 	player_effect_container.size = Vector2(100, 50)     # width controls when icons wrap
 	player_effect_container.alignment = FlowContainer.ALIGNMENT_CENTER
 	add_child(player_effect_container)
@@ -213,32 +213,25 @@ func has_icon(id: String) -> bool:
 	return false
 
 func refresh_icons() -> void:
-	# Build a map of what effects currently exist and their values
 	var effect_map: Dictionary = {}
 	for effect in player_effects:
-		if effect is PlayerEffects.StrengthEffect:
-			effect_map["strength"] = effect.strength
-		elif effect is PlayerEffects.WeakEffect:
-			effect_map["weak"] = effect.weak
-		elif effect is PlayerEffects.VulnerableEffect:
-			effect_map["vulnerable"] = effect.vulnerable
+		if effect.icon_id != "":
+			effect_map[effect.icon_id] = effect.get_icon_count()
 
-	# Remove icons that no longer have an effect
-	for child in player_effect_container.get_children():
-		if not effect_map.has(child.data.id):
-			child.queue_free()
+	for icon in player_effect_container.get_children():
+		if not effect_map.has(icon.data.id):
+			icon.queue_free()
 
-	# Add or update icons that should exist
-	for id in effect_map:
-		if not has_icon(id):
-			var icon = IconDB.create_icon_node(id)
+	for effect_title in effect_map:
+		print("checking effect: ", effect_title)
+		if not has_icon(effect_title):
+			var icon = IconDB.create_icon_node(effect_title)
 			icon.icon_scale(ICON_SCALE)
 			player_effect_container.add_child(icon)
-		# update count whether new or existing
-		# use call_deferred since queue_free above is deferred
-		var icon = get_icon_node(id)
+
+		var icon = get_icon_node(effect_title)
 		if icon:
-			icon.update_count(effect_map[id])
+			icon.update_count(effect_map[effect_title])
 
 func get_icon_node(id: String) -> Control:
 	for child in player_effect_container.get_children():

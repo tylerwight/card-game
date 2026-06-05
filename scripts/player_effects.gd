@@ -5,6 +5,10 @@ class PlayerEffect:
 	extends Resource
 	var type: String = "default"
 	var deleteme: bool = false
+	var icon_id: String = ""
+	
+	func get_icon_count() -> int:
+		return 1
 	func print() -> String:
 		return "PlayerEffect(type:%s)" % type
 	func process_attacking_player(_encounter: NodeEncounter, _card: NodeCard) -> void:
@@ -38,6 +42,9 @@ class WeakEffect:
 	extends PlayerEffect
 	func _init():
 		type = "attacking"
+		icon_id = "weak"
+	func get_icon_count() -> int:
+		return weak
 	var weak = 0
 	func print() -> String:
 		return "PlayerEffect(weak:%s)" % weak
@@ -72,6 +79,9 @@ class StrengthEffect:
 	extends PlayerEffect
 	func _init():
 		type = "attacking"
+		icon_id = "strength"
+	func get_icon_count() -> int:
+		return strength
 	var strength = 0
 	func print() -> String:
 		return "PlayerEffect(strength:%s)" % strength
@@ -98,6 +108,9 @@ class VulnerableEffect:
 	extends PlayerEffect
 	func _init():
 		type = "attacked"
+		icon_id = "vulnerable"
+	func get_icon_count() -> int:
+		return vulnerable
 	var vulnerable = 0
 	func print() -> String:
 		return "PlayerEffect(vulnerable:%s)" % vulnerable
@@ -128,12 +141,16 @@ class VulnerableEffect:
 class FlexEffect:
 	extends PlayerEffect
 	var flxstrength = 0
+	func _init():
+		type = "end"
+		icon_id = "flex"
+		
+	func get_icon_count() -> int:
+		return flxstrength
 	
 	func print() -> String:
 		return "PlayerEffect(flxstrength:%s)" % flxstrength
 		
-	func _init():
-		type = "end"
 	
 	
 	func process_end_player(encounter: NodeEncounter, _card: NodeCard) -> void:
@@ -150,7 +167,10 @@ class BattleTranceEffect:
 		
 	func _init():
 		type = "drawcount"
-	
+		icon_id = "battle_trance"
+		
+	func get_icon_count() -> int:
+		return 1
 	
 	func process_calculate_draw_player(_encounter: NodeEncounter, _drawcount: int) -> int:
 		print("BATTLE TRANCE STOPPING DRAW")
@@ -170,6 +190,10 @@ class CombustEffect:
 		
 	func _init():
 		type = "end"
+		icon_id = "combust"
+		
+	func get_icon_count() -> int:
+		return damage
 		
 	func process_end_player(encounter: NodeEncounter, _card: NodeCard) -> void:
 		encounter.player.remove_hp(hp_loss)
@@ -185,6 +209,10 @@ class DarkembraceEffect:
 		
 	func _init():
 		type = "end"
+		icon_id = "dark_embrace"
+		
+	func get_icon_count() -> int:
+		return 1
 	func process_exhaust_player(encounter: NodeEncounter) -> void:
 		print("DARK EMBRACE")
 		encounter.deck_hand.draw_hand(false, 1)
@@ -199,7 +227,10 @@ class EvolveEffect:
 		
 	func _init():
 		type = "ondraw"
-	
+		icon_id = "evolve"
+		
+	func get_icon_count() -> int:
+		return draw
 	
 	func process_on_draw_player(encounter: NodeEncounter, card: CardDB.CardData) -> void:
 		print("EVOLVE CHECKING")
@@ -215,7 +246,10 @@ class FireBreathingEffect:
 		
 	func _init():
 		type = "ondraw"
-	
+		icon_id = "fire_breathing"
+		
+	func get_icon_count() -> int:
+		return dmg
 	
 	func process_on_draw_player(encounter: NodeEncounter, card: CardDB.CardData) -> void:
 		print("FIREBREATHING CHECKING")
@@ -228,6 +262,10 @@ class FlameBarrierEffect:
 	extends PlayerEffect
 	func _init():
 		type = "attacked"
+		icon_id = "flame_barrier"
+		
+	func get_icon_count() -> int:
+		return dmg
 	var dmg = 0
 	func print() -> String:
 		return "PlayerEffect(FlameBarrier:%s)" % dmg
@@ -241,14 +279,6 @@ class FlameBarrierEffect:
 		deleteme = true
 
 
-class InflameEffect:
-	extends PlayerEffect
-	
-	func print() -> String:
-		return "PlayerEffect(Inflame:%s)"
-		
-	func _init():
-		type = "end"
 	
 class MetallicizeEffect:
 	extends PlayerEffect
@@ -259,6 +289,10 @@ class MetallicizeEffect:
 		
 	func _init():
 		type = "end"
+		icon_id = "metallicize"
+		
+	func get_icon_count() -> int:
+		return block
 		
 	func process_end_player(encounter: NodeEncounter, _card: NodeCard) -> void:
 		print("ADDING BLOCK TO PLAYER")
@@ -275,6 +309,10 @@ class RageEffect:
 		
 	func _init():
 		type = "end"
+		icon_id = "rage"
+		
+	func get_icon_count() -> int:
+		return block
 		
 	func process_card_played(encounter: NodeEncounter, _enemy: NodeEnemy, card: NodeCard) -> void:
 		if card.card_info.type == "attack":
@@ -292,6 +330,10 @@ class JuggernautEffect:
 		
 	func _init():
 		type = "on_gain_block"
+		icon_id = "juggernaut"
+		
+	func get_icon_count() -> int:
+		return dmg
 
 	func process_on_gain_block(encounter: NodeEncounter) -> void:
 		var random_enemy = encounter.enemies.pick_random()
@@ -308,6 +350,10 @@ class FeelNoPainEffect:
 
 	func _init():
 		type = "exhaust"
+		icon_id = "feel_no_pain"
+		
+	func get_icon_count() -> int:
+		return block
 
 	func process_exhaust_player(encounter: NodeEncounter) -> void:
 		print("FEEL NO PAIN - gaining block: ", block)
@@ -323,7 +369,11 @@ class RuptureEffect: #FIX -- no "from_card" attribute
 
 	func _init():
 		type = "attacked"
-
+		icon_id = "rupture"
+		
+	func get_icon_count() -> int:
+		return strength_gain
+		
 	func process_attacked_player(encounter: NodeEncounter, damage: Dictionary) -> void:
 
 		if damage.get("from_card", false):
@@ -339,6 +389,10 @@ class BarricadeEffect:
 
 	func _init():
 		type = "permanent"
+		icon_id = "barricade"
+		
+	func get_icon_count() -> int:
+		return 1
 
 
 
@@ -351,7 +405,10 @@ class BerserkEffect:
 
 	func _init():
 		type = "end"
-
+		icon_id = "combust"
+		
+	func get_icon_count() -> int:
+		return 1
 
 	func process_end_enemy(encounter: NodeEncounter) -> void:
 		print("BERSERK - gaining 1 energy")
@@ -367,6 +424,10 @@ class BrutalityEffect:
 
 	func _init():
 		type = "end"
+		icon_id = "brutality"
+		
+	func get_icon_count() -> int:
+		return 1
 
 
 	func process_start_player(encounter: NodeEncounter) -> void:
@@ -383,7 +444,10 @@ class CorruptionEffect:
 
 	func _init():
 		type = "card_played"
-
+		icon_id = "corruption"
+		
+	func get_icon_count() -> int:
+		return 1
 
 	func process_card_played(encounter: NodeEncounter, _enemy: NodeEnemy, card: NodeCard) -> void:
 		if card.card_info.type == "skill":
@@ -400,7 +464,10 @@ class DemonFormEffect:
 
 	func _init():
 		type = "end"
-
+		icon_id = "demon_form"
+		
+	func get_icon_count() -> int:
+		return strength
 	func process_end_enemy(encounter: NodeEncounter) -> void:
 		print("DEMON FORM - gaining %s strength" % strength)
 		encounter.player.apply_strength(strength)
@@ -415,6 +482,10 @@ class DoubleTapEffect:
 
 	func _init():
 		type = "card_played"
+		icon_id = "double_tap"
+		
+	func get_icon_count() -> int:
+		return taps_remaining
 		
 	func process_card_played(encounter: NodeEncounter, enemy: NodeEnemy, card: NodeCard) -> void:
 		if card.card_info.type == "attack" and taps_remaining > 0:
