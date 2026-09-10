@@ -1,0 +1,23 @@
+[gd_scene load_steps=7 format=3 uid="uid://c7we0xwo0cwut"]
+
+[ext_resource type="Script" uid="uid://dmkvdalwyc3pu" path="res://scripts/audio_manager.gd" id="1_8qd8g"]
+[ext_resource type="Script" uid="uid://cqmco4w3wta0n" path="res://scripts/sound_effect_settings.gd" id="2_liach"]
+[ext_resource type="AudioStream" uid="uid://c5h5a2waaak4j" path="res://assets/sound/music/broken_promise.wav" id="3_3asnw"]
+[ext_resource type="AudioStream" uid="uid://d2uphq5pexxa7" path="res://assets/sound/music/slow_feels.wav" id="4_m6ggh"]
+
+[sub_resource type="Resource" id="Resource_3asnw"]
+script = ExtResource("2_liach")
+limit = 1
+sound_effect = ExtResource("3_3asnw")
+metadata/_custom_type_script = "uid://cqmco4w3wta0n"
+
+[sub_resource type="Resource" id="Resource_aoitu"]
+script = ExtResource("2_liach")
+limit = 1
+type = 1
+sound_effect = ExtResource("4_m6ggh")
+metadata/_custom_type_script = "uid://cqmco4w3wta0n"
+
+[node name="AudioManager" type="Node2D"]
+script = ExtResource("1_8qd8g")
+sound_effects = Array[ExtResource("2_liach")]([SubResource("Resource_3asnw"), SubResource("Resource_aoitu")])

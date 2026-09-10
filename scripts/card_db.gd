@@ -149,7 +149,7 @@ func _ready() -> void:
 		"type": "attack",
 		"description": "Deal ~dmg~ damage. Apply ~weak~ Weak",
 		"dynamic_desc": "Deal [color=green]~dmg~[/color] damage. Apply ~weak~ Weak",
-		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"texture_path": "res://assets/cards/clothesline.png",
 		"cost_mana": 2,
 		"damage_melee": 12,
 		"weak": 2,
@@ -160,7 +160,7 @@ func _ready() -> void:
 		"type": "attack",
 		"description": "Can only be played if every card in your hand is an Attack. Deal ~dmg~ damage.",
 		"dynamic_desc": "Can only be played if every card in your hand is an Attack. Deal [color=green]~dmg~[/color] damage.",
-		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"texture_path": "res://assets/cards/clash.png",
 		"cost_mana": 0,
 		"damage_melee": 14,
 		"effect": CardEffects.EffectClash.new()
@@ -170,7 +170,7 @@ func _ready() -> void:
 		"type": "power",
 		"description": "Gain ~str~ Strength",
 		"dynamic_desc": "Gain ~str~ Strength",
-		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"texture_path": "res://assets/cards/inflame.png",
 		"cost_mana": 1,
 		"strength": 2,
 		"needs_target": false,
@@ -181,7 +181,7 @@ func _ready() -> void:
 		"type": "attack",
 		"description": "Deal ~dmg~ damage to ALL enemies",
 		"dynamic_desc": "Deal [color=green]~dmg~[/color] damage to ALL enemies",
-		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"texture_path": "res://assets/cards/cleave.png",
 		"cost_mana": 1,
 		"needs_target": false,
 		"effect": CardEffects.EffectCleave.new()
@@ -191,7 +191,7 @@ func _ready() -> void:
 		"type": "skill",
 		"description": "Add ~str~ strength. At the end of yoru turn remove ~str~ strength.",
 		"dynamic_desc": "Add ~str~ strength. At the end of yoru turn remove ~str~ strength.",
-		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"texture_path": "res://assets/cards/flex.png",
 		"cost_mana": 0,
 		"strength": 2,
 		"needs_target": false,
@@ -202,7 +202,7 @@ func _ready() -> void:
 		"type": "skill",
 		"description": "Play the top card of your draw pile and Exhaust it.",
 		"dynamic_desc": "Play the top card of your draw pile and Exhaust it.",
-		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"texture_path": "res://assets/cards/habov.png",
 		"cost_mana": 1,
 		"needs_target": false,
 		"effect": CardEffects.EffectHavoc.new()
@@ -212,7 +212,7 @@ func _ready() -> void:
 		"type": "attack",
 		"description": "Deal ~dmg~ damage. Place a card from your discard pile on top of your draw pile.",
 		"dynamic_desc": "Deal [color=green]~dmg~[/color] damage. Place a card from your discard pile on top of your draw pile.",
-		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"texture_path": "res://assets/cards/headbutt.png",
 		"cost_mana": 1,
 		"damage_melee": 9,
 		"effect": CardEffects.EffectHeadbutt.new()
@@ -222,7 +222,7 @@ func _ready() -> void:
 		"type": "attack",
 		"description": "Deal ~dmg~ damage. Strength affects Heavy Blade 3 times.",
 		"dynamic_desc": "Deal [color=green]~dmg~[/color] damage. Strength affects Heavy Blade 3 times.",
-		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"texture_path": "res://assets/cards/heavyblade.png",
 		"cost_mana": 2,
 		"damage_melee": 14,
 		"effect": CardEffects.EffectHeavyblade.new()
@@ -232,7 +232,7 @@ func _ready() -> void:
 		"type": "skill",
 		"description": "Gain ~blk~ block. Upgrade a card in your hand for the rest of combat.",
 		"dynamic_desc": "Gain ~blk~ block. Upgrade a card in your hand for the rest of combat.",
-		"texture_path": "res://assets/cards/green_card_attack_defend.png",
+		"texture_path": "res://assets/cards/armaments.png",
 		"cost_mana": 1,
 		"block_std": 5,
 		"needs_target": false,
@@ -243,7 +243,7 @@ func _ready() -> void:
 		"type": "attack",
 		"description": "Gain ~blk~ Block. Deal ~dmg~ damage.",
 		"dynamic_desc": "Gain ~blk~ Block. Deal [color=green]~dmg~[/color] damage.",
-		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"texture_path": "res://assets/cards/ironwave.png",
 		"cost_mana": 1,
 		"damage_melee": 5,
 		"block_std": 5,
@@ -254,7 +254,7 @@ func _ready() -> void:
 		"type": "attack",
 		"description": "Deal ~dmg~ damage. Deals an additional 2 damage for ALL of your cards containing 'Strike'.",
 		"dynamic_desc": "Deal [color=green]~dmg~[/color] damage. Deals an additional 2 damage for ALL of your cards containing 'Strike'.",
-		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"texture_path": "res://assets/cards/perfectedstrike.png",
 		"cost_mana": 2,
 		"damage_melee": 6,
 		"effect": CardEffects.EffectPerfectedstrike.new()
@@ -264,7 +264,7 @@ func _ready() -> void:
 		"type": "attack",
 		"description": "Deal ~dmg~ damage. Draw 1 card.",
 		"dynamic_desc": "Deal [color=green]~dmg~[/color] damage. Draw 1 card.",
-		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"texture_path": "res://assets/cards/pommelstrike.png",
 		"cost_mana": 1,
 		"damage_melee": 9,
 		"effect": CardEffects.EffectPommelstrike.new()
@@ -274,7 +274,7 @@ func _ready() -> void:
 		"type": "skill",
 		"description": "Gain ~blk~ block. Draw 1 card.",
 		"dynamic_desc": "Gain ~blk~ block. Draw 1 card.",
-		"texture_path": "res://assets/cards/green_card_attack_defend.png",
+		"texture_path": "res://assets/cards/shrugitoff.png",
 		"cost_mana": 1,
 		"block_std": 8,
 		"needs_target": false,
@@ -285,7 +285,7 @@ func _ready() -> void:
 		"type": "attack",
 		"description": "Deal ~dmg~ damage to a random enemy 3 times.",
 		"dynamic_desc": "Deal [color=green]~dmg~[/color] damage to a random enemy 3 times.",
-		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"texture_path": "res://assets/cards/green_card_swordboomerang.png",
 		"cost_mana": 1,
 		"damage_melee": 3,
 		"effect": CardEffects.EffectSwordboomerang.new()
@@ -295,7 +295,7 @@ func _ready() -> void:
 		"type": "attack",
 		"description": "Deal ~dmg~ damage and apply 1 Vulnerable to ALL enemies.",
 		"dynamic_desc": "Deal [color=green]~dmg~[/color] damage and apply 1 Vulnerable to ALL enemies.",
-		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"texture_path": "res://assets/cards/green_card_thunderclap.png",
 		"cost_mana": 1,
 		"damage_melee": 4,
 		"vulnerable": 1,
@@ -307,7 +307,7 @@ func _ready() -> void:
 		"type": "skill",
 		"description": "Gain ~blk~ Block. Exhaust a random card from your hand.",
 		"dynamic_desc": "Gain ~blk~ Block. Exhaust a random card from your hand.",
-		"texture_path": "res://assets/cards/green_card_attack_defend.png",
+		"texture_path": "res://assets/cards/green_card_truegrit.png",
 		"cost_mana": 1,
 		"block_std": 7,
 		"needs_target": false,
@@ -318,7 +318,7 @@ func _ready() -> void:
 		"type": "attack",
 		"description": "Deal ~dmg~ damage twice.",
 		"dynamic_desc": "Deal [color=green]~dmg~[/color] damage twice.",
-		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"texture_path": "res://assets/cards/green_card_twinstriket.png",
 		"cost_mana": 1,
 		"damage_melee": 5,
 		"effect": CardEffects.EffectTwinstrike.new()
@@ -328,7 +328,7 @@ func _ready() -> void:
 		"type": "skill",
 		"description": "Draw 1 card. Place a card from your hand on top of your draw pile. Exhaust.",
 		"dynamic_desc": "Draw 1 card. Place a card from your hand on top of your draw pile. Exhaust.",
-		"texture_path": "res://assets/cards/green_card_attack_defend.png",
+		"texture_path": "res://assets/cards/green_card_warcryt.png",
 		"cost_mana": 0,
 		"needs_target": false,
 		"effect": CardEffects.EffectWarcry.new()
@@ -338,7 +338,7 @@ func _ready() -> void:
 		"type": "status",
 		"description": "Unplayable",
 		"dynamic_desc": "Unplayable",
-		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"texture_path": "res://assets/cards/green_card_wound.png",
 		"cost_mana": 0,
 		"effect": CardEffects.EffectWound.new()
 	})	
@@ -347,7 +347,7 @@ func _ready() -> void:
 		"type": "attack",
 		"description": "Deal ~dmg~ damage. Shuffle a Wound into your draw pile.",
 		"dynamic_desc": "Deal [color=green]~dmg~[/color] damage. Shuffle a Wound into your draw pile.",
-		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"texture_path": "res://assets/cards/green_card_wildstrike.png",
 		"cost_mana": 1,
 		"damage_melee": 12,
 		"effect": CardEffects.EffectWildstrike.new()
@@ -357,7 +357,7 @@ func _ready() -> void:
 		"type": "skill",
 		"description": "Draw 3 cards. You cannot draw additional cards this turn.",
 		"dynamic_desc": "Draw 3 cards. You cannot draw additional cards this turn.",
-		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"texture_path": "res://assets/cards/green_card_battletrance.png",
 		"cost_mana": 0,
 		"needs_target": false,
 		"effect": CardEffects.EffectBattletrance.new()
@@ -367,17 +367,17 @@ func _ready() -> void:
 		"type": "attack",
 		"description": "Costs 1 less energy for each time you lose HP in combat. Deal ~dmg~ damage.",
 		"dynamic_desc": "Costs 1 less energy for each time you lose HP in combat. Deal [color=green]~dmg~[/color] damage.",
-		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"texture_path": "res://assets/cards/green_card_bloodforblood.png",
 		"cost_mana": 4,
 		"damage_melee": 18,
 		"effect": CardEffects.EffectBloodForBlood.new()
 	})	
-	_add_card("blootletting", {#revisit
+	_add_card("bloodletting", {#revisit
 		"name": "Bloodletting",
 		"type": "skill",
 		"description": "Lose 3 HP. Gain 2 Energy.",
 		"dynamic_desc": "Lose 3 HP. Gain 2 Energy.",
-		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"texture_path": "res://assets/cards/green_card_bloodletting.png",
 		"cost_mana": 0,
 		"needs_target": false,
 		"effect": CardEffects.EffectBloodletting.new()
@@ -387,7 +387,7 @@ func _ready() -> void:
 		"type": "skill",
 		"description": "Exhaust 1 card. Draw 2 cards.",
 		"dynamic_desc": "Exhaust 1 card. Draw 2 cards.",
-		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"texture_path": "res://assets/cards/burningpact.png",
 		"cost_mana": 1,
 		"needs_target": false,
 		"effect": CardEffects.EffectBurningpact.new()
@@ -397,7 +397,7 @@ func _ready() -> void:
 		"type": "attack",
 		"description": "Ethereal. Deal ~dmg~ damage.",
 		"dynamic_desc": "Ethereal. Deal [color=green]~dmg~[/color] damage.",
-		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"texture_path": "res://assets/cards/carnage.png",
 		"cost_mana": 2,
 		"damage_melee": 18,
 		"ethereal": true,
@@ -408,7 +408,7 @@ func _ready() -> void:
 		"type": "power",
 		"description": "At the end of your turn, lose 1 HP and deal 5 damage to ALL enemies.",
 		"dynamic_desc": "At the end of your turn, lose 1 HP and deal 5 damage to ALL enemies.",
-		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"texture_path": "res://assets/cards/combust.png",
 		"cost_mana": 1,
 		"needs_target": false,
 		"effect": CardEffects.EffectCombust.new()
@@ -418,7 +418,7 @@ func _ready() -> void:
 		"type": "power",
 		"description": "Whenever a card is Exhausted, draw 1 card.",
 		"dynamic_desc": "Whenever a card is Exhausted, draw 1 card.",
-		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"texture_path": "res://assets/cards/darkembrace.png",
 		"cost_mana": 2,
 		"needs_target": false,
 		"effect": CardEffects.EffectDarkembrace.new()
@@ -428,7 +428,7 @@ func _ready() -> void:
 		"type": "skill",
 		"description": "Enemy loses 2 strength. Exhaust.",
 		"dynamic_desc": "Enemy loses 2 strength. Exhaust.",
-		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"texture_path": "res://assets/cards/disarm.png",
 		"cost_mana": 1,
 		"strength": -2,
 		"effect": CardEffects.EffectDisarm.new()
@@ -438,7 +438,7 @@ func _ready() -> void:
 		"type": "attack",
 		"description": "Deal ~dmg~ damage. If the enemy is Vulnerable, gain 1 energy and draw 1 card.",
 		"dynamic_desc": "Deal [color=green]~dmg~[/color] damage. If the enemy is Vulnerable, gain 1 energy and draw 1 card.",
-		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"texture_path": "res://assets/cards/dropkick.png",
 		"cost_mana": 1,
 		"damage_melee": 5,
 		"effect": CardEffects.EffectDropkick.new()
@@ -448,7 +448,7 @@ func _ready() -> void:
 		"type": "skill",
 		"description": "Create 1 copy of an Attack or Power card in your hand.",
 		"dynamic_desc": "Create 1 copy of an Attack or Power card in your hand.",
-		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"texture_path": "res://assets/cards/dual_wield.png",
 		"cost_mana": 1,
 		"needs_target": false,
 		"effect": CardEffects.EffectDualwield.new()
@@ -458,7 +458,7 @@ func _ready() -> void:
 		"type": "skill",
 		"description": "Double your block.",
 		"dynamic_desc": "Double your block.",
-		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"texture_path": "res://assets/cards/entrench.png",
 		"cost_mana": 2,
 		"needs_target": false,
 		"effect": CardEffects.EffectEntrench.new()
@@ -468,7 +468,7 @@ func _ready() -> void:
 		"type": "power",
 		"description": "Whenever you draw a Status card, draw 1 card.",
 		"dynamic_desc": "Whenever you draw a Status card, draw 1 card.",
-		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"texture_path": "res://assets/cards/evolve.png",
 		"cost_mana": 1,
 		"needs_target": false,
 		"effect": CardEffects.EffectEvolve.new()
@@ -478,7 +478,7 @@ func _ready() -> void:
 		"type": "power",
 		"description": "Whenever you draw a Status or Curse card, deal 6 damage to all enemies.",
 		"dynamic_desc": "Whenever you draw a Status or Curse card, deal 6 damage to all enemies.",
-		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"texture_path": "res://assets/cards/firebreathing.png",
 		"cost_mana": 1,
 		"needs_target": false,
 		"effect": CardEffects.EffectFirebreathing.new()
@@ -488,7 +488,7 @@ func _ready() -> void:
 		"type": "skill",
 		"description": "Gain ~blk~ Block. Whenever you are attacked this turn, deal 4 damage to random enemy",
 		"dynamic_desc": "Gain ~blk Block. Whenever you are attacked this turn, deal 4 damage to random enemy",
-		"texture_path": "res://assets/cards/green_card_attack_defend.png",
+		"texture_path": "res://assets/cards/flamebarrier.png",
 		"cost_mana": 2,
 		"block_std": 12,
 		"needs_target": false,
@@ -499,7 +499,7 @@ func _ready() -> void:
 		"type": "skill",
 		"description": "Gain ~blk~ block. Ethereal.",
 		"dynamic_desc": "Gain ~blk~ block. Ethereal.",
-		"texture_path": "res://assets/cards/green_card_attack_defend.png",
+		"texture_path": "res://assets/cards/ghostlyarmor.png",
 		"cost_mana": 1,
 		"block_std": 10,
 		"needs_target": false,
@@ -511,7 +511,7 @@ func _ready() -> void:
 		"type": "attack",
 		"description": "Lose 2 HP. Deal ~dmg~ damage.",
 		"dynamic_desc": "Lose 2 HP. Deal [color=green]~dmg~[/color] damage.",
-		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"texture_path": "res://assets/cards/hemokeneisis.png",
 		"cost_mana": 1,
 		"damage_melee": 15,
 		"effect": CardEffects.EffectHemokinesis.new()
@@ -521,7 +521,7 @@ func _ready() -> void:
 		"type": "skill",
 		"description": "Add a random Attack to your hand. It costs 0 this turn. Exhaust.",
 		"dynamic_desc": "Add a random Attack to your hand. It costs 0 this turn. Exhaust.",
-		"texture_path": "res://assets/cards/green_card_attack_defend.png",
+		"texture_path": "res://assets/cards/internalblade.png",
 		"cost_mana": 1,
 		"needs_target": false,
 		"effect": CardEffects.EffectInfernalBlade.new()
@@ -531,7 +531,7 @@ func _ready() -> void:
 		"type": "skill",
 		"description": "Apply 1 Weak to ALL enemies. Exhaust.",
 		"dynamic_desc": "Apply 1 Weak to ALL enemies. Exhaust.",
-		"texture_path": "res://assets/cards/green_card_attack_defend.png",
+		"texture_path": "res://assets/cards/intimidate.png",
 		"cost_mana": 0,
 		"needs_target": false,
 		"effect": CardEffects.EffectIntimidate.new()
@@ -541,7 +541,7 @@ func _ready() -> void:
 		"type": "power",
 		"description": "	At the end of your turn, gain 3 Block..",
 		"dynamic_desc": "	At the end of your turn, gain 3 Block.",
-		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"texture_path": "res://assets/cards/metallicize.png",
 		"cost_mana": 1,
 		"needs_target": false,
 		"effect": CardEffects.EffectMetallicize.new()
@@ -551,7 +551,7 @@ func _ready() -> void:
 		"type": "skill",
 		"description": "Add 2 Wounds to your hand. Gain ~blk~ Block.",
 		"dynamic_desc": "Add 2 Wounds to your hand. Gain [color=green]~blk~[/color] Block.",
-		"texture_path": "res://assets/cards/green_card_attack_defend.png",
+		"texture_path": "res://assets/cards/powerthrough.png",
 		"cost_mana": 1,
 		"block_std": 15,
 		"needs_target": false,
@@ -562,7 +562,7 @@ func _ready() -> void:
 		"type": "skill",
 		"description": "	Whenever you play an Attack this turn, gain 3 Block.",
 		"dynamic_desc": "Whenever you play an Attack this turn, gain 3 Block.",
-		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"texture_path": "res://assets/cards/rage.png",
 		"cost_mana": 0,
 		"needs_target": false,
 		"effect": CardEffects.EffectRage.new()
@@ -572,7 +572,7 @@ func _ready() -> void:
 		"type": "attack",
 		"description": "Deals ~dmg~ damage. Increase this card's damage by 5 this combat.",
 		"dynamic_desc": "Deals [color=green]~dmg~[/color] damage. Increase this card's damage by 5 this combat.",
-		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"texture_path": "res://assets/cards/rampage.png",
 		"cost_mana": 1,
 		"damage_melee": 8,
 		"effect": CardEffects.EffectRampage.new()
@@ -583,7 +583,7 @@ func _ready() -> void:
 		"description": "Unplayable. Ethereal.",
 		"dynamic_desc": "Unplayable. Ethereal.",
 		"ethereal": true,
-		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"texture_path": "res://assets/cards/dazed.png",
 		"cost_mana": 0,
 		"effect": CardEffects.EffectDazed.new()
 	})	
@@ -592,7 +592,7 @@ func _ready() -> void:
 		"type": "attack",
 		"description": "Deal ~dmg~ damage. Shuffle a Dazed into your draw pile.",
 		"dynamic_desc": "Deal [color=green]~dmg~[/color] damage. Shuffle a Dazed into your draw pile.",
-		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"texture_path": "res://assets/cards/recklesscharge.png",
 		"cost_mana": 0,
 		"damage_melee": 7,
 		"effect": CardEffects.EffectRecklessCharge.new()
@@ -602,7 +602,7 @@ func _ready() -> void:
 		"type": "attack",
 		"description": "Deal ~dmg~ damage. Can be upgraded any number of times. ",
 		"dynamic_desc": "Deal [color=green]~dmg~[/color] damage. Can be upgraded any number of times. ",
-		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"texture_path": "res://assets/cards/searingblow.png",
 		"cost_mana": 2,
 		"damage_melee": 12,
 		"effect": CardEffects.EffectSearingBlow.new()
@@ -612,7 +612,7 @@ func _ready() -> void:
 		"type": "skill",
 		"description": "Exhaust all non-Attack cards in your hand and gain ~blk~ Block for each card Exhausted.",
 		"dynamic_desc": "Exhaust all non-Attack cards in your hand and gain [color=green]~blk~[/color] Block for each card Exhausted.",
-		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"texture_path": "res://assets/cards/secondwind.png",
 		"cost_mana": 1,
 		"block_std": 5,
 		"needs_target": false,
@@ -623,7 +623,7 @@ func _ready() -> void:
 		"type": "skill",
 		"description": "Gain 2 energy. Exhaust.",
 		"dynamic_desc": "Gain 2 energy. Exhaust.",
-		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"texture_path": "res://assets/cards/seeingred.png",
 		"cost_mana": 1,
 		"needs_target": false,
 		"effect": CardEffects.EffectSeeingRed.new()
@@ -633,7 +633,7 @@ func _ready() -> void:
 		"type": "skill",
 		"description": "Gain ~blk~ Block. If this card is Exhausted, gain ~manaadd~ energy.",
 		"dynamic_desc": "Gain [color=green]~blk~[/color] Block. If this card is Exhausted, gain ~manaadd~ energy.",
-		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"texture_path": "res://assets/cards/sentinel.png",
 		"cost_mana": 1,
 		"mana_add": 2,
 		"block_std": 5,
@@ -645,7 +645,7 @@ func _ready() -> void:
 		"type": "attack",
 		"description": "Exhaust all non-Attack cards in your hand. Deal ~dmg~ damage.",
 		"dynamic_desc": "Exhaust all non-Attack cards in your hand. Deal [color=green]~dmg~[/color]  damage.",
-		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"texture_path": "res://assets/cards/seversoul.png",
 		"cost_mana": 2,
 		"damage_melee": 16,
 		"effect": CardEffects.EffectSeverSoul.new()
@@ -655,7 +655,7 @@ func _ready() -> void:
 		"type": "power",
 		"description": "Whenever a card is Exhausted, gain 3 Block.",
 		"dynamic_desc": "Whenever a card is Exhausted, gain 3 Block.",
-		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"texture_path": "res://assets/cards/feelnopain.png",
 		"cost_mana": 1,
 		"needs_target": false,
 		"effect": CardEffects.EffectFeelNoPain.new()
@@ -665,7 +665,7 @@ func _ready() -> void:
 		"type": "attack",
 		"description": "Deal 2 damage 4 times. Exhaust.",
 		"dynamic_desc": "Deal 2 damage 4 times. Exhaust.",
-		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"texture_path": "res://assets/cards/pummel.png",
 		"cost_mana": 1,
 		"damage_melee": 2,
 		"effect": CardEffects.EffectPummel.new()
@@ -675,7 +675,7 @@ func _ready() -> void:
 		"type": "power",
 		"description": "Whenever you lose HP from a card, gain 1 Strength.",
 		"dynamic_desc": "Whenever you lose HP from a card, gain 1 Strength.",
-		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"texture_path": "res://assets/cards/rupture.png",
 		"cost_mana": 1,
 		"needs_target": false,
 		"effect": CardEffects.EffectRupture.new()
@@ -685,7 +685,7 @@ func _ready() -> void:
 		"type": "attack",
 		"description": "Deal ~dmg~ damage. If this kills a non-minion enemy, gain 3 permanent Max HP. Exhaust.",
 		"dynamic_desc": "Deal [color=green]~dmg~[/color] damage. If this kills a non-minion enemy, gain 3 permanent Max HP. Exhaust.",
-		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"texture_path": "res://assets/cards/feed.png",
 		"cost_mana": 1,
 		"damage_melee": 10,
 		"effect": CardEffects.EffectFeed.new()
@@ -695,7 +695,7 @@ func _ready() -> void:
 		"type": "power",
 		"description": "Block is not removed at the start of your turn.",
 		"dynamic_desc": "Block is not removed at the start of your turn.",
-		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"texture_path": "res://assets/cards/barricade.png",
 		"cost_mana": 3,
 		"needs_target": false,
 		"effect": CardEffects.EffectBarricade.new()
@@ -705,7 +705,7 @@ func _ready() -> void:
 		"type": "power",
 		"description": "Gain 2 Vulnerable. At the start of your turn, gain 1 Energy.",
 		"dynamic_desc": "Gain 2 Vulnerable. At the start of your turn, gain 1 Energy.",
-		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"texture_path": "res://assets/cards/berserk.png",
 		"cost_mana": 0,
 		"needs_target": false,
 		"effect": CardEffects.EffectBerserk.new()
@@ -715,7 +715,7 @@ func _ready() -> void:
 		"type": "power",
 		"description": "At the start of your turn, lose 1 HP and draw 1 card.",
 		"dynamic_desc": "At the start of your turn, lose 1 HP and draw 1 card.",
-		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"texture_path": "res://assets/cards/brutality.png",
 		"cost_mana": 0,
 		"needs_target": false,
 		"effect": CardEffects.EffectBrutality.new()
@@ -725,7 +725,7 @@ func _ready() -> void:
 		"type": "power",
 		"description": "Skills cost 0. Whenever you play a Skill, Exhaust it.",
 		"dynamic_desc": "Skills cost 0. Whenever you play a Skill, Exhaust it.",
-		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"texture_path": "res://assets/cards/corruption.png",
 		"cost_mana": 3,
 		"needs_target": false,
 		"effect": CardEffects.EffectCorruption.new()
@@ -735,7 +735,7 @@ func _ready() -> void:
 		"type": "power",
 		"description": "At the start of each turn, gain 2 Strength.",
 		"dynamic_desc": "At the start of each turn, gain 2 Strength.",
-		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"texture_path": "res://assets/cards/demonform.png",
 		"cost_mana": 3,
 		"needs_target": false,
 		"effect": CardEffects.EffectDemonForm.new()
@@ -745,7 +745,7 @@ func _ready() -> void:
 		"type": "skill",
 		"description": "This turn, your next Attack is played twice.",
 		"dynamic_desc": "This turn, your next Attack is played twice.",
-		"texture_path": "res://assets/cards/green_card_attack_strike.png",
+		"texture_path": "res://assets/cards/doubletap.png",
 		"cost_mana": 1,
 		"needs_target": false,
 		"effect": CardEffects.EffectDoubleTap.new()

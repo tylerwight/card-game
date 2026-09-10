@@ -96,9 +96,8 @@ func _on_card_played(player: NodePlayer, card: NodeCard, enemy: NodeEnemy):
 		card.card_info.populate_damage_actual(self, card)
 		#card.card_info.get_dynamic_desc()
 		card.playing = true
-		player.sprite.play("attack")
 		player.attack_move()
-		await player.sprite.animation_finished
+		
 		await card.cast(player, enemy)
 		player.mana -= card.card_info.get_cost(card, player)
 		player_effects_card_played(player, card, enemy)

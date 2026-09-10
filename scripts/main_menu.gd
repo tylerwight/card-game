@@ -7,6 +7,7 @@ signal start_game()
 func _ready() -> void:
 	#for card_id in CardDB.cards_global:
 		#CardDB.cards_global[card_id].print_self()
+	AudioManager.create_audio(SoundEffect.SOUND_EFFECT_TYPE.TITLE_MUSIC)
 	pass
 
 

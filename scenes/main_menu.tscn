@@ -1,13 +1,11 @@
-[gd_scene load_steps=4 format=3 uid="uid://cwyeeubmalrm1"]
+[gd_scene load_steps=5 format=3 uid="uid://cwyeeubmalrm1"]
 
 [ext_resource type="Script" uid="uid://bok63xk0uj1wk" path="res://scripts/main_menu.gd" id="1_l6cm7"]
 [ext_resource type="Texture2D" uid="uid://ch8nveemfa2cg" path="res://assets/backgrounds/green_mountain.png" id="2_ekxnf"]
+[ext_resource type="FontFile" uid="uid://bxn373ar447w2" path="res://assets/fonts/karma.future-regular.otf" id="3_bqqt6"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_l6cm7"]
-font_size = 75
-outline_size = 13
-outline_color = Color(0, 0, 0, 1)
-shadow_size = 18
+[sub_resource type="RichTextEffect" id="RichTextEffect_ekxnf"]
+resource_local_to_scene = true
 
 [node name="mainmenu" type="Control"]
 layout_mode = 3
@@ -23,32 +21,42 @@ position = Vector2(867, 487.00003)
 scale = Vector2(0.75, 0.75)
 texture = ExtResource("2_ekxnf")
 
-[node name="title" type="Label" parent="."]
+[node name="title" type="RichTextLabel" parent="."]
 layout_mode = 0
-offset_left = 390.0
-offset_top = 8.0
-offset_right = 869.0
-offset_bottom = 220.375
-text = "CARDBOUND
-KNIGHT"
-label_settings = SubResource("LabelSettings_l6cm7")
+offset_left = 140.0
+offset_top = 1.0
+offset_right = 1116.0
+offset_bottom = 379.0
+theme_override_colors/default_color = Color(0.0007246235, 0.00072462263, 0.0007246223, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0.21960784, 0.38431373, 0.6627451, 0.7176471)
+theme_override_constants/shadow_outline_size = 22
+theme_override_constants/outline_size = 9
+theme_override_fonts/normal_font = ExtResource("3_bqqt6")
+theme_override_font_sizes/normal_font_size = 144
+bbcode_enabled = true
+text = "[wave amp=50 freq=2]CARDBOUND
+KNIGHT[/wave]"
+scroll_active = false
+shortcut_keys_enabled = false
 horizontal_alignment = 1
+custom_effects = [SubResource("RichTextEffect_ekxnf")]
 
 [node name="play button" type="Button" parent="."]
 layout_mode = 0
 offset_left = 577.0
-offset_top = 222.0
+offset_top = 388.0
 offset_right = 658.0
-offset_bottom = 265.0
+offset_bottom = 431.0
 text = "play
 "
 
 [node name="quit button" type="Button" parent="."]
 layout_mode = 0
-offset_left = 579.0
-offset_top = 410.0
-offset_right = 660.0
-offset_bottom = 453.0
+offset_left = 577.0
+offset_top = 512.0
+offset_right = 658.0
+offset_bottom = 555.0
 text = "quit
 "
 

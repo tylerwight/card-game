@@ -335,12 +335,14 @@ func _update_hp_bar_label(delta: float) -> void:
 		
 		
 func attack_move() -> void:
+	self.sprite.play("attack")
 	is_attacking = true
 	var tween = create_tween()
 	tween.tween_property(self, "position", home_pos + Vector2(500, 0), 1.0).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
 	tween.tween_property(self, "position", home_pos, 0.3).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
 	await tween.finished
 	is_attacking = false
+	await self.sprite.animation_finished
 
 
 func _on_animation_finished() -> void:
