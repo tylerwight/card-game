@@ -18,6 +18,7 @@ func _on_level_1_pressed() -> void:
 	var enemies: Array[EnemyDB.EnemyData]
 	enemies.push_back(EnemyDB.get_enemy("orc"))
 	enemies.push_back(EnemyDB.get_enemy("skeleton"))
+	#enemies.push_back(EnemyDB.get_enemy("skeleton"))
 	Main.hide_ui()
 	Main.create_encounter(player_manager, enemies, "Level 1")
 	AudioManager.stop_all_audio()

@@ -63,7 +63,7 @@ func _ready() -> void:
 		"description": " *bone rattles* ",
 		"texture_path": "res://assets/skeleton/",
 		"health": 35,
-		"behavior": EnemyBehaviors.BehaviorGoodboy.new()
+		"behavior": EnemyBehaviors.BehaviorSkeleton.new()
 	})
 	
 

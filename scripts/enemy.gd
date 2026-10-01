@@ -21,6 +21,8 @@ var max_hp = 0
 var sprite: AnimatedSprite2D
 var is_dead := false
 var enemy_effect_container : HFlowContainer
+var enemy_intent_container : HFlowContainer
+
 @onready var active_encounter: NodeEncounter = get_tree().get_first_node_in_group("encounter")
 
 func setup_enemy(data: EnemyDB.EnemyData) -> void:
@@ -43,7 +45,7 @@ func setup_enemy(data: EnemyDB.EnemyData) -> void:
 	add_child(sprite)
 	sprite.play("idle")
 	sprite.animation_finished.connect(_on_animation_finished)
-	
+	sprite.frame_changed.connect(_on_sprite_frame_changed)
 	stats.roll_intents()
 	self.scale  = BASE_SCALE
 
@@ -53,20 +55,31 @@ func _ready() -> void:
 	$enemybody.input_pickable = true
 	stats.node = self
 	_setup_hp_label()
-	_setup_hitting_label()
+	#_setup_hitting_label()
 	_update_hitting_label()
+	_update_intents_icon()
 	enemy_effect_container = HFlowContainer.new()
 	enemy_effect_container.name = "enemy_effect_container"
 	enemy_effect_container.alignment = FlowContainer.ALIGNMENT_CENTER
 	enemy_effect_container.position = Vector2(-50, 30)
 	enemy_effect_container.size = Vector2(100, 50)
 	add_child(enemy_effect_container)
+	enemy_intent_container = HFlowContainer.new()
+	enemy_intent_container.name = "enemy_intent_container"
+	enemy_intent_container.alignment = FlowContainer.ALIGNMENT_CENTER
+	enemy_intent_container.position = Vector2(-15, -40)
+	enemy_intent_container.size = Vector2(25, 25)
+	add_child(enemy_intent_container)
+	
+	
+	
 	EventBus.top_of_round.connect(_top_of_round)
 	print("============= Home pos: ", home_pos, "E pos: ", position)
 	
 
 func _top_of_round():
 	_update_hitting_label()
+	_update_intents_icon()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -120,15 +133,23 @@ func _on_enemybody_mouse_exited() -> void:
 
 
 func take_turn() -> void:
+	sprite.play("attack")
+	attack_move()
+	
+	await sprite.animation_finished
+	
+	
 	stats.take_turn(player, self)
 	stats.roll_intents()
-	
+	#player._update_block_label()
 	for effect in stats.player_effects.duplicate():
 		effect.process_end_enemy(active_encounter)
 		if effect.deleteme == true:
 			stats.player_effects.erase(effect)
-			
+	
+	
 	_update_hitting_label()
+	_update_intents_icon()
 	
 func apply_weak(amount: int) -> void:
 	var found_weak = false
@@ -159,6 +180,7 @@ func apply_strength(amount: int) -> void:
 	
 	stats.refresh_effects_attack()
 	_update_hitting_label()
+	_update_intents_icon()
 	refresh_icons()
 	
 func apply_vulnerable(amount: int) -> void:
@@ -212,6 +234,7 @@ func refresh_icons() -> void:
 		var icon = get_icon_node(effect_title)
 		if icon:
 			icon.update_count(effect_map[effect_title])
+
 
 func remove_icon(id: String) -> void:
 	for child in enemy_effect_container.get_children():
@@ -302,15 +325,29 @@ func _setup_hitting_label() -> void:
 
 	add_child(hitting_label)
 
+func _update_intents_icon() -> void:
+	if enemy_intent_container == null:
+		return
+	for icon in enemy_intent_container.get_children():
+		icon.queue_free()
+	var intent_icon = IconDB.create_icon_node("enemy_attack", true)
+	intent_icon.icon_scale(ICON_SCALE)
+	intent_icon.update_count(active_encounter.player.get_damage(stats.behavior.actual_damage))
+
+	enemy_intent_container.add_child(intent_icon)
+
 func _update_hitting_label() -> void:
 	if hitting_label:
 		hitting_label.text = "Attacking: %d" % active_encounter.player.get_damage(stats.behavior.actual_damage)
-		
+
 func die() -> void:
 	sprite.play("death")
 	await sprite.animation_finished
 	await get_tree().create_timer(1.0).timeout
 	active_encounter.clean_up_enemies()
+	
+	if active_encounter.enemies.size() <= 0:
+		active_encounter.flash_message("YOU WIN", true, 2)
 		
 		
 func attack_move() -> void:
@@ -320,3 +357,10 @@ func attack_move() -> void:
 	tween.tween_property(self, "position", home_pos, 0.3).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
 	await tween.finished
 	is_attacking = false
+
+
+func _on_sprite_frame_changed() -> void:
+	if sprite.animation == "attack" and sprite.frame == 3:
+		AudioManager.create_audio(SoundEffect.SOUND_EFFECT_TYPE.MELEE_1)
+		if is_attacking == true:
+			player.sprite.play("hit")

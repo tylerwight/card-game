@@ -13,7 +13,7 @@ var mana := 3
 var mana_max := 3
 var hp_loss_count := 0
 var player_effect_container: HFlowContainer
-
+var player_block_container: HFlowContainer
 
 var mana_label: Label
 var block_label: Label
@@ -28,7 +28,7 @@ var sprite: AnimatedSprite2D
 var is_attacking := false
 var is_dead := false
 const ICON_SCALE := Vector2(0.5, 0.5)
-
+var current_target: NodeEnemy = null
 
 @onready var encounter := Main.get_tree().get_first_node_in_group("encounter")
 
@@ -44,10 +44,15 @@ func setup_player() -> void:
 	NodeMain.add_animation(sprite, death_tex, 140, 140, 9, "death", 8.0, false)
 	var hit_tex: Texture2D = load("res://assets/player/hit.png")
 	NodeMain.add_animation(sprite, hit_tex, 140, 140, 4, "hit", 8.0, false)
+	var cast_tex: Texture2D = load("res://assets/player/cast.png")
+	NodeMain.add_animation(sprite, cast_tex, 140, 140, 6, "cast", 8.0, false)
+	
+	sprite.material = NodeMain.mat_glow
 	
 	add_child(sprite)
 	sprite.play("idle")
 	sprite.animation_finished.connect(_on_animation_finished)
+	sprite.frame_changed.connect(_on_sprite_frame_changed)
 	
 	self.scale += Vector2(1, 1)
 	#_setup_hp_label()
@@ -176,6 +181,17 @@ func _ready() -> void:
 	player_effect_container.size = Vector2(100, 50)     # width controls when icons wrap
 	player_effect_container.alignment = FlowContainer.ALIGNMENT_CENTER
 	add_child(player_effect_container)
+	
+	player_block_container = HFlowContainer.new()
+	player_block_container.name = "player_block_container"
+	player_block_container.alignment = FlowContainer.ALIGNMENT_CENTER
+	player_block_container.position = Vector2(-15, -40)
+	player_block_container.size = Vector2(25, 25)
+	add_child(player_block_container)
+	
+	
+	
+	
 	apply_strength(2)
 	apply_vulnerable(2)
 	apply_weak(2)
@@ -278,8 +294,21 @@ func _setup_block_label() -> void:
 	add_child(block_label)
 	
 func _update_block_label() -> void:
-	if block_label:
-		block_label.text = "BLK: %d" % block
+	if player_block_container == null:
+		return
+	for icon in player_block_container.get_children():
+		if block == 0:
+			icon.queue_free()
+		else:
+			icon.update_count(block)
+			return
+	if player_block_container.get_children().size() <= 0 and block > 0:
+		var intent_icon = IconDB.create_icon_node("block", true)
+		intent_icon.icon_scale(ICON_SCALE)
+		intent_icon.update_count(block)
+
+		player_block_container.add_child(intent_icon)
+
 		
 		
 
@@ -334,17 +363,40 @@ func _update_hp_bar_label(delta: float) -> void:
 		
 		
 		
-func attack_move() -> void:
-	self.sprite.play("attack")
-	is_attacking = true
-	var tween = create_tween()
-	tween.tween_property(self, "position", home_pos + Vector2(500, 0), 1.0).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
-	tween.tween_property(self, "position", home_pos, 0.3).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
-	await tween.finished
-	is_attacking = false
-	await self.sprite.animation_finished
+func animate_casting_card(enemy: NodeEnemy, card: NodeCard) -> void:
+	current_target = enemy
+	if card.card_info.type == "attack":
+		self.sprite.play("attack")
+		is_attacking = true
+		var tween = create_tween()
+		tween.tween_property(self, "position", home_pos + Vector2(500, 0), 1.0).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
+		tween.tween_property(self, "position", home_pos, 0.3).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
+		await tween.finished
+		
+		await self.sprite.animation_finished
+		is_attacking = false
+		
+	else:
+		self.sprite.play("cast")
+		await self.sprite.animation_finished
+
+		
+	current_target = null
 
 
 func _on_animation_finished() -> void:
 	if not is_dead:
 		sprite.play("idle")
+
+
+func _on_sprite_frame_changed() -> void:
+	if sprite.animation == "attack" and sprite.frame == 3:
+		AudioManager.create_audio(SoundEffect.SOUND_EFFECT_TYPE.MELEE_1)
+		if current_target:
+			current_target.sprite.play("hit")
+	if sprite.animation == "cast" and sprite.frame == 5:
+		AudioManager.create_audio(SoundEffect.SOUND_EFFECT_TYPE.BUFF_1)
+		var glow_tween = create_tween()
+		glow_tween.tween_property(sprite, "material:shader_parameter/glow_amount", 0.8, 0.15)
+		glow_tween.tween_property(sprite, "material:shader_parameter/glow_amount", 0.0, 0.05)
+		await glow_tween.finished

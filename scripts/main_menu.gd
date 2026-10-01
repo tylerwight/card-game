@@ -26,3 +26,8 @@ func _on_play_button_pressed() -> void:
 	
 	#get_tree().root.print_tree()
 	#ui.hide_all() # also doesn't work
+
+
+func _on_h_slider_value_changed(value: float) -> void:
+	AudioManager.master_volume = value
+	pass # Replace with function body.

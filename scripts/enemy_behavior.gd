@@ -9,6 +9,7 @@ class EnemyBehavior:
 	var intent_debuff: bool = false
 	var intent_buff: bool = false
 	var intent_block: bool = false
+	var turn_counter: int = 0
 	
 	@export var actual_damage: int = base_damage
 		
@@ -19,6 +20,11 @@ class EnemyBehavior:
 		
 		if actual_damage < 0:
 			actual_damage = 0
+			
+		turn_counter += 1
+		
+		if turn_counter == 8:
+			turn_counter = 0
 		
 		
 	func refresh_effects_attack(enemy: EnemyDB.EnemyData) -> void:
@@ -50,6 +56,25 @@ class BehaviorBadboy:
 	
 	#func randomize(enemy: NodeEnemy):
 		#actual_damage = randi_range(base_damage - damage_variance, base_damage + damage_variance)
+	
+	func take_turn(player: NodePlayer,  enemy: NodeEnemy) -> void:
+		player.damage(actual_damage)
+		print("Hit ", player.player_name, " for ", actual_damage)
+		end_turn(enemy)
+
+class BehaviorSkeleton:
+	extends EnemyBehavior
+	
+	func roll_intents(enemy: EnemyDB.EnemyData):
+		actual_damage = randi_range(base_damage - damage_variance, base_damage + damage_variance)
+		for effect in enemy.player_effects:
+			effect.process_attacking_enemy(null, enemy.node)
+		
+		
+		
+		if actual_damage < 0:
+			actual_damage = 0
+
 	
 	func take_turn(player: NodePlayer,  enemy: NodeEnemy) -> void:
 		player.damage(actual_damage)

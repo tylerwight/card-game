@@ -71,14 +71,17 @@ func exhaust():
 	for effect in encounter.player.player_effects.duplicate():
 		effect.process_exhaust_player(encounter)
 
+func remove():
+	deck_hand.hand.remove_card(card_info)
+	self.call_deferred("queue_free")
+
+
 
 func delete():
 	deck_hand.hand.remove_card(card_info)
 	self.call_deferred("queue_free")
 
-func remove():
-	deck_hand.hand.remove_card(card_info)
-	self.call_deferred("queue_free")
+
 
 func move_to_top_of_draw_pile():
 	print("trying to move to top of draw pile: ", card_info.name)

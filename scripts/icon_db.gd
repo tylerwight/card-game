@@ -120,6 +120,16 @@ func _ready() -> void:
 		"description": "The next attack card played this turn is played twice",
 		"texture": "res://assets/icons/double_tap1.png",
 	})
+	_add_icon("block", {
+		"name": "Block",
+		"description": "Block is removed before HP",
+		"texture": "res://assets/icons/block1.png",
+	})
+	_add_icon("enemy_attack", {
+		"name": "Attack",
+		"description": "This enemy intends to attack",
+		"texture": "res://assets/icons/brutality1.png",
+	})
 	
 
 func _process(delta: float) -> void:
@@ -151,11 +161,11 @@ func get_icon(id: String) -> IconData:
 
 var icon_scene = preload("res://scenes/icon.tscn")
 
-func create_icon_node(id: String) -> Node:
+func create_icon_node(id: String, text_above: bool = false) -> Node:
 	var data = icons_global.get(id)
 	if not data:
 		push_warning("IconDB: unknown icon id '%s'" % id)
 		return null
 	var icon = icon_scene.instantiate()
-	icon.setup(data)
+	icon.setup(data, text_above)
 	return icon

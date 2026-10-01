@@ -468,7 +468,8 @@ class DemonFormEffect:
 		
 	func get_icon_count() -> int:
 		return strength
-	func process_end_enemy(encounter: NodeEncounter) -> void:
+		
+	func process_end_player(encounter: NodeEncounter, _card: NodeCard) -> void:
 		print("DEMON FORM - gaining %s strength" % strength)
 		encounter.player.apply_strength(strength)
 

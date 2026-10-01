@@ -8,14 +8,14 @@ func setup(icon_data: IconDB.IconData, above: bool = false) -> void:
 	description_above = above
 	data = icon_data
 	$sprite.texture = load(data.texture)
-	$tooltip/description.text = data.description
+	$tooltip/description.text = data.name + ":\n" + data.description
 	$tooltip.hide()
 	_position_description()
 
 func _position_description() -> void:
-	var tooltip = $iconbody/tooltip
+	var tooltip = $tooltip
 	if description_above:
-		tooltip.position.y -= 60
+		tooltip.position.y -= 90
 
 func _on_mouse_entered() -> void:
 	$tooltip.show()

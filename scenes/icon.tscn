@@ -8,7 +8,7 @@ outline_size = 1
 outline_color = Color(0, 0, 0, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_h6rt1"]
-font_size = 5
+font_size = 10
 
 [node name="icon" type="Control"]
 custom_minimum_size = Vector2(32, 32)
@@ -40,7 +40,8 @@ autowrap_mode = 3
 
 [node name="count" type="Label" parent="."]
 layout_mode = 0
-offset_right = 30.0
+offset_left = -6.0
+offset_right = 24.0
 offset_bottom = 23.0
 label_settings = SubResource("LabelSettings_h6rt1")
 

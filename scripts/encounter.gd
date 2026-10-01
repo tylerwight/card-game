@@ -57,8 +57,9 @@ func _process(delta: float) -> void:
 	_card_movement(delta)
 	_update_labels()
 
-	if enemies.size() <= 0:
-		flash_message("YOU WIN", true, 2)
+	#if enemies.size() <= 0:
+		#flash_message("YOU WIN", true, 2)
+
 		
 	if player.is_dead:
 		flash_message("YOU LOSE", false, 2)
@@ -93,15 +94,15 @@ func _on_card_played(player: NodePlayer, card: NodeCard, enemy: NodeEnemy):
 	if card.playing == true:
 		return
 	if card.card_playable(card, player, enemy):
+		card.playing = true
 		card.card_info.populate_damage_actual(self, card)
 		#card.card_info.get_dynamic_desc()
-		card.playing = true
-		player.attack_move()
+		
+		player.animate_casting_card(enemy, card)
 		
 		await card.cast(player, enemy)
 		player.mana -= card.card_info.get_cost(card, player)
 		player_effects_card_played(player, card, enemy)
-		if enemy: enemy.sprite.play("hit")
 		player.refresh_icons()
 		card.playing = false
 	else:
@@ -181,12 +182,8 @@ func get_true_damage(player: NodePlayer, card: NodeCard, enemy: NodeEnemy):
 	
 func do_enemies_turn() -> void:
 	for enemy in enemies:
-		enemy.sprite.play("attack")
-		enemy.attack_move()
-		
-		await enemy.sprite.animation_finished
-		player.sprite.play("hit")
-		enemy.take_turn()	
+
+		await enemy.take_turn()	
 	return
 
 
@@ -199,13 +196,14 @@ func spawn_and_play_card(card_info: CardDB.CardData) -> void:
 	
 	card.card_info.populate_damage_actual(self, card)
 	card.playing = true
-	player.sprite.play("attack")
-	player.attack_move()
+
+	
 	await player.sprite.animation_finished
 	
 	var enemy = enemies.pick_random()
+	player.animate_casting_card(enemy, card)
 	card.cast(player, enemy)
-	if enemy: enemy.sprite.play("hit")
+	
 	card.playing = false
 	
 

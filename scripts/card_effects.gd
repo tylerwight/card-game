@@ -183,6 +183,9 @@ class EffectInflame:
 		card.upgraded = true
 		card.name = "[color=green]" + card.name + "+[/color]"	
 
+	func end(card: NodeCard, _player: NodePlayer, _enemy: NodeEnemy) -> void:
+		card.remove()
+		encounter.deck_hand.render_hand()
 
 class EffectCleave:
 	extends CardEffect
@@ -693,7 +696,10 @@ class EffectCombust:
 		dmg = 7
 		card.upgraded = true
 		card.name = "[color=green]" + card.name + "+[/color]"	
-
+	
+	func end(card: NodeCard, _player: NodePlayer, _enemy: NodeEnemy) -> void:
+		card.remove()
+		encounter.deck_hand.render_hand()
 
 class EffectDarkembrace:
 	extends CardEffect
@@ -713,7 +719,11 @@ class EffectDarkembrace:
 		card.upgraded = true
 		card.name = "[color=green]" + card.name + "+[/color]"	
 
-
+	func end(card: NodeCard, _player: NodePlayer, _enemy: NodeEnemy) -> void:
+		card.remove()
+		encounter.deck_hand.render_hand()
+		
+		
 class EffectDisarm:
 	extends CardEffect
 
@@ -819,6 +829,10 @@ class EffectEvolve:
 		card.description = "Whenever you draw a Status card, draw [color=green]2[/color] card."
 		card.dynamic_desc = "Whenever you draw a Status card, draw [color=green]2[/color] card."
 
+	func end(card: NodeCard, _player: NodePlayer, _enemy: NodeEnemy) -> void:
+		card.remove()
+		encounter.deck_hand.render_hand()
+
 class EffectFirebreathing:
 	extends CardEffect
 	var dmg = 6
@@ -839,6 +853,9 @@ class EffectFirebreathing:
 		card.description = "Whenever you draw a Status or Curse card, deal 10 damage to all enemies."
 		card.dynamic_desc = "Whenever you draw a Status or Curse card, deal 10 damage to all enemies."
 
+	func end(card: NodeCard, _player: NodePlayer, _enemy: NodeEnemy) -> void:
+		card.remove()
+		encounter.deck_hand.render_hand()
 
 
 class EffectFlameBarrier:
@@ -947,7 +964,10 @@ class EffectMetallicize:
 		block = 4
 		card.upgraded = true
 		card.name = "[color=green]" + card.name + "+[/color]"	
-
+	
+	func end(card: NodeCard, _player: NodePlayer, _enemy: NodeEnemy) -> void:
+		card.remove()
+		encounter.deck_hand.render_hand()
 
 
 class EffectPowerThrough:
@@ -1207,6 +1227,10 @@ class EffectBarricade:
 		card.upgraded = true
 		card.name = "[color=green]" + card.name + "+[/color]"
 
+	func end(card: NodeCard, _player: NodePlayer, _enemy: NodeEnemy) -> void:
+		card.remove()
+		encounter.deck_hand.render_hand()
+
 class EffectBerserk:
 	extends CardEffect
 	var vulnerable_amount = 2
@@ -1224,6 +1248,10 @@ class EffectBerserk:
 		vulnerable_amount = 1
 		card.upgraded = true
 		card.name = "[color=green]" + card.name + "+[/color]"
+
+	func end(card: NodeCard, _player: NodePlayer, _enemy: NodeEnemy) -> void:
+		card.remove()
+		encounter.deck_hand.render_hand()
 		
 class EffectBludgeon:
 	extends CardEffect
@@ -1258,8 +1286,9 @@ class EffectBrutality:
 		card.description = "Innate. At the start of your turn, lose 1 HP and draw 1 card."
 		card.dynamic_desc = "Innate. At the start of your turn, lose 1 HP and draw 1 card."
 	
-	func end(card: NodeCard, _player: NodePlayer,  _enemy: NodeEnemy) -> void:
-		card.delete()
+	func end(card: NodeCard, _player: NodePlayer, _enemy: NodeEnemy) -> void:
+		card.remove()
+		encounter.deck_hand.render_hand()
 		
 class EffectCorruption:
 	extends CardEffect
@@ -1275,6 +1304,11 @@ class EffectCorruption:
 		card.cost_mana = 2
 		card.upgraded = true
 		card.name = "[color=green]" + card.name + "+[/color]"
+	
+	func end(card: NodeCard, _player: NodePlayer, _enemy: NodeEnemy) -> void:
+		card.remove()
+		encounter.deck_hand.render_hand()
+
 
 class EffectDemonForm:
 	extends CardEffect
@@ -1292,6 +1326,11 @@ class EffectDemonForm:
 		strength_per_turn = 3
 		card.upgraded = true
 		card.name = "[color=green]" + card.name + "+[/color]"
+	
+	func end(card: NodeCard, _player: NodePlayer, _enemy: NodeEnemy) -> void:
+		card.remove()
+		encounter.deck_hand.render_hand()
+
 
 class EffectDoubleTap:
 	extends CardEffect
@@ -1448,6 +1487,10 @@ class EffectJuggernaut:
 		card.upgraded = true
 		card.name = "[color=green]" + card.name + "+[/color]"	
 
+	func end(card: NodeCard, _player: NodePlayer, _enemy: NodeEnemy) -> void:
+		card.remove()
+		encounter.deck_hand.render_hand()
+
 class EffectOffering:
 	extends CardEffect
 	var draw = 3
@@ -1503,7 +1546,10 @@ class EffectFeelNoPain:
 		card.upgraded = true
 		card.name = "[color=green]" + card.name + "+[/color]"
 
-
+	func end(card: NodeCard, _player: NodePlayer, _enemy: NodeEnemy) -> void:
+		card.remove()
+		encounter.deck_hand.render_hand()
+		
 class EffectPummel:
 	extends CardEffect
 	var times = 4
@@ -1543,7 +1589,10 @@ class EffectRupture:
 		strength_gain = 2
 		card.upgraded = true
 		card.name = "[color=green]" + card.name + "+[/color]"
-
+	
+	func end(card: NodeCard, _player: NodePlayer, _enemy: NodeEnemy) -> void:
+		card.remove()
+		encounter.deck_hand.render_hand()
 
 class EffectFeed:
 	extends CardEffect

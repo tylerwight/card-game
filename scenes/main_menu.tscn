@@ -60,5 +60,24 @@ offset_bottom = 555.0
 text = "quit
 "
 
+[node name="HSlider" type="HSlider" parent="."]
+layout_mode = 0
+offset_left = 60.0
+offset_top = 700.0
+offset_right = 164.0
+offset_bottom = 716.0
+max_value = 1.0
+step = 0.05
+value = 0.5
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 697.0
+offset_right = 50.0
+offset_bottom = 720.0
+text = "Vol:"
+
 [connection signal="pressed" from="play button" to="." method="_on_play_button_pressed"]
 [connection signal="pressed" from="quit button" to="." method="_on_quit_button_pressed"]
+[connection signal="value_changed" from="HSlider" to="." method="_on_h_slider_value_changed"]

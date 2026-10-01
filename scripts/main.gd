@@ -2,9 +2,13 @@ extends Node
 class_name NodeMain
 
 
-# next: discard, exhaust
-# card end phase
-# debug UI, player, enemy, card info, etc.
+
+static var mat_glow: ShaderMaterial
+
+func setup_shaders() -> void:
+	mat_glow = ShaderMaterial.new()
+	mat_glow.shader = load("res://shaders/glow.gdshader")
+	mat_glow.set_shader_parameter("glow_amount", 0.0) 
 
 func hide_ui() -> void:
 	var UI := get_tree().get_first_node_in_group("UI")
@@ -46,7 +50,8 @@ func create_card_picker(cards: Array[CardDB.CardData], title: String, required_c
 		
 	
 func _ready() -> void:
-	pass
+	setup_shaders()
+
 	
 
 

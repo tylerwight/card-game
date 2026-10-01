@@ -8,13 +8,16 @@ extends Node2D
 ## @tutorial: https://www.youtube.com/watch?v=Egf2jgET3nQ
 
 var sound_effect_dict: Dictionary = {} ## Loads all registered SoundEffects on ready as a reference.
-
 @export var sound_effects: Array[SoundEffect] ## Stores all possible SoundEffects that can be played.
-
+@export_range(0.0, 1.0, 0.01) var master_volume: float = 0.5 :
+	set(value):
+		master_volume = value
+		set_master_volume(master_volume)
 
 func _ready() -> void:
 	for sound_effect: SoundEffect in sound_effects:
 		sound_effect_dict[sound_effect.type] = sound_effect
+	set_master_volume(master_volume)
 
 
 ## Creates a sound effect at a specific location if the limit has not been reached. Pass [param location] for the global position of the audio effect, and [param type] for the SoundEffect to be queued.
@@ -63,3 +66,8 @@ func stop_all_audio() -> void:
 			child.queue_free()
 	for sound_effect: SoundEffect in sound_effect_dict.values():
 		sound_effect.audio_count = 0
+
+
+func set_master_volume(linear_volume: float) -> void:
+	var bus_index: int = AudioServer.get_bus_index("Master")
+	AudioServer.set_bus_volume_db(bus_index, linear_to_db(linear_volume))
